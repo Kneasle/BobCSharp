@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Bob;
 
 namespace BobTests {
 	public class HandyStuff {
@@ -11,6 +12,16 @@ namespace BobTests {
 			for (int i = 0; i < Math.Max (array1.Length, array2.Length); i++) {
 				Assert.AreEqual (array1 [i], array2 [i]);
 			}
+		}
+
+		public static Change GetLeadEnd (PlaceNotation[] notations) {
+			Change change = Change.Rounds (notations [0].stage);
+
+			foreach (PlaceNotation notation in notations) {
+				change *= notation;
+			}
+
+			return change;
 		}
 	}
 }

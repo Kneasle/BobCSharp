@@ -103,17 +103,7 @@ namespace Bob {
 		}
 		
 		public static bool operator == (Change a, Change b) {
-			if (a.array.Length != b.array.Length) {
-				return false;
-			}
-
-			for (int i = 0; i < a.array.Length; i ++ ) {
-				if (a.array [i] != b.array [i]) {
-					return false;
-				}
-			}
-
-			return true;
+			return a.Equals (b);
 		}
 
 		public static bool operator != (Change a, Change b) {
@@ -137,8 +127,19 @@ namespace Bob {
 				return false;
 			}
 
-			var change = (Change)obj;
-			return EqualityComparer<int []>.Default.Equals (m_array, change.m_array);
+			Change other = (Change)obj;
+
+			if (other.array.Length != array.Length) {
+				return false;
+			}
+
+			for (int i = 0; i < array.Length; i ++) {
+				if (other.array [i] != array [i]) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		public override int GetHashCode () {

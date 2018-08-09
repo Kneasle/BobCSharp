@@ -26,6 +26,10 @@ namespace BobTests {
 			Assert.AreEqual (false, Change.Rounds (Stage.Minor) == Change.Rounds (Stage.Major));
 			Assert.AreEqual (true, Change.Rounds (Stage.Minor) == new Change (new int [] { 0, 1, 2, 3, 4, 5 }));
 			Assert.AreEqual (false, Change.Rounds (Stage.Minor) == new Change (new int [] { 0, 1, 4, 3, 2, 5 }));
+
+			Assert.AreEqual (Change.Rounds (Stage.Royal), Change.Rounds (Stage.Royal));
+			Assert.AreNotEqual (Change.Rounds (Stage.Minor), new Change (new int [] { 0, 1, 2, 4, 3, 5 }));
+			Assert.AreEqual (Change.Rounds (Stage.Singles), new Change (new int [] { 0, 1, 2 }));
 		}
 	}
 }

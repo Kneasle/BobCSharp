@@ -22,6 +22,12 @@ namespace Bob {
 			}
 		}
 
+		public Stage stage {
+			get {
+				return (Stage)m_array.Length;
+			}
+		}
+
 		// Functions
 		public int [] GetArray () {
 			return m_array;
@@ -83,10 +89,130 @@ namespace Bob {
 			}
 		}
 
-		// Constants
+		// Static Stuff
+		public static PlaceNotation[] DecodeFullNotation (string full_notation, Stage stage) {
+			full_notation = full_notation.ToUpper ();
+
+			List<string> segments = new List<string> ();
+
+			string segment = "";
+			int index = 0;
+			int leadend_index = -1;
+
+			string GetNextSubstringFrom (string [] list) {
+				string delimiter = "";
+				foreach (string i in list) {
+					if (index + i.Length > full_notation.Length - 1) {
+						continue;
+					}
+
+					if (full_notation.Substring (index, i.Length) == i) {
+						delimiter = i;
+					}
+				}
+
+				return delimiter;
+			}
+
+			while (index < full_notation.Length) {
+				// Delimiter
+				string delimiter = GetNextSubstringFrom (basic_delimiters);
+
+				if (delimiter != "") {
+					index += delimiter.Length;
+
+					if (segment != "") {
+						segments.Add (segment);
+						segment = "";
+					}
+
+					continue;
+				}
+
+				// Lead-end
+				delimiter = GetNextSubstringFrom (leadend_delimiters);
+
+				if (delimiter != "") {
+					index += delimiter.Length;
+
+					if (segment != "") {
+						segments.Add (segment);
+						segment = "";
+					}
+
+					leadend_index = segments.Count;
+
+					continue;
+				}
+
+				// X
+				string x = GetNextSubstringFrom (x_notations);
+
+				if (x != "") {
+					index += delimiter.Length;
+
+					if (segment != "") {
+						segments.Add (segment);
+						segment = "";
+					}
+
+					segments.Add (x);
+
+					continue;
+				}
+
+				// Just bog standard notation
+				string next_char = full_notation.Substring (index, 1);
+				if (Constants.bell_names.Contains (next_char)) {
+					segment += next_char;
+					index += 1;
+
+					continue;
+				}
+
+				// If the loop gets this far, just reject the character,
+				// 'cos no-one cares about it
+				index += 1;
+			}
+
+			segments.Add (segment);
+
+			// Expand lead-end notation
+			if (leadend_index != -1) {
+				if (leadend_index == 1) {
+					// Grandsire-like method
+					throw new NotImplementedException ();
+				}
+
+				if (leadend_index == segments.Count - 1) {
+					// Plain Bob-like method
+					List<String> part_to_reverse = segments.GetRange (0, segments.Count - 2);
+					string half_lead = segments [segments.Count - 2];
+					string lead_end = segments [segments.Count - 1];
+
+					segments.Clear ();
+					segments.AddRange (part_to_reverse);
+					segments.Add (half_lead);
+
+					part_to_reverse.Reverse ();
+					segments.AddRange (part_to_reverse);
+					segments.Add (lead_end);
+				}
+			}
+
+			// Build notations from strings
+			PlaceNotation [] notations = new PlaceNotation [segments.Count];
+
+			for (int i = 0; i < segments.Count; i ++) {
+				notations [i] = new PlaceNotation (segments [i], stage);
+			}
+
+			return notations;
+		}
+
 		public static string [] x_notations =  new string [] { "X", "-" };
 
-		public static string [] delimiters = new string [] { ".", " " };
+		public static string [] basic_delimiters = new string [] { ".", " " };
 
 		public static string [] leadend_delimiters = new string [] { ",", "LE" };
 	}
