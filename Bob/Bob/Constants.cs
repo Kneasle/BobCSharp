@@ -5,8 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
-	static class Constants {
+	public static class Constants {
 		public static string bell_names = "1234567890ETABCDFGHIJKLMNOPQRSUVWYZ";
+	}
+
+	public enum Parity {
+		Even = 0,
+		Odd = 1
 	}
 
 	public enum Stage {
@@ -32,8 +37,17 @@ namespace Bob {
 		TwentyTwo = 22
 	}
 
-	public enum Parity {
-		Even = 0,
-		Odd = 1
+	public enum Catagory {
+		Bob,
+		Place,
+		SlowCourse,
+		Principle,
+		TrebleBob,
+		Surprise,
+		Delight,
+		TreblePlace,
+		Alliance,
+		Hybrid,
+		Differential
 	}
 }

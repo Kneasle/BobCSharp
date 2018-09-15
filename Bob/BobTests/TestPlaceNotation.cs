@@ -33,9 +33,10 @@ namespace BobTests {
 
 		[TestMethod]
 		public void PlaceNot_DecodeFullNotation () {
-			PlaceNotation[] notations = PlaceNotation.DecodeFullNotation ("5.1.5.1.5,2", Stage.Doubles);
-
-			Change lead_end = HandyStuff.GetLeadEnd (notations);
+			/*
+			Assert.AreEqual (Utils.GetEndChange (PlaceNotation.DecodeFullNotation ("5.1.5.1.5,2", Stage.Doubles)), new Change ("13524"));
+			Assert.AreEqual (Utils.GetEndChange (PlaceNotation.DecodeFullNotation ("X18", Stage.Major)), new Change ("24163857"));
+			*/
 		}
 	}
 }

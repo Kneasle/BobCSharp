@@ -40,7 +40,6 @@ namespace Bob {
 			
 			if (x_notations.Contains (notation)) {
 				// Inputted an X notation
-
 				if ((int)stage % 2 == 0) {
 					for (int i = 0; i < (int)stage; i += 2) {
 						m_array [i] = i + 1;
@@ -51,7 +50,6 @@ namespace Bob {
 				}
 			} else {
 				// Inputted a non-X notation
-
 				List<int> places_made = new List<int> ();
 
 				foreach (char c in notation) {
@@ -101,8 +99,9 @@ namespace Bob {
 
 			string GetNextSubstringFrom (string [] list) {
 				string delimiter = "";
+
 				foreach (string i in list) {
-					if (index + i.Length > full_notation.Length - 1) {
+					if (index + i.Length > full_notation.Length) {
 						continue;
 					}
 
@@ -130,10 +129,10 @@ namespace Bob {
 				}
 
 				// Lead-end
-				delimiter = GetNextSubstringFrom (leadend_delimiters);
+				string le_delimiter = GetNextSubstringFrom (leadend_delimiters);
 
-				if (delimiter != "") {
-					index += delimiter.Length;
+				if (le_delimiter != "") {
+					index += le_delimiter.Length;
 
 					if (segment != "") {
 						segments.Add (segment);
@@ -149,7 +148,7 @@ namespace Bob {
 				string x = GetNextSubstringFrom (x_notations);
 
 				if (x != "") {
-					index += delimiter.Length;
+					index += x.Length;
 
 					if (segment != "") {
 						segments.Add (segment);
@@ -175,7 +174,10 @@ namespace Bob {
 				index += 1;
 			}
 
-			segments.Add (segment);
+			// Add the last segment
+			if (segment != "") {
+				segments.Add (segment);
+			}
 
 			// Expand lead-end notation
 			if (leadend_index != -1) {

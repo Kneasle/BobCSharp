@@ -13,15 +13,5 @@ namespace BobTests {
 				Assert.AreEqual (array1 [i], array2 [i]);
 			}
 		}
-
-		public static Change GetLeadEnd (PlaceNotation[] notations) {
-			Change change = Change.Rounds (notations [0].stage);
-
-			foreach (PlaceNotation notation in notations) {
-				change *= notation;
-			}
-
-			return change;
-		}
 	}
 }

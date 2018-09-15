@@ -97,6 +97,18 @@ namespace Bob {
 			m_array = array;
 		}
 
+		public Change (string text) {
+			List<int> converted_list = new List<int> ();
+
+			foreach (char c in text) {
+				if (Constants.bell_names.Contains (c)) {
+					converted_list.Add (Constants.bell_names.IndexOf (c));
+				}
+			}
+
+			m_array = converted_list.ToArray ();
+		}
+
 		// Operators
 		public static Change operator * (Change change, ITransposition transposition) {
 			return change.Transpose (transposition);
@@ -147,6 +159,16 @@ namespace Bob {
 			hashCode = hashCode * -1521134295 + base.GetHashCode ();
 			hashCode = hashCode * -1521134295 + EqualityComparer<int []>.Default.GetHashCode (m_array);
 			return hashCode;
+		}
+
+		public override string ToString () {
+			string output = "";
+
+			foreach (int i in m_array) {
+				output += Constants.bell_names [i];
+			}
+
+			return output;
 		}
 	}
 }
