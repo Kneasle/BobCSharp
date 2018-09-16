@@ -30,15 +30,5 @@ namespace Bob {
 
 			return catagory.ToString ();
 		}
-
-		public static Change GetEndChange (PlaceNotation [] notations) {
-			Change change = Change.Rounds (notations [0].stage);
-
-			foreach (PlaceNotation notation in notations) {
-				change *= notation;
-			}
-
-			return change;
-		}
 	}
 }

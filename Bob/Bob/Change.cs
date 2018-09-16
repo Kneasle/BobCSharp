@@ -71,7 +71,7 @@ namespace Bob {
 
 			int [] new_array = new int [size];
 
-			for (int i = 0; i < size; i ++) {
+			for (int i = 0; i < size; i++) {
 				int transpose_index = i;
 
 				if (i <= transpose_array.Length) {
@@ -88,7 +88,7 @@ namespace Bob {
 			return new Change (new_array);
 		}
 
-		public int[] GetArray () {
+		public int [] GetArray () {
 			return m_array;
 		}
 
@@ -113,7 +113,7 @@ namespace Bob {
 		public static Change operator * (Change change, ITransposition transposition) {
 			return change.Transpose (transposition);
 		}
-		
+
 		public static bool operator == (Change a, Change b) {
 			return a.Equals (b);
 		}
@@ -131,6 +131,12 @@ namespace Bob {
 			}
 
 			return new Change (array);
+		}
+
+		public static Change null_change {
+			get {
+				return new Change (new int [] { -1 });
+			}
 		}
 
 		// Equality overrides

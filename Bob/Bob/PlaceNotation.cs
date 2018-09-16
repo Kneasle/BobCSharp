@@ -146,7 +146,7 @@ namespace Bob {
 
 				// X
 				string x = GetNextSubstringFrom (x_notations);
-
+				
 				if (x != "") {
 					index += x.Length;
 
@@ -210,6 +210,16 @@ namespace Bob {
 			}
 
 			return notations;
+		}
+
+		public static Change CombinePlaceNotations (PlaceNotation [] notations) {
+			Change change = Change.Rounds (notations [0].stage);
+
+			foreach (PlaceNotation notation in notations) {
+				change *= notation;
+			}
+
+			return change;
 		}
 
 		public static string [] x_notations =  new string [] { "X", "-" };

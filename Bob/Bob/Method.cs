@@ -7,20 +7,9 @@ using System.Threading.Tasks;
 namespace Bob {
 	public class Method {
 		private string m_full_notation;
-		private PlaceNotation [] m_notations;
-		private Change m_lead_end;
-
-		public PlaceNotation [] notations {
-			get {
-				return m_notations;
-			}
-		}
-
-		public Change lead_end {
-			get {
-				return m_lead_end;
-			}
-		}
+		public PlaceNotation [] place_notations { get; private set; }
+		public Change lead_end { get; private set; }
+		public int lead_length { get; private set; }
 
 		public string name;
 		public Catagory catagory;
@@ -51,8 +40,9 @@ namespace Bob {
 
 		// Functions
 		private void RefreshNotation () {
-			m_notations = PlaceNotation.DecodeFullNotation (m_full_notation, stage);
-			m_lead_end = Utils.GetEndChange (m_notations);
+			place_notations = PlaceNotation.DecodeFullNotation (m_full_notation, stage);
+			lead_end = PlaceNotation.CombinePlaceNotations (place_notations);
+			lead_length = place_notations.Length;
 		}
 
 		// Constructors
