@@ -27,6 +27,7 @@ namespace BobTests {
 			Assert.AreEqual (false, Change.Rounds (Stage.Minor) == Change.Rounds (Stage.Major));
 			Assert.AreEqual (true, Change.Rounds (Stage.Minor) == new Change (new int [] { 0, 1, 2, 3, 4, 5 }));
 			Assert.AreEqual (false, Change.Rounds (Stage.Minor) == new Change (new int [] { 0, 1, 4, 3, 2, 5 }));
+			Assert.AreEqual (true, Change.null_change == Change.null_change);
 
 			// Assert that `Change.Equals (other)` works as expected
 			Assert.AreEqual (Change.Rounds (Stage.Royal), Change.Rounds (Stage.Royal));
@@ -43,6 +44,15 @@ namespace BobTests {
 			// string to Change
 			Assert.AreEqual (Change.Rounds (Stage.Maximus), new Change ("1234567890ET"));
 			Assert.AreEqual (new Change (new int [] { 5, 4, 2, 3, 1, 0 }), new Change ("653421"));
+		}
+
+		[TestMethod]
+		public void Change_Nullness () {
+			Assert.AreEqual (Change.null_change.is_null, true);
+			Assert.AreEqual (Change.Rounds (Stage.Caters).is_null, false);
+			
+			Assert.AreEqual (Change.null_change.ToString (), "<null Change>");
+			Assert.AreNotEqual (Change.Rounds (Stage.Major).ToString (), "<null Change>");
 		}
 	}
 }

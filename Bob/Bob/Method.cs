@@ -38,6 +38,8 @@ namespace Bob {
 			}
 		}
 
+		public Touch plain_course => new Touch (this);
+
 		// Functions
 		private void RefreshNotation () {
 			place_notations = PlaceNotation.DecodeFullNotation (m_full_notation, stage);
@@ -54,5 +56,9 @@ namespace Bob {
 			// Do full notation last, because it relies upon stage and catagory
 			this.full_notation = full_notation;
 		}
+
+		// Static functions
+		public static Method plain_bob_doubles { get { return new Method ("5.1.5.1.5,125", "Plain", Catagory.Bob, Stage.Doubles); } }
+		public static Method plain_bob_minor { get { return new Method ("x16x16x16,12", "Plain", Catagory.Bob, Stage.Minor); } }
 	}
 }

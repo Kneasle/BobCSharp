@@ -53,6 +53,7 @@
     <Compile Include="TestChange.cs" />
     <Compile Include="TestPlaceNotation.cs" />
     <Compile Include="TestMethod.cs" />
+    <Compile Include="TestTouch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

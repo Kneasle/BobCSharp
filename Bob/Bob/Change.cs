@@ -62,6 +62,12 @@ namespace Bob {
 			}
 		}
 
+		public bool is_null {
+			get {
+				return m_array.Length == 1 && m_array [0] == -1;
+			}
+		}
+
 		// Functions
 		public Change Transpose (ITransposition transposable) {
 			int [] in_array = m_array;
@@ -168,6 +174,10 @@ namespace Bob {
 		}
 
 		public override string ToString () {
+			if (is_null) {
+				return "<null Change>";
+			}
+
 			string output = "";
 
 			foreach (int i in m_array) {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
-	public struct PlaceNotation : ITransposition {
+	public class PlaceNotation : ITransposition {
 		private int [] m_array;
 		private string m_notation;
 
