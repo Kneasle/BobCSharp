@@ -6,13 +6,30 @@ using System.Threading.Tasks;
 
 namespace Bob {
 	public class Touch {
+		private class CallPoint {
+			public Call call;
+			public int start_index;
+
+			public int length => call.length;
+			public int end_index => start_index + length - 1;
+
+			public PlaceNotation GetNotationAtIndex (int index) {
+				return call.place_notations [index - start_index];
+			}
+
+			public CallPoint (Call call, int start_index) {
+				this.call = call;
+				this.start_index = start_index;
+			}
+		}
+
 		public MethodCall [] method_calls;
 		public BasicCall [] basic_calls;
 
-		private Change m_target_change = Change.null_change;
+		private Change m_target_change = null;
 		public Change target_change {
 			get {
-				return m_target_change == Change.null_change ? Change.Rounds (stage) : m_target_change;
+				return m_target_change ?? Change.Rounds (stage);
 			}
 			set {
 				m_target_change = value;
@@ -20,6 +37,9 @@ namespace Bob {
 		}
 
 		public Change [] changes { get; private set; }
+
+		public bool is_extent { get; private set; }
+		public bool is_true { get; private set; }
 
 		public Stage stage {
 			get {
@@ -43,21 +63,49 @@ namespace Bob {
 			}
 		}
 
-		private class CallPoint {
-			public Call call;
-			public int start_index;
-
-			public int length => call.length;
-			public int end_index => start_index + length - 1;
-
-			public PlaceNotation GetNotationAtIndex (int index) {
-				return call.place_notations [index - start_index];
+		bool IsExtent (Dictionary<int, int> change_repeat_frequencies) {
+			if (change_repeat_frequencies.Keys.Count != 1) {
+				return false;
 			}
 
-			public CallPoint (Call call, int start_index) {
-				this.call = call;
-				this.start_index = start_index;
+			if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
+				return false;
 			}
+
+			return change_repeat_frequencies [1] == Utils.Factorial ((int)stage);
+		}
+
+		void UpdateChangeData () {
+			if (changes == null) {
+				return;
+			}
+
+			// Run duplication / falseness
+			Dictionary<string, int> change_repeats = new Dictionary<string, int> ();
+
+			foreach (Change change in changes) {
+				string c = change.ToString ();
+
+				try {
+					change_repeats [c] += 1;
+				} catch (KeyNotFoundException) {
+					change_repeats [c] = 1;
+				}
+			}
+
+			Dictionary<int, int> change_repeat_frequencies = new Dictionary<int, int> ();
+
+			foreach (string k in change_repeats.Keys) {
+				int v = change_repeats [k];
+
+				try {
+					change_repeat_frequencies [v] += 1;
+				} catch (KeyNotFoundException) {
+					change_repeat_frequencies [v] = 1;
+				}
+			}
+
+			is_extent = IsExtent (change_repeat_frequencies);
 		}
 
 		public void ComputeChanges () {
@@ -143,6 +191,8 @@ namespace Bob {
 			}
 
 			this.changes = changes.ToArray ();
+
+			UpdateChangeData ();
 		}
 
 		public override string ToString () {

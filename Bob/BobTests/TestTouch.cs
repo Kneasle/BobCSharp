@@ -11,6 +11,7 @@ namespace BobTests {
 
 			Assert.AreEqual (touch.target_change, Change.Rounds (Stage.Doubles));
 			Assert.AreEqual (touch.Length, 40);
+			Assert.AreEqual (false, touch.is_extent);
 		}
 
 		[TestMethod]
@@ -25,26 +26,15 @@ namespace BobTests {
 			);
 			
 			Assert.AreEqual (20, touch.Length);
+			Assert.AreEqual (false, touch.is_extent);
 		}
 
 		[TestMethod]
 		public void Touch_120OfBobDoubles () {
-			Method method = Method.plain_bob_doubles;
-
-			Call bob = Call.LeadEndBob (method, "145");
-			Call plain = Call.LeadEndPlain (method);
-
-			Touch touch = new Touch (
-				method,
-				new BasicCall [] {
-					new BasicCall (plain, new CallLocationList ()),
-					new BasicCall (plain, new CallLocationList ()),
-					new BasicCall (plain, new CallLocationList ()),
-					new BasicCall (bob, new CallLocationList ())
-				}
-			);
+			Touch touch = Method.plain_bob_doubles.TouchFromCallList ("PPBP");
 
 			Assert.AreEqual (120, touch.Length);
+			Assert.AreEqual (true, touch.is_extent);
 		}
 	}
 }

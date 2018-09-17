@@ -8,6 +8,7 @@ namespace Bob {
 	public class PlaceNotation : ITransposition {
 		private int [] m_array;
 		private string m_notation;
+		public int [] places_made { get; private set; }
 
 		// Properties
 		public int [] array {
@@ -28,9 +29,53 @@ namespace Bob {
 			}
 		}
 
+		public bool is_12 {
+			get {
+				if ((int)stage % 2 == 0) {
+					return Enumerable.SequenceEqual (places_made, new int [] { 0, 1 });
+				} else {
+					return Enumerable.SequenceEqual (places_made, new int [] { 0, 1, (int)stage - 1 });
+				}
+			}
+		}
+
+		public bool is_1n {
+			get {
+				if ((int)stage % 2 == 0) {
+					return Enumerable.SequenceEqual (places_made, new int [] { 0, (int)stage - 1 });
+				} else {
+					return false;
+				}
+			}
+		}
+
 		// Functions
 		public int [] GetArray () {
 			return m_array;
+		}
+
+		public override bool Equals (object obj) {
+			if (!(obj is PlaceNotation)) {
+				return false;
+			}
+
+			PlaceNotation other = obj as PlaceNotation;
+
+			if (other.array.Length != array.Length) {
+				return false;
+			}
+
+			for (int i = 0; i < array.Length; i++) {
+				if (other.array [i] != array [i]) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public override int GetHashCode () {
+			return -1984574666 + EqualityComparer<int []>.Default.GetHashCode (m_array);
 		}
 
 		// Constructors
@@ -69,6 +114,8 @@ namespace Bob {
 				if (max_place < (int)stage - 1 && ((int)stage - max_place) % 2 == 0) {
 					places_made.Add ((int)stage - 1);
 				}
+
+				this.places_made = places_made.ToArray ();
 
 				// Compute transposition array
 				int i = 0;
@@ -183,7 +230,17 @@ namespace Bob {
 			if (leadend_index != -1) {
 				if (leadend_index == 1) {
 					// Grandsire-like method
-					throw new NotImplementedException ();
+					List<String> part_to_reverse = segments.GetRange (1, segments.Count - 2);
+					string half_lead = segments [segments.Count - 1];
+					string lead_end = segments [0];
+
+					segments.Clear ();
+					segments.Add (lead_end);
+					segments.AddRange (part_to_reverse);
+					segments.Add (half_lead);
+
+					part_to_reverse.Reverse ();
+					segments.AddRange (part_to_reverse);
 				}
 
 				if (leadend_index == segments.Count - 1) {
@@ -222,11 +279,32 @@ namespace Bob {
 			return change;
 		}
 
+		public static Change[] GenerateChangeArray (PlaceNotation[] notations, Change start_change = null) {
+			Change change = start_change ?? Change.Rounds (notations [0].stage);
+
+			Change [] changes = new Change [notations.Length];
+			for (int i = 0; i < notations.Length; i++) {
+				change *= notations [i];
+
+				changes [i] = change;
+			}
+
+			return changes;
+		}
+
 		public static string [] x_notations =  new string [] { "X", "-" };
 
 		public static string [] basic_delimiters = new string [] { ".", " " };
 
 		public static string [] leadend_delimiters = new string [] { ",", "LE" };
+
+		public static bool operator == (PlaceNotation notation1, PlaceNotation notation2) {
+			return EqualityComparer<PlaceNotation>.Default.Equals (notation1, notation2);
+		}
+
+		public static bool operator != (PlaceNotation notation1, PlaceNotation notation2) {
+			return !(notation1 == notation2);
+		}
 	}
 
 	public class XNotationWithTenorCoverException : Exception {

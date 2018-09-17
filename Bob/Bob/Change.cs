@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
-	public struct Change : ITransposition {
+	public class Change : ITransposition {
 		private int [] m_array;
 
 		// Properties
@@ -94,6 +94,16 @@ namespace Bob {
 			return new Change (new_array);
 		}
 
+		public int IndexOf (int bell) {
+			for (int i = 0; i < m_array.Length; i ++) {
+				if (m_array [i] == bell) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
 		public int [] GetArray () {
 			return m_array;
 		}
@@ -137,12 +147,6 @@ namespace Bob {
 			}
 
 			return new Change (array);
-		}
-
-		public static Change null_change {
-			get {
-				return new Change (new int [] { -1 });
-			}
 		}
 
 		// Equality overrides

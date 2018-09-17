@@ -85,7 +85,7 @@ namespace Bob {
 		}
 
 		public static Call LeadEndBob (Method method, string notation) {
-			return LeadEndCall (method, bob_name, bob_notations, new PlaceNotation [] { new PlaceNotation (notation, method.stage) });
+			return LeadEndCall (method, bob_name, bob_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
 
 		public static Call LeadEndSingle (Method method, PlaceNotation [] place_notations) {
@@ -97,7 +97,7 @@ namespace Bob {
 		}
 
 		public static Call LeadEndSingle (Method method, string notation) {
-			return LeadEndCall (method, single_name, single_notations, new PlaceNotation [] { new PlaceNotation (notation, method.stage) });
+			return LeadEndCall (method, single_name, single_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
 
 		public static Call LeadEndPlain (Method method, int length = 1) {
@@ -117,13 +117,13 @@ namespace Bob {
 
 		private static string [] m_single_notations = null;
 		public static string [] single_notations {
-			get { return m_single_notations ?? new string [] { "-", "B" }; }
+			get { return m_single_notations ?? new string [] { "S" }; }
 			set { m_single_notations = value; }
 		}
 
 		private static string [] m_plain_notations = null;
 		public static string [] plain_notations {
-			get { return m_plain_notations ?? new string [] { "-", "B" }; }
+			get { return m_plain_notations ?? new string [] { "M", "P" }; }
 			set { m_plain_notations = value; }
 		}
 	}

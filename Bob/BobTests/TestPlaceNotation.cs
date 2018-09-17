@@ -38,5 +38,13 @@ namespace BobTests {
 			Assert.AreEqual (Utils.GetEndChange (PlaceNotation.DecodeFullNotation ("X18", Stage.Major)), new Change ("24163857"));
 			*/
 		}
+
+		[TestMethod]
+		public void PlaceNot_Equality () {
+			Assert.AreEqual (new PlaceNotation ("12", Stage.Doubles), new PlaceNotation ("125", Stage.Doubles));
+			Assert.AreEqual (false, new PlaceNotation ("12", Stage.Minor) == new PlaceNotation ("12", Stage.Doubles));
+			Assert.AreEqual (true, new PlaceNotation ("12", Stage.Doubles) == new PlaceNotation ("125", Stage.Doubles));
+			Assert.AreEqual (false, new PlaceNotation ("12", Stage.Doubles) != new PlaceNotation ("125", Stage.Doubles));
+		}
 	}
 }
