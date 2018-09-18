@@ -134,8 +134,18 @@ Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we 
 ```C#
 Touch plain_course = Method.plain_bob_doubles.plain_course;
 
-int length = plain_course.length; // ==> 40
 Change change_no_3 = plain_course [2]; // ==> 24153
+
+int length = plain_course.length; // ==> 40
 bool is_true = plain_course.is_true; // ==> true
 bool is_extent = plain_course.is_extent; // ==> false
+```
+
+. . . or a basic 120 of plain bob doubles:
+```C#
+Touch touch = Method.plain_bob_doubles.TouchFromCallList ("MMMB");
+
+int length = plain_course.length; // ==> 120
+bool is_true = plain_course.is_true; // ==> true
+bool is_extent = plain_course.is_extent; // ==> true
 ```
