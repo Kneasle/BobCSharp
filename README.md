@@ -23,9 +23,7 @@ PlaceNotation notation = new PlaceNotation ("145", Stage.Doubles);
 
 Implicit places are automatically filled in:
 ```C#
-PlaceNotation lazy_notation = new PlaceNotation ("4", Stage.Doubles);
-
-bool are_the_same = (lazy_notation == notation); // ==> true
+PlaceNotation lazy_notation = new PlaceNotation ("4", Stage.Doubles); ==> 145
 ```
 
 Suppose you want to know the parity (odd/evenness) of the change
@@ -110,4 +108,34 @@ Some common methods have their own static properties:
 ```C#
 Method grandsire_triples = Method.grandsire_triples;
 Method cambridge_major = Method.cambridge_major;
+```
+
+**(TODO)** You can get any method from the CCCBR's method library (also comes with the standard calls):
+```C#
+Method stedman_triples = Method.GetMethodFromLibrary ("Stedman Triples");
+```
+
+**(TODO)** You only need a name, stage and any place notation to make a method (BobC# can classify methods)
+```C#
+Method cambridge_surprise_minor = new Method ("Cambridge", "x3x4x2x3x4x5,2", Stage.Minor);
+```
+
+
+
+
+
+### Touches
+Any piece of ringing is a **Touch** object:
+```C#
+Touch touch = new Touch ();
+```
+
+Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we we've all been there at some point):
+```C#
+Touch plain_course = Method.plain_bob_doubles.plain_course;
+
+int length = plain_course.length; // ==> 40
+Change change_no_3 = plain_course.changes [2]; // ==> 24153
+bool is_true = plain_course.is_true; // ==> true
+bool is_extent = plain_course.is_extent; // ==> false
 ```
