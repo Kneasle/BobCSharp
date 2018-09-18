@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 namespace Bob {
 	public class Call {
 		public Method method;
+
 		public string name;
 		public string [] notations;
+
 		public PlaceNotation [] place_notations;
+		public string [] calling_positions;
+
 		public int every;
 		public int from;
 		public int cover;
-		public string [,] calling_positions;
 
 		// Properties
 		public Change overall_transposition => PlaceNotation.CombinePlaceNotations (place_notations);
@@ -59,7 +62,7 @@ namespace Bob {
 			Init ();
 		}
 
-		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [,] calling_positions, int every, int from = 0, int cover = -1) {
+		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [] calling_positions, int every, int from = 0, int cover = -1) {
 			this.name = name;
 			this.notations = notations;
 			this.place_notations = place_notations;
@@ -77,12 +80,17 @@ namespace Bob {
 			return new Call (method, name, notations, place_notations, method.lead_length, - place_notations.Length);
 		}
 
-		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [,] calling_positions) {
+		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [] calling_positions) {
 			return new Call (method, name, notations, place_notations, calling_positions, method.lead_length, -place_notations.Length);
 		}
 
-		public static Call LeadEndBob (Method method, PlaceNotation [] place_notations) {
-			return LeadEndCall (method, bob_name, bob_notations, place_notations);
+
+		public static Call LeadEndBob (Method method, PlaceNotation [] place_notations, bool add_standard_calling_positions = true) {
+			if (add_standard_calling_positions) {
+				return LeadEndCall (method, bob_name, bob_notations, place_notations, standard_calling_positions_bob [method.stage]);
+			} else {
+				return LeadEndCall (method, bob_name, bob_notations, place_notations);
+			}
 		}
 
 		public static Call LeadEndBob (Method method, PlaceNotation place_notation) {
@@ -93,8 +101,13 @@ namespace Bob {
 			return LeadEndCall (method, bob_name, bob_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
 
-		public static Call LeadEndSingle (Method method, PlaceNotation [] place_notations) {
-			return LeadEndCall (method, single_name, single_notations, place_notations);
+
+		public static Call LeadEndSingle (Method method, PlaceNotation [] place_notations, bool add_standard_calling_positions = true) {
+			if (add_standard_calling_positions) {
+				return LeadEndCall (method, single_name, single_notations, place_notations, standard_calling_positions_single [method.stage]);
+			} else {
+				return LeadEndCall (method, single_name, single_notations, place_notations);
+			}
 		}
 
 		public static Call LeadEndSingle (Method method, PlaceNotation place_notation) {
@@ -104,6 +117,7 @@ namespace Bob {
 		public static Call LeadEndSingle (Method method, string notation) {
 			return LeadEndCall (method, single_name, single_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
+
 
 		public static Call LeadEndPlain (Method method, int length = 1) {
 			return LeadEndCall (method, plain_name, plain_notations, new PlaceNotation [length]);
@@ -116,20 +130,53 @@ namespace Bob {
 
 		private static string [] m_bob_notations = null;
 		public static string [] bob_notations {
-			get { return m_bob_notations ?? new string [] { "-", "B" }; }
+			get { return m_bob_notations ?? new string [] { "-", "b" }; }
 			set { m_bob_notations = value; }
 		}
 
 		private static string [] m_single_notations = null;
 		public static string [] single_notations {
-			get { return m_single_notations ?? new string [] { "S" }; }
+			get { return m_single_notations ?? new string [] { "s" }; }
 			set { m_single_notations = value; }
 		}
 
 		private static string [] m_plain_notations = null;
 		public static string [] plain_notations {
-			get { return m_plain_notations ?? new string [] { "M", "P" }; }
+			get { return m_plain_notations ?? new string [] { "m", "p" }; }
 			set { m_plain_notations = value; }
+		}
+
+		public static Dictionary<Stage, string []> standard_calling_positions_bob {
+			get {
+				Dictionary<Stage, string []> dict = new Dictionary<Stage, string []> ();
+
+				dict.Add (Stage.Doubles, new string [] { "", "I", "BO", "FM4", "H" });
+				dict.Add (Stage.Minor, new string [] { "", "I", "BO", "FM4", "W", "H" });
+				dict.Add (Stage.Triples, new string [] { "", "I", "BO", "F4", "W", "M", "H" });
+				dict.Add (Stage.Major, new string [] { "", "I", "BO", "F4", "V5", "M", "W", "H" });
+				dict.Add (Stage.Caters, new string [] { "", "I", "BO", "F4", "V5", "X6", "W", "M", "H" });
+				dict.Add (Stage.Royal, new string [] { "", "I", "BO", "F4", "V5", "X6", "S7", "M", "W", "H" });
+				dict.Add (Stage.Cinques, new string [] { "", "I", "BO", "F4", "V5", "X6", "S7", "E8", "W", "M", "H" });
+				dict.Add (Stage.Maximus, new string [] { "", "I", "BO", "F4", "V5", "X6", "S7", "E8", "N9", "M", "W", "H" });
+
+				return dict;
+			}
+		}
+		public static Dictionary<Stage, string []> standard_calling_positions_single {
+			get {
+				Dictionary<Stage, string []> dict = new Dictionary<Stage, string []> ();
+
+				dict.Add (Stage.Doubles, new string [] { "", "BI2", "3", "F4", "H" });
+				dict.Add (Stage.Minor, new string [] { "", "BI2", "3", "FM4", "W", "H" });
+				dict.Add (Stage.Triples, new string [] { "", "BI2", "3", "F4", "W", "M", "H" });
+				dict.Add (Stage.Major, new string [] { "", "BI2", "3", "F4", "V5", "M", "W", "H" });
+				dict.Add (Stage.Caters, new string [] { "", "BI2", "3", "F4", "V5", "X6", "W", "M", "H" });
+				dict.Add (Stage.Royal, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "M", "W", "H" });
+				dict.Add (Stage.Cinques, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "E8", "W", "M", "H" });
+				dict.Add (Stage.Maximus, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "E8", "N9", "M", "W", "H" });
+
+				return dict;
+			}
 		}
 	}
 }

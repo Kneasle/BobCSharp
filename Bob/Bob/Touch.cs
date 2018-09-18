@@ -106,6 +106,12 @@ namespace Bob {
 			}
 		}
 
+		public Change this [int k] {
+			get {
+				return changes [k];
+			}
+		}
+
 		void UpdateChangeData () {
 			if (changes == null) {
 				return;
