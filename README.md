@@ -135,7 +135,7 @@ Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we 
 Touch plain_course = Method.plain_bob_doubles.plain_course;
 
 int length = plain_course.length; // ==> 40
-Change change_no_3 = plain_course.changes [2]; // ==> 24153
+Change change_no_3 = plain_course [2]; // ==> 24153
 bool is_true = plain_course.is_true; // ==> true
 bool is_extent = plain_course.is_extent; // ==> false
 ```
