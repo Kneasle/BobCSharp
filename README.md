@@ -1,4 +1,4 @@
-# BobCSharp
+# BobC# (In development)
 A C# library which can quickly and easily run bellringing-related queries.
 
 
@@ -25,7 +25,7 @@ Parity p = change.parity; // >>> Parity.Odd
 int o = change.order; // >>> 4
 ```
 
-Suppose you just wanted rounds on 5:
+. . . or you just wanted rounds on 5:
 ```C#
 Change rounds = Change.Rounds (Stage.Doubles);
 ```
@@ -34,7 +34,8 @@ Suppose you wanted to transpose a change by another change:
 ```C#
 Change plain = new Change ("15738264"); // Cambridge Major's lead end
 Change bob = new Change ("13578264"); // Cambridge Major's lead end after a bob
-
+```
+```C#
 Change plain_then_bob = plain.Transpose (bob); // ==> 17864523
 Change bob_then_plain = bob.Transpose (plain); // ==> 18654327
 ```
@@ -43,4 +44,12 @@ Change bob_then_plain = bob.Transpose (plain); // ==> 18654327
 ```C#
 Change plain_then_bob = plain * bob; // ==> 17864523
 Change bob_then_plain = bob * plain; // ==> 18654327
+```
+
+. . . or you wanted to transpose by some place notation
+```C#
+Change rounds = Change.Rounds (Stage.Maximus);
+PlaceNotation notation = new PlaceNotation ("14ET");
+
+Change transpose_change = rounds * notation; // ==> 1324658709ET
 ```
