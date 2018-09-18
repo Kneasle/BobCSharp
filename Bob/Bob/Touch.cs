@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bob {
 	public class Touch {
-		private class CallPoint {
+		public class CallPoint {
 			public Call call;
 			public int start_index;
 
@@ -37,9 +37,52 @@ namespace Bob {
 		}
 
 		public Change [] changes { get; private set; }
+		public Dictionary<int, Call> calls { get; private set; }
 
-		public bool is_extent { get; private set; }
-		public bool is_true { get; private set; }
+		private Dictionary<int, int> change_repeat_frequencies;
+
+		public bool is_extent {
+			get {
+				if (change_repeat_frequencies.Keys.Count != 1) {
+					return false;
+				}
+
+				if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
+					return false;
+				}
+
+				return change_repeat_frequencies [1] == Utils.Factorial ((int)stage);
+			}
+		}
+		public bool is_multiple_extent {
+			get {
+				if (change_repeat_frequencies.Keys.Count != 1) {
+					return false;
+				}
+
+				if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
+					return false;
+				}
+
+				return change_repeat_frequencies [1] % Utils.Factorial ((int)stage) == 0;
+			}
+		}
+		public bool is_true => change_repeat_frequencies.Keys.Count == 1 && change_repeat_frequencies.Keys.ToArray () [0] == 1;
+		public bool is_quarter_peal_true {
+			get {
+				int [] keys = change_repeat_frequencies.Keys.ToArray ();
+
+				if (keys.Length > 2 || keys.Length == 0) {
+					return false;
+				}
+
+				if (keys.Length == 1) {
+					return true;
+				}
+
+				return Math.Abs (keys [1] - keys [0]) == 1;
+			}
+		}
 
 		public Stage stage {
 			get {
@@ -63,18 +106,6 @@ namespace Bob {
 			}
 		}
 
-		bool IsExtent (Dictionary<int, int> change_repeat_frequencies) {
-			if (change_repeat_frequencies.Keys.Count != 1) {
-				return false;
-			}
-
-			if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
-				return false;
-			}
-
-			return change_repeat_frequencies [1] == Utils.Factorial ((int)stage);
-		}
-
 		void UpdateChangeData () {
 			if (changes == null) {
 				return;
@@ -93,7 +124,7 @@ namespace Bob {
 				}
 			}
 
-			Dictionary<int, int> change_repeat_frequencies = new Dictionary<int, int> ();
+			change_repeat_frequencies = new Dictionary<int, int> ();
 
 			foreach (string k in change_repeats.Keys) {
 				int v = change_repeats [k];
@@ -104,12 +135,11 @@ namespace Bob {
 					change_repeat_frequencies [v] = 1;
 				}
 			}
-
-			is_extent = IsExtent (change_repeat_frequencies);
 		}
 
 		public void ComputeChanges () {
 			List<Change> changes = new List<Change> ();
+			calls = new Dictionary<int, Call> ();
 
 			int lead_index = 0;
 			int sub_lead_index = 0;
@@ -130,6 +160,7 @@ namespace Bob {
 
 						if ((sub_lead_index - call.from) % call.every == 0) {
 							current_callpoint = new CallPoint (call, absolute_change_index);
+							calls.Add (absolute_change_index, call);
 						}
 					}
 				} else {
@@ -205,11 +236,18 @@ namespace Bob {
 			}
 
 			string output = "";
-			foreach (Change c in changes) {
-				output += "   " + c.ToString () + "\n";
+			for (int i = 0; i < changes.Length; i++) {
+				Change c = changes [i];
+
+				string call_symbol = " ";
+				if (calls.Keys.Contains (i + 2) && !calls [i + 2].is_plain) {
+					call_symbol = calls [i + 2].preferred_notation;
+				}
+
+				output += " " + call_symbol + " " + c.ToString () + "\n";
 			}
 
-			output += "(" + changes.Length.ToString () + " changes)";
+			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
 
 			return output;
 		}

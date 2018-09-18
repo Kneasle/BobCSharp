@@ -10,8 +10,12 @@ namespace BobTests {
 			Touch touch = Method.plain_bob_doubles.plain_course;
 
 			Assert.AreEqual (touch.target_change, Change.Rounds (Stage.Doubles));
-			Assert.AreEqual (touch.Length, 40);
+
+			Assert.AreEqual (40, touch.Length);
 			Assert.AreEqual (false, touch.is_extent);
+			Assert.AreEqual (false, touch.is_multiple_extent);
+			Assert.AreEqual (true, touch.is_true);
+			Assert.AreEqual (true, touch.is_quarter_peal_true);
 		}
 
 		[TestMethod]
@@ -27,6 +31,9 @@ namespace BobTests {
 			
 			Assert.AreEqual (20, touch.Length);
 			Assert.AreEqual (false, touch.is_extent);
+			Assert.AreEqual (false, touch.is_multiple_extent);
+			Assert.AreEqual (true, touch.is_true);
+			Assert.AreEqual (true, touch.is_quarter_peal_true);
 		}
 
 		[TestMethod]
@@ -35,6 +42,31 @@ namespace BobTests {
 
 			Assert.AreEqual (120, touch.Length);
 			Assert.AreEqual (true, touch.is_extent);
+			Assert.AreEqual (true, touch.is_multiple_extent);
+			Assert.AreEqual (true, touch.is_true);
+			Assert.AreEqual (true, touch.is_quarter_peal_true);
+		}
+
+		[TestMethod]
+		public void Touch_120OfGrandsire () {
+			Touch touch = Method.grandsire_doubles.TouchFromCallList ("SBSP");
+
+			Assert.AreEqual (120, touch.Length);
+			Assert.AreEqual (true, touch.is_extent);
+			Assert.AreEqual (true, touch.is_multiple_extent);
+			Assert.AreEqual (true, touch.is_true);
+			Assert.AreEqual (true, touch.is_quarter_peal_true);
+		}
+
+		[TestMethod]
+		public void Touch_180OfBobDoubles () {
+			Touch touch = Method.plain_bob_doubles.TouchFromCallList ("PPPBPS");
+
+			Assert.AreEqual (180, touch.Length);
+			Assert.AreEqual (false, touch.is_extent);
+			Assert.AreEqual (false, touch.is_multiple_extent);
+			Assert.AreEqual (false, touch.is_true);
+			Assert.AreEqual (true, touch.is_quarter_peal_true);
 		}
 	}
 }

@@ -7,6 +7,18 @@ using System.Threading.Tasks;
 namespace Bob {
 	public static class Constants {
 		public static string bell_names = "1234567890ETABCDFGHIJKLMNOPQRSUVWYZ";
+
+		public static string GetBellNameIndexingFromZero (int n) {
+			return bell_names [n].ToString ();
+		}
+
+		public static string GetBellNameIndexingFromOne (int n) {
+			return bell_names [n - 1].ToString ();
+		}
+
+		public static int GetBellIndex (char value) {
+			return bell_names.IndexOf (value);
+		}
 	}
 
 	public enum Parity {

@@ -153,7 +153,8 @@ namespace Bob {
 		public Change[] plain_lead_changes { get; private set; }
 
 		public int lead_length { get; private set; }
-		public int plain_course_length { get; private set; }
+		public int leads_in_plain_course { get; private set; }
+		public int plain_course_length => lead_length * leads_in_plain_course;
 
 		public Change lead_end { get; private set; }
 		public PlaceNotation lead_end_notation { get; private set; }
@@ -227,7 +228,7 @@ namespace Bob {
 
 			lead_end = PlaceNotation.CombinePlaceNotations (place_notations);
 			lead_length = place_notations.Length;
-			plain_course_length = lead_length * lead_end.order;
+			leads_in_plain_course = lead_end.order;
 
 			lead_end_notation = place_notations [place_notations.Length - 1];
 			half_lead_notation = lead_length % 2 == 0 ? place_notations [place_notations.Length / 2 - 1] : null;
@@ -256,7 +257,7 @@ namespace Bob {
 			}
 		}
 
-		private void GenerateCalls (bool overwrite_current = true) {
+		private void GenerateStandardCalls (bool overwrite_current = true) {
 			if ((int)stage < 4) {
 				return;
 			}
@@ -276,6 +277,19 @@ namespace Bob {
 						} else if (stage > Stage.Doubles) {
 							calls.Add (Call.LeadEndSingle (this, "1234"));
 						}
+
+						calls.Add (Call.LeadEndPlain (this));
+					} else if (lead_end_notation.is_1n && stage > Stage.Doubles) {
+						if (overwrite_current) {
+							calls.Clear ();
+						}
+
+						string n_minus_2 = Constants.GetBellNameIndexingFromOne ((int)stage - 2);
+						string n_minus_1 = Constants.GetBellNameIndexingFromOne ((int)stage - 1);
+						string n = Constants.GetBellNameIndexingFromOne ((int)stage);
+
+						calls.Add (Call.LeadEndBob (this, "1" + n_minus_2));
+						calls.Add (Call.LeadEndBob (this, "1" + n_minus_2 + n_minus_1 + n));
 
 						calls.Add (Call.LeadEndPlain (this));
 					}
@@ -348,7 +362,7 @@ namespace Bob {
 			this.full_notation = full_notation;
 
 			if (generate_calls) {
-				GenerateCalls ();
+				GenerateStandardCalls ();
 			}
 		}
 
@@ -356,6 +370,7 @@ namespace Bob {
 		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Catagory.Bob, Stage.Doubles);
 		public static Method plain_bob_minor => new Method ("x16x16x16,12", "Plain", Catagory.Bob, Stage.Minor);
 		public static Method grandsire_triples => new Method ("3,1.7.1.7.1.7.1", "Grandsire", Catagory.SlowCourse, Stage.Triples, "Grandsire Triples");
+		public static Method grandsire_doubles => new Method ("3,1.5.1.5.1", "Grandsire", Catagory.SlowCourse, Stage.Doubles, "Grandsire Doubles");
 		public static Method cambridge_major => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Catagory.Surprise, Stage.Major);
 	}
 }

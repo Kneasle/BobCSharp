@@ -13,12 +13,13 @@ namespace Bob {
 		public int every;
 		public int from;
 		public int cover;
-		public string [] [] calling_positions;
+		public string [,] calling_positions;
 
 		// Properties
 		public Change overall_transposition => PlaceNotation.CombinePlaceNotations (place_notations);
-		public bool is_plain => place_notations == null;
+		public bool is_plain => name == plain_name;
 		public int length => place_notations.Length;
+		public string preferred_notation => notations [0];
 
 		// Functions
 		private void Init () {
@@ -58,7 +59,7 @@ namespace Bob {
 			Init ();
 		}
 
-		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [] [] calling_positions, int every, int from = 0, int cover = -1) {
+		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [,] calling_positions, int every, int from = 0, int cover = -1) {
 			this.name = name;
 			this.notations = notations;
 			this.place_notations = place_notations;
@@ -74,6 +75,10 @@ namespace Bob {
 		// Static functions
 		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations) {
 			return new Call (method, name, notations, place_notations, method.lead_length, - place_notations.Length);
+		}
+
+		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [,] calling_positions) {
+			return new Call (method, name, notations, place_notations, calling_positions, method.lead_length, -place_notations.Length);
 		}
 
 		public static Call LeadEndBob (Method method, PlaceNotation [] place_notations) {
