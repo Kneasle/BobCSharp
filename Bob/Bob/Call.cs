@@ -9,7 +9,7 @@ namespace Bob {
 		public Method method;
 
 		public string name;
-		public string [] notations;
+		public char [] notations;
 
 		public PlaceNotation [] place_notations;
 		public string [] calling_positions;
@@ -22,9 +22,19 @@ namespace Bob {
 		public Change overall_transposition => PlaceNotation.CombinePlaceNotations (place_notations);
 		public bool is_plain => name == plain_name;
 		public int length => place_notations.Length;
-		public string preferred_notation => notations [0];
+		public char preferred_notation => notations [0];
 
 		// Functions
+		public int GetCallingPositionIndex (char c) {
+			for (int i = 0; i < calling_positions.Length; i++) {
+				if (calling_positions [i].Contains (c)) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
 		private void Init () {
 			if (method.lead_length % every != 0) {
 				throw new Exception ("Call " + name + " of " + method.title + " repeats at a number of changes which is not a divisor of the lead length. This will cause massive issues with calls not lining up as expected.");
@@ -38,7 +48,7 @@ namespace Bob {
 			Init ();
 		}
 
-		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, int every, int from = 0, int cover = -1) {
+		public Call (Method method, string name, char [] notations, PlaceNotation [] place_notations, int every, int from = 0, int cover = -1) {
 			this.method = method;
 			this.name = name;
 			this.notations = notations;
@@ -50,7 +60,7 @@ namespace Bob {
 			Init ();
 		}
 
-		public Call (Method method, string name, string [] notations, PlaceNotation place_notation, int every, int from = 0, int cover = -1) {
+		public Call (Method method, string name, char [] notations, PlaceNotation place_notation, int every, int from = 0, int cover = -1) {
 			this.method = method;
 			this.name = name;
 			this.notations = notations;
@@ -62,7 +72,7 @@ namespace Bob {
 			Init ();
 		}
 
-		public Call (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [] calling_positions, int every, int from = 0, int cover = -1) {
+		public Call (Method method, string name, char [] notations, PlaceNotation [] place_notations, string [] calling_positions, int every, int from = 0, int cover = -1) {
 			this.name = name;
 			this.notations = notations;
 			this.place_notations = place_notations;
@@ -76,11 +86,11 @@ namespace Bob {
 		}
 
 		// Static functions
-		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations) {
+		public static Call LeadEndCall (Method method, string name, char [] notations, PlaceNotation [] place_notations) {
 			return new Call (method, name, notations, place_notations, method.lead_length, - place_notations.Length);
 		}
 
-		public static Call LeadEndCall (Method method, string name, string [] notations, PlaceNotation [] place_notations, string [] calling_positions) {
+		public static Call LeadEndCall (Method method, string name, char [] notations, PlaceNotation [] place_notations, string [] calling_positions) {
 			return new Call (method, name, notations, place_notations, calling_positions, method.lead_length, -place_notations.Length);
 		}
 
@@ -128,21 +138,21 @@ namespace Bob {
 		public static string single_name = "Single";
 		public static string plain_name = "Plain";
 
-		private static string [] m_bob_notations = null;
-		public static string [] bob_notations {
-			get { return m_bob_notations ?? new string [] { "-", "b" }; }
+		private static char [] m_bob_notations = null;
+		public static char [] bob_notations {
+			get { return m_bob_notations ?? new char [] { '-', 'b' }; }
 			set { m_bob_notations = value; }
 		}
 
-		private static string [] m_single_notations = null;
-		public static string [] single_notations {
-			get { return m_single_notations ?? new string [] { "s" }; }
+		private static char [] m_single_notations = null;
+		public static char [] single_notations {
+			get { return m_single_notations ?? new char [] { 's' }; }
 			set { m_single_notations = value; }
 		}
 
-		private static string [] m_plain_notations = null;
-		public static string [] plain_notations {
-			get { return m_plain_notations ?? new string [] { "m", "p" }; }
+		private static char [] m_plain_notations = null;
+		public static char [] plain_notations {
+			get { return m_plain_notations ?? new char [] { 'm', 'p' }; }
 			set { m_plain_notations = value; }
 		}
 

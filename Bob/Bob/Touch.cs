@@ -26,6 +26,16 @@ namespace Bob {
 		public MethodCall [] method_calls;
 		public BasicCall [] basic_calls;
 
+		private int m_conductor_bell = Constants.tenor;
+		public int conductor_bell {
+			get {
+				return m_conductor_bell == Constants.tenor ? (int)stage - 1 : m_conductor_bell;
+			}
+			set {
+				m_conductor_bell = value;
+			}
+		}
+
 		private Change m_target_change = null;
 		public Change target_change {
 			get {
@@ -162,11 +172,14 @@ namespace Bob {
 				// Update calls
 				if (current_callpoint == null) {
 					if (basic_calls != null && basic_calls.Length > 0) {
-						Call call = basic_calls [call_index].call;
+						BasicCall basic_call = basic_calls [call_index];
+						Call call = basic_call.call;
 
 						if ((sub_lead_index - call.from) % call.every == 0) {
-							current_callpoint = new CallPoint (call, absolute_change_index);
-							calls.Add (absolute_change_index, call);
+							if (basic_call.call_location.Evaluate (call, current_change, absolute_change_index, this)) {
+								current_callpoint = new CallPoint (call, absolute_change_index);
+								calls.Add (absolute_change_index, call);
+							}
 						}
 					}
 				} else {
@@ -245,7 +258,7 @@ namespace Bob {
 			for (int i = 0; i < changes.Length; i++) {
 				Change c = changes [i];
 
-				string call_symbol = " ";
+				char call_symbol = ' ';
 				if (calls.Keys.Contains (i + 2) && !calls [i + 2].is_plain) {
 					call_symbol = calls [i + 2].preferred_notation;
 				}
@@ -306,12 +319,24 @@ namespace Bob {
 	}
 
 	public interface ICallLocation {
-		bool Evaluate (Call call, Change start_change, int start_index);
+		bool Evaluate (Call call, Change start_change, int start_index, Touch touch);
 	}
 
 	public class CallLocationList : ICallLocation {
-		public bool Evaluate (Call call, Change start_change, int start_index) {
+		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
 			return true;
+		}
+	}
+
+	public class CallLocationCallingPosition : ICallLocation {
+		public char calling_position;
+
+		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
+			Change end_change = start_change * call.overall_transposition;
+
+			Console.WriteLine (end_change);
+
+			return end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
 		}
 	}
 }

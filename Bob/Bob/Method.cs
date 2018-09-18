@@ -315,10 +315,10 @@ namespace Bob {
 			return null;
 		}
 
-		public Call GetCallByNotation (string notation) {
+		public Call GetCallByNotation (char notation) {
 			foreach (Call call in calls) {
-				foreach (string n in call.notations) {
-					if (n.ToUpper () == notation.ToUpper ()) {
+				foreach (char n in call.notations) {
+					if (n.ToString ().ToUpper () == notation.ToString ().ToUpper ()) {
 						return call;
 					}
 				}
@@ -341,7 +341,7 @@ namespace Bob {
 			List<Call> calls = new List<Call> ();
 
 			foreach (char c in notation) {
-				Call call = GetCallByNotation (c.ToString ());
+				Call call = GetCallByNotation (c);
 
 				if (call != null) {
 					calls.Add (call);
