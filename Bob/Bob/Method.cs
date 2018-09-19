@@ -351,6 +351,30 @@ namespace Bob {
 			return TouchFromCallList (calls.ToArray ());
 		}
 
+		public Touch TouchFromCallingPositions (string notation) {
+			List<BasicCall> calls = new List<BasicCall> ();
+
+			Call current_call = GetCallByName (Call.bob_name);
+			foreach (char c in notation) {
+				if (Constants.alpha.Contains (c)) { // `c` is lower-case, and therefore a call name
+					current_call = GetCallByNotation (c);
+				}
+
+				if (Constants.ALPHA.Contains (c)) { // `c` is upper-case, and therefore a calling position
+					calls.Add (new BasicCall (
+						current_call,
+						new CallLocationCallingPosition (c)
+					));
+
+					current_call = GetCallByName (Call.bob_name);
+				}
+
+				// Otherwise `c` is a random character, and should be ignored
+			}
+
+			return new Touch (this, calls.ToArray ());
+		}
+
 		// Constructors
 		public Method (string full_notation, string name, Catagory catagory, Stage stage, string override_title = "", bool generate_calls = true) {
 			this.name = name [0].ToString ().ToUpper () + name.Substring (1).ToLower ();

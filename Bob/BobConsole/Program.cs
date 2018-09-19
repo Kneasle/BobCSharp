@@ -11,6 +11,8 @@ namespace BobConsole {
 			Console.WriteLine (Method.grandsire_triples.plain_course);
 			Console.WriteLine ("\n\n\n\n\n");
 			Console.WriteLine (Method.plain_bob_doubles.TouchFromCallList ("PPPBPS"));
+			Console.WriteLine ("\n\n\n\n\n");
+			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH"));
 
 			Console.ReadLine ();
 		}

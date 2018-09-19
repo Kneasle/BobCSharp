@@ -271,18 +271,22 @@ namespace Bob {
 			return output;
 		}
 
-		public Touch (Method method, bool automatically_compute_changes = true) {
+		public Touch (Method method, bool automatically_compute_changes = true, int conductor_bell = Constants.tenor) {
 			method_calls = new MethodCall [] { new MethodCall (method) };
 			basic_calls = new BasicCall [0];
+
+			m_conductor_bell = conductor_bell;
 
 			if (automatically_compute_changes) {
 				ComputeChanges ();
 			}
 		}
 
-		public Touch (Method method, BasicCall[] calls, bool automatically_compute_changes = true) {
+		public Touch (Method method, BasicCall[] calls, bool automatically_compute_changes = true, int conductor_bell = Constants.tenor) {
 			method_calls = new MethodCall [] { new MethodCall (method) };
 			basic_calls = calls;
+
+			m_conductor_bell = conductor_bell;
 
 			if (automatically_compute_changes) {
 				ComputeChanges ();
@@ -334,9 +338,15 @@ namespace Bob {
 		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
 			Change end_change = start_change * call.overall_transposition;
 
-			Console.WriteLine (end_change);
+			bool do_call = end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
 
-			return end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
+			//Console.WriteLine (end_change.ToString () + " " + (do_call ? call.preferred_notation : ' '));
+
+			return do_call;
+		}
+
+		public CallLocationCallingPosition (char calling_position) {
+			this.calling_position = calling_position;
 		}
 	}
 }

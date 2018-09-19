@@ -12,7 +12,7 @@ namespace Bob {
 		public char [] notations;
 
 		public PlaceNotation [] place_notations;
-		public string [] calling_positions;
+		public string [] calling_positions = new string [0];
 
 		public int every;
 		public int from;
@@ -104,11 +104,11 @@ namespace Bob {
 		}
 
 		public static Call LeadEndBob (Method method, PlaceNotation place_notation) {
-			return LeadEndCall (method, bob_name, bob_notations, new PlaceNotation [] { place_notation });
+			return LeadEndBob (method, new PlaceNotation [] { place_notation });
 		}
 
 		public static Call LeadEndBob (Method method, string notation) {
-			return LeadEndCall (method, bob_name, bob_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
+			return LeadEndBob (method, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
 
 
@@ -121,11 +121,11 @@ namespace Bob {
 		}
 
 		public static Call LeadEndSingle (Method method, PlaceNotation place_notation) {
-			return LeadEndCall (method, single_name, single_notations, new PlaceNotation [] { place_notation });
+			return LeadEndSingle (method, new PlaceNotation [] { place_notation });
 		}
 
 		public static Call LeadEndSingle (Method method, string notation) {
-			return LeadEndCall (method, single_name, single_notations, PlaceNotation.DecodeFullNotation (notation, method.stage));
+			return LeadEndSingle (method, PlaceNotation.DecodeFullNotation (notation, method.stage));
 		}
 
 
@@ -176,14 +176,14 @@ namespace Bob {
 			get {
 				Dictionary<Stage, string []> dict = new Dictionary<Stage, string []> ();
 
-				dict.Add (Stage.Doubles, new string [] { "", "BI2", "3", "F4", "H" });
-				dict.Add (Stage.Minor, new string [] { "", "BI2", "3", "FM4", "W", "H" });
-				dict.Add (Stage.Triples, new string [] { "", "BI2", "3", "F4", "W", "M", "H" });
-				dict.Add (Stage.Major, new string [] { "", "BI2", "3", "F4", "V5", "M", "W", "H" });
-				dict.Add (Stage.Caters, new string [] { "", "BI2", "3", "F4", "V5", "X6", "W", "M", "H" });
-				dict.Add (Stage.Royal, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "M", "W", "H" });
-				dict.Add (Stage.Cinques, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "E8", "W", "M", "H" });
-				dict.Add (Stage.Maximus, new string [] { "", "BI2", "3", "F4", "V5", "X6", "S7", "E8", "N9", "M", "W", "H" });
+				dict.Add (Stage.Doubles, new string [] { "", "BI2", "3T", "F4", "H" });
+				dict.Add (Stage.Minor, new string [] { "", "BI2", "3T", "FM4", "W", "H" });
+				dict.Add (Stage.Triples, new string [] { "", "BI2", "3T", "F4", "W", "M", "H" });
+				dict.Add (Stage.Major, new string [] { "", "BI2", "3T", "F4", "V5", "M", "W", "H" });
+				dict.Add (Stage.Caters, new string [] { "", "BI2", "3T", "F4", "V5", "X6", "W", "M", "H" });
+				dict.Add (Stage.Royal, new string [] { "", "BI2", "3T", "F4", "V5", "X6", "S7", "M", "W", "H" });
+				dict.Add (Stage.Cinques, new string [] { "", "BI2", "3T", "F4", "V5", "X6", "S7", "E8", "W", "M", "H" });
+				dict.Add (Stage.Maximus, new string [] { "", "BI2", "3T", "F4", "V5", "X6", "S7", "E8", "N9", "M", "W", "H" });
 
 				return dict;
 			}

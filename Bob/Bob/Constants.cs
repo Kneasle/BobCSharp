@@ -8,7 +8,9 @@ namespace Bob {
 	public static class Constants {
 		public static string bell_names = "1234567890ETABCDFGHIJKLMNOPQRSUVWYZ";
 
-		public static int tenor = -1;
+		public const int tenor = -1;
+		public const string alpha = "abcdefghijklmnopqrstuvwxyz";
+		public const string ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		public static string GetBellNameIndexingFromZero (int n) {
 			return bell_names [n].ToString ();
