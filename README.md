@@ -1,7 +1,17 @@
-# BobC# (In development)
-A C# library with a high-level interface for computing methods, touches, extents and other bellringing computations.
+# BobC# (Beta)
+A high-level C# library for computing methods, touches, extents and other bellringing computations.
 
 
+## !! Important !!
+Internally, BobC# references all bells and places as indices starting at zero.
+
+Therefore, the Treble is bell **#0**, the two is bell **#1**, the three is bell **#2**, etc.
+
+Likewise, firsts place/leading is place **#0**, seconds place is place **#1**, thirds place is place **#2**, etc.
+
+When the library converts anything to a string, it looks at these indices in a customisable string `Constants.bell_names`, which defaults to `"1234567890ETABCDFGHIJKLMNOPQRSUVWXYZ"`.
+
+And so bell **#0** (the Treble) comes out as `"1"`, bell **#1** (the two) comes out as `"2"`, bell **#2** (the three) comes out as `"3"`.
 
 ## Quickstart
 First things first, import the library to your code: 
