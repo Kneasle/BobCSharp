@@ -13,6 +13,8 @@ When the library converts anything to a string, it looks at these indices in a c
 
 And so bell **#0** (the Treble) comes out as `"1"`, bell **#1** (the two) comes out as `"2"`, bell **#2** (the three) comes out as `"3"`.
 
+So from the outside, everything works as expected.
+
 ## Quickstart
 First things first, import the library to your code: 
 ```C#
@@ -26,7 +28,7 @@ Let's create a new change:
 ```C#
 Change change = new Change ("13524");
 
-int third_bell = change [2]; // ==> 4 (because this treble is bell #0, bell #4 is the 5)
+int third_bell = change [2]; // ==> 4 (place #2 is thirds place, and the 5 is bell #4)
 Parity parity = change.parity; // ==> Parity.Odd
 int order = change.order; // ==> 4
 ```
