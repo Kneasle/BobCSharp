@@ -1,5 +1,5 @@
 # BobC# (In development)
-A C# library which can quickly and easily run bellringing-related queries.
+A C# library with a high-level interface for computing methods, touches, extents and other bellringing computations.
 
 
 
@@ -8,6 +8,7 @@ First things first, import the library to your code:
 ```C#
 using Bob;
 ```
+
 
 
 ### Changes and Place Notations
@@ -48,7 +49,6 @@ Change bob_then_plain = bob * plain; // ==> 18654327
 PlaceNotation notation = new PlaceNotation ("14", Stage.Major);
 Change transposed_change = rounds * notation; // ==> 17532846
 ```
-
 
 
 
