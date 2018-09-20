@@ -64,6 +64,7 @@ namespace Bob {
 		TreblePlace,
 		Alliance,
 		Hybrid,
-		Differential
+		Differential,
+		Unclassified
 	}
 }

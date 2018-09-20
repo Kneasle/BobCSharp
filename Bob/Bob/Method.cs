@@ -21,13 +21,19 @@ namespace Bob {
 				}
 			}
 
+			public Stage stage { get; private set; }
+
 			public bool is_plain_hunting { get; private set; }
 			public bool is_treble_dodging { get; private set; }
+
+			public bool is_symmetrical { get; private set; }
+			public bool spends_same_number_of_blows_in_each_place { get; private set; }
+
 			public bool is_little { get; private set; }
 
 			public int [] rotated_path { get; private set; }
 
-			void UpdateRotatedPath () {
+			private void UpdateRotatedPath () {
 				rotated_path = null;
 
 				// Find the index of two consecutive leads
@@ -54,7 +60,7 @@ namespace Bob {
 				}
 			}
 
-			bool IsPlainHunting () {
+			private bool IsPlainHunting () {
 				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
 				if (path.Length % 2 != 0) {
 					return false;
@@ -70,25 +76,70 @@ namespace Bob {
 				return true;
 			}
 
-			bool IsTrebleDodging () {
-				// Check whether lead length is compatible
-				if (path.Length % 4 != 0) {
+			private bool IsTrebleDodging () {
+				// Check whether path is compatible
+				if (path.Length % 2 != 0) {
 					return false;
 				}
+
+				if ((int)stage % 2 == 1) {
+					return false;
+				}
+
+				int number_of_dodges = path.Length / ((int)stage * 4);
 
 				// Check that path is equal to {0, 1, 0, 1, 2, 3, 2, 3, ... n, n, ... 3, 2, 3, 2, 1, 0, 1, 0}
 				for (int j = 0; j < path.Length / 4; j += 2) {
 					int i = j * 2;
-					if (rotated_path [i + 0] != j)     { return false; }
-					if (rotated_path [i + 1] != j + 1) { return false; }
-					if (rotated_path [i + 2] != j)     { return false; }
-					if (rotated_path [i + 3] != j + 1) { return false; }
 
-					int l = path.Length - 1;
-					if (rotated_path [l - (i + 0)] != j)     { return false; }
-					if (rotated_path [l - (i + 1)] != j + 1) { return false; }
-					if (rotated_path [l - (i + 2)] != j)     { return false; }
-					if (rotated_path [l - (i + 3)] != j + 1) { return false; }
+					for (int d = 0; d < number_of_dodges + 1; d++) {
+						if (rotated_path [i + d * 2 + 0] != j) { return false; }
+						if (rotated_path [i + d * 2 + 1] != j + 1) { return false; }
+						
+						int l = path.Length - 1;
+						if (rotated_path [l - (i + d * 2 + 0)] != j) { return false; }
+						if (rotated_path [l - (i + d * 2 + 1)] != j + 1) { return false; }
+					}
+				}
+
+				return true;
+			}
+
+			private bool IsSymmetrical () {
+				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
+				if (path.Length % 2 != 0) {
+					return false;
+				}
+
+				// Check that path is equal to {0, 1, 2, 3, ... n, n, ... 3, 2, 1, 0}
+				for (int i = 0; i < path.Length / 2; i++) {
+					if (rotated_path [i] != rotated_path [path.Length - i - 1]) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+
+			private bool SpendsSameNumberOfBlowsInEachPlace () {
+				int [] number_of_blows_in_each_place = new int [path.Max () + 1];
+
+				foreach (int p in path) {
+					number_of_blows_in_each_place [p] += 1;
+				}
+
+				// This code could do with some re-writing.  It works, but is basically unreadable.
+				int value = 0;
+				for (int i = 0; i < path.Max (); i++) {
+					if (number_of_blows_in_each_place [i] != 0) {
+						if (value == 0) {
+							value = number_of_blows_in_each_place [i];
+						} else {
+							if (number_of_blows_in_each_place [i] != value) {
+								return false;
+							}
+						}
+					}
 				}
 
 				return true;
@@ -97,20 +148,29 @@ namespace Bob {
 			public HuntBell (int bell_number, int [] path, Stage stage) {
 				this.bell_number = bell_number;
 				this.path = path;
+				this.stage = stage;
 
-				is_little = path.Max () < (int)stage - 1;
 				is_plain_hunting = IsPlainHunting ();
 				is_treble_dodging = IsTrebleDodging ();
+
+				is_symmetrical = IsSymmetrical ();
+				spends_same_number_of_blows_in_each_place = SpendsSameNumberOfBlowsInEachPlace ();
+
+				is_little = path.Max () < (int)stage - 1 || path.Min () > 0;
 			}
 
-			public HuntBell (int bell_number, int [] path, bool is_plain_hunting, bool is_treble_dodging, bool is_little) {
+			public HuntBell (int bell_number, int [] path, Stage stage, bool is_plain_hunting, bool is_treble_dodging, bool is_little) {
 				this.bell_number = bell_number;
 				this.path = path;
+				this.stage = stage;
+
 				this.is_plain_hunting = is_plain_hunting;
 				this.is_treble_dodging = is_treble_dodging;
 				this.is_little = is_little;
 			}
 		}
+
+		public class MethodNotClassifiedException : Exception { }
 
 		public enum SymmetryType { Asymmetric, PlainBobLike, GrandsireLike }
 
@@ -145,10 +205,12 @@ namespace Bob {
 					return override_title;
 				}
 
+				bool called_differential = is_differential && classification != Classification.Differential;
+
 				if (classification == Classification.Principle) {
 					return name + " " + Utils.StageToString (stage);
 				} else {
-					return name + (is_little ? " Little" : "") + " " + Utils.CatagoryToString (classification) + " " + Utils.StageToString (stage);
+					return name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.CatagoryToString (classification) + " " + Utils.StageToString (stage);
 				}
 			}
 		}
@@ -179,6 +241,19 @@ namespace Bob {
 			// These tags will be possibly set to true
 			is_little = false;
 			is_differential = false;
+			classification = Classification.Unclassified;
+
+			// Set the is_differential tag
+			int number_of_rotating_non_hunt_bell_sets = 0;
+			foreach (int [] set in rotating_sets) {
+				if (set.Length > 1) {
+					number_of_rotating_non_hunt_bell_sets += 1;
+				}
+			}
+
+			if (number_of_rotating_non_hunt_bell_sets > 1) {
+				is_differential = true;
+			}
 
 			// No hunt bells => Principle or Differential
 			if (hunt_bells.Length == 0) {
@@ -189,18 +264,6 @@ namespace Bob {
 
 					classification = Classification.Differential;
 				}
-			}
-
-			// If it has some hunt bells, set the is_differential tag
-			int number_of_rotating_non_hunt_bell_sets = 0;
-			foreach (int[] set in rotating_sets) {
-				if (set.Length > 1) {
-					number_of_rotating_non_hunt_bell_sets += 1;
-				}
-			}
-
-			if (number_of_rotating_non_hunt_bell_sets > 1) {
-				is_differential = true;
 			}
 
 			// Now keep going with the classification
@@ -225,10 +288,10 @@ namespace Bob {
 					// Detect internal places as the treble hunts between dodges
 					bool are_all_internal_places_made = true;
 					bool are_no_internal_places_made = true;
+					
+					int length_of_dodges = lead_length / (main_hunt_bell.path.Max () - main_hunt_bell.path.Min () + 1);
 
-					int middle_change_index = lead_length / 2 - 1;
-
-					for (int i = 3; i < lead_length; i += 4) {
+					for (int i = length_of_dodges - 1; i < lead_length; i += length_of_dodges) {
 						// This is the half-lead when the treble lies at the back
 						if (i == lead_length / 2 - 1) {
 							continue;
@@ -254,9 +317,22 @@ namespace Bob {
 					} else {
 						classification = Classification.Delight;
 					}
-				} else {
-					throw new NotImplementedException (); // Could be `Alliance` or `Treble Place` or `Hybrid`
+				} else { // Treble isn't plain hunting or treble dodging
+					if (main_hunt_bell.is_symmetrical) {
+						if (main_hunt_bell.spends_same_number_of_blows_in_each_place) {
+							classification = Classification.TreblePlace;
+						} else {
+							classification = Classification.Alliance;
+						}
+					} else {
+						classification = Classification.Hybrid;
+					}
 				}
+			}
+
+			// Throw an error if it's still unclassified
+			if (classification == Classification.Unclassified) {
+				throw new MethodNotClassifiedException ();
 			}
 		}
 
@@ -411,7 +487,7 @@ namespace Bob {
 
 				for (int i = 0; i < path.Length; i++) {
 					// Fix wrapping around the ends
-					int last_index = (i - 1) < 0 ? (i - 1 + path.Length) : (i + 1);
+					int last_index = (i - 1) < 0 ? (i - 1 + path.Length) : (i - 1);
 					int current_index = i;
 					int next_index = (i + 1) > path.Length - 1 ? (i + 1 - path.Length) : (i + 1);
 
