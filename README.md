@@ -1,5 +1,5 @@
 # BobC# (Beta)
-A high-level C# library for computing methods, touches, extents and other bellringing computations.
+A high-level C# library for computing methods, touches, peals and other bellringing computations.
 
 
 ## !! Important !!
