@@ -6,26 +6,18 @@ using System.Threading.Tasks;
 
 namespace Bob {
 	public class Change : ITransposition {
-		private int [] m_array;
-
 		// Properties
-		public int [] array {
-			get {
-				return m_array;
-			}
-		}
+		public int [] array { get; private set; }
+		
+		public int this [int i] => array [i];
 
-		public Stage stage {
-			get {
-				return (Stage)m_array.Length;
-			}
-		}
+		public Stage stage => (Stage)array.Length;
 
 		public Parity parity {
 			get {
 				int swaps = 0;
 
-				int [] temp_order = (int [])m_array.Clone ();
+				int [] temp_order = (int [])array.Clone ();
 
 				for (int i = 0; i < (int)stage; i++) {
 					for (int j = 0; j < i; j++) {
@@ -62,15 +54,85 @@ namespace Bob {
 			}
 		}
 
-		public bool is_null {
+		public Change clone {
 			get {
-				return m_array.Length == 1 && m_array [0] == -1;
+				int [] new_array = new int [(int)stage];
+
+				for (int i = 0; i < (int)stage; i++) {
+					new_array [i] = array [i];
+				}
+
+				return new Change (new_array);
+			}
+		}
+
+		// Only look it this function's source code if you want to 
+		// spend a whole year working out what it does, or if it breaks.
+		// It works.  That's enough for me.
+		public int [] [] rotating_sets {
+			get {
+				// Generate dictionary of <bell index, which group it belongs to>
+				Dictionary<int, int> set_indices = new Dictionary<int, int> ();
+
+				int index = -1;
+
+				for (int i = 0; i < (int)stage; i ++) {
+					if (set_indices.Keys.Contains (i)) {
+						continue;
+					}
+
+					index += 1;
+
+					set_indices.Add (i, index);
+
+					Change change = this;
+
+					if (change [i] == i) {
+						continue;
+					}
+
+					while (true) {
+						if (change [i] == i) {
+							break;
+						}
+
+						set_indices.Add (change.IndexOf (i), index);
+
+						change *= this;
+					}
+				}
+
+				// Create an array of lists
+				List<int> [] groups = new List<int> [index + 1];
+
+				for (int i = 0; i < groups.Length; i++) {
+					groups [i] = new List<int> ();
+				}
+
+				foreach (int key in set_indices.Keys) {
+					groups [set_indices [key]].Add (key);
+				}
+
+				// Convert this array of lists to a jagged array
+				int [] [] output = new int [groups.Length] [];
+
+				for (int i = 0; i < groups.Length; i++) {
+					output [i] = groups [i].ToArray ();
+				}
+
+				return output;
+			}
+		}
+
+		public string rotating_sets_as_string {
+			get {
+				return RotatingSetsToString (rotating_sets);
 			}
 		}
 
 		// Functions
 		public Change Transpose (ITransposition transposable) {
-			int [] in_array = m_array;
+			int [] in_array = array;
 			int [] transpose_array = transposable.GetArray ();
 
 			int size = Math.Max (in_array.Length, transpose_array.Length);
@@ -95,8 +157,8 @@ namespace Bob {
 		}
 
 		public int IndexOf (int bell) {
-			for (int i = 0; i < m_array.Length; i ++) {
-				if (m_array [i] == bell) {
+			for (int i = 0; i < array.Length; i ++) {
+				if (array [i] == bell) {
 					return i;
 				}
 			}
@@ -104,13 +166,14 @@ namespace Bob {
 			return -1;
 		}
 
+		// Functions which implement interfaces' requirements
 		public int [] GetArray () {
-			return m_array;
+			return array;
 		}
 
 		// Constructors
 		public Change (int [] array) {
-			m_array = array;
+			this.array = array;
 		}
 
 		public Change (string text) {
@@ -122,7 +185,7 @@ namespace Bob {
 				}
 			}
 
-			m_array = converted_list.ToArray ();
+			array = converted_list.ToArray ();
 		}
 
 		// Operators
@@ -149,6 +212,24 @@ namespace Bob {
 			return new Change (array);
 		}
 
+		public static string RotatingSetsToString (int [] [] rotating_sets) {
+			string s = "";
+
+			foreach (int [] arr in rotating_sets) {
+				s += "[";
+
+				bool is_first = true;
+				foreach (int i in arr) {
+					s += (is_first ? "" : " ") + i;
+					is_first = false;
+				}
+
+				s += "]";
+			}
+
+			return s;
+		}
+
 		// Equality overrides
 		public override bool Equals (object obj) {
 			if (!(obj is Change)) {
@@ -173,18 +254,14 @@ namespace Bob {
 		public override int GetHashCode () {
 			var hashCode = -1323650490;
 			hashCode = hashCode * -1521134295 + base.GetHashCode ();
-			hashCode = hashCode * -1521134295 + EqualityComparer<int []>.Default.GetHashCode (m_array);
+			hashCode = hashCode * -1521134295 + EqualityComparer<int []>.Default.GetHashCode (array);
 			return hashCode;
 		}
 
 		public override string ToString () {
-			if (is_null) {
-				return "<null Change>";
-			}
-
 			string output = "";
 
-			foreach (int i in m_array) {
+			foreach (int i in array) {
 				output += Constants.bell_names [i];
 			}
 

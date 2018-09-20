@@ -13,6 +13,8 @@ namespace BobConsole {
 			Console.WriteLine (Method.plain_bob_doubles.TouchFromCallList ("PPPBPS"));
 			Console.WriteLine ("\n\n\n\n\n");
 			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH"));
+			Console.WriteLine ("\n\n\n\n\n");
+			Console.WriteLine (new Change ("1245376").rotating_sets_as_string);
 
 			Console.ReadLine ();
 		}

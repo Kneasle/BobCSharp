@@ -33,10 +33,8 @@ namespace BobTests {
 
 		[TestMethod]
 		public void PlaceNot_DecodeFullNotation () {
-			/*
-			Assert.AreEqual (Utils.GetEndChange (PlaceNotation.DecodeFullNotation ("5.1.5.1.5,2", Stage.Doubles)), new Change ("13524"));
-			Assert.AreEqual (Utils.GetEndChange (PlaceNotation.DecodeFullNotation ("X18", Stage.Major)), new Change ("24163857"));
-			*/
+			Assert.AreEqual (PlaceNotation.CombinePlaceNotations (PlaceNotation.DecodeFullNotation ("5.1.5.1.5,2", Stage.Doubles)), new Change ("13524"));
+			Assert.AreEqual (PlaceNotation.CombinePlaceNotations (PlaceNotation.DecodeFullNotation ("X18", Stage.Major)), new Change ("24163857"));
 		}
 
 		[TestMethod]
@@ -45,6 +43,14 @@ namespace BobTests {
 			Assert.AreEqual (false, new PlaceNotation ("12", Stage.Minor) == new PlaceNotation ("12", Stage.Doubles));
 			Assert.AreEqual (true, new PlaceNotation ("12", Stage.Doubles) == new PlaceNotation ("125", Stage.Doubles));
 			Assert.AreEqual (false, new PlaceNotation ("12", Stage.Doubles) != new PlaceNotation ("125", Stage.Doubles));
+		}
+
+		[TestMethod]
+		public void PlaceNot_InternalPlaces () {
+			Assert.AreEqual (false, new PlaceNotation ("X", Stage.Minor).has_internal_places);
+			Assert.AreEqual (false, new PlaceNotation ("18", Stage.Major).has_internal_places);
+			Assert.AreEqual (true, new PlaceNotation ("16", Stage.Major).has_internal_places);
+			Assert.AreEqual (true, new PlaceNotation ("36", Stage.Minor).has_internal_places);
 		}
 	}
 }

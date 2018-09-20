@@ -15,16 +15,16 @@ namespace Bob {
 			return stage.ToString ();
 		}
 
-		public static string CatagoryToString (Catagory catagory) {
-			if (catagory == Catagory.SlowCourse) {
+		public static string CatagoryToString (Classification catagory) {
+			if (catagory == Classification.SlowCourse) {
 				return "Slow Course";
 			}
 
-			if (catagory == Catagory.TreblePlace) {
+			if (catagory == Classification.TreblePlace) {
 				return "Treble Place";
 			}
 
-			if (catagory == Catagory.TrebleBob) {
+			if (catagory == Classification.TrebleBob) {
 				return "Treble Bob";
 			}
 

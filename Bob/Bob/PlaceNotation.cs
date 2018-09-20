@@ -6,28 +6,12 @@ using System.Threading.Tasks;
 
 namespace Bob {
 	public class PlaceNotation : ITransposition {
-		private int [] m_array;
-		private string m_notation;
+		public string notation { get; private set; }
+		public int [] array { get; private set; }
 		public int [] places_made { get; private set; }
 
 		// Properties
-		public int [] array {
-			get {
-				return m_array;
-			}
-		}
-
-		public string notation {
-			get {
-				return m_notation;
-			}
-		}
-
-		public Stage stage {
-			get {
-				return (Stage)m_array.Length;
-			}
-		}
+		public Stage stage => (Stage)array.Length;
 
 		public bool is_12 {
 			get {
@@ -49,9 +33,21 @@ namespace Bob {
 			}
 		}
 
+		public bool has_internal_places {
+			get {
+				for (int i = 1; i < (int)stage - 1; i++) {
+					if (places_made.Contains (i)) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
 		// Functions
 		public int [] GetArray () {
-			return m_array;
+			return array;
 		}
 
 		public override bool Equals (object obj) {
@@ -75,20 +71,26 @@ namespace Bob {
 		}
 
 		public override int GetHashCode () {
-			return -1984574666 + EqualityComparer<int []>.Default.GetHashCode (m_array);
+			return -1984574666 + EqualityComparer<int []>.Default.GetHashCode (array);
+		}
+
+		public override string ToString () {
+			return notation + " => " + Change.Rounds (stage) * this;
 		}
 
 		// Constructors
 		public PlaceNotation (string notation, Stage stage) {
-			m_array = new int [(int)stage];
-			m_notation = notation;
+			array = new int [(int)stage];
+			this.notation = notation;
 			
 			if (x_notations.Contains (notation)) {
+				places_made = new int [0];
+
 				// Inputted an X notation
 				if ((int)stage % 2 == 0) {
 					for (int i = 0; i < (int)stage; i += 2) {
-						m_array [i] = i + 1;
-						m_array [i + 1] = i;
+						array [i] = i + 1;
+						array [i + 1] = i;
 					}
 				} else {
 					throw new XNotationWithTenorCoverException ("X notation used in notation '" + notation + "' with stage '" + stage.ToString () + "'.");
@@ -119,14 +121,14 @@ namespace Bob {
 
 				// Compute transposition array
 				int i = 0;
-				while (i < m_array.Length) {
+				while (i < array.Length) {
 					if (places_made.Contains (i) || places_made.Contains (i + 1)) {
-						m_array [i] = i;
+						array [i] = i;
 
 						i += 1;
 					} else {
-						m_array [i] = i + 1;
-						m_array [i + 1] = i;
+						array [i] = i + 1;
+						array [i + 1] = i;
 
 						i += 2;
 					}
@@ -292,12 +294,14 @@ namespace Bob {
 			return changes;
 		}
 
+		// Constants
 		public static string [] x_notations =  new string [] { "X", "-" };
 
 		public static string [] basic_delimiters = new string [] { ".", " " };
 
 		public static string [] leadend_delimiters = new string [] { ",", "LE" };
 
+		// Operators
 		public static bool operator == (PlaceNotation notation1, PlaceNotation notation2) {
 			return EqualityComparer<PlaceNotation>.Default.Equals (notation1, notation2);
 		}

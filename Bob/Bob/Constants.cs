@@ -53,7 +53,7 @@ namespace Bob {
 		TwentyTwo = 22
 	}
 
-	public enum Catagory {
+	public enum Classification {
 		Bob,
 		Place,
 		SlowCourse,

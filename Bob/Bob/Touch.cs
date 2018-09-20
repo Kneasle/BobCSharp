@@ -338,11 +338,7 @@ namespace Bob {
 		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
 			Change end_change = start_change * call.overall_transposition;
 
-			bool do_call = end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
-
-			//Console.WriteLine (end_change.ToString () + " " + (do_call ? call.preferred_notation : ' '));
-
-			return do_call;
+			return end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
 		}
 
 		public CallLocationCallingPosition (char calling_position) {

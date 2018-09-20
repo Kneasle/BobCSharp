@@ -20,6 +20,11 @@ namespace BobTests {
 		}
 
 		[TestMethod]
+		public void Change_RotationSets () {
+			Assert.AreEqual ("[0][1][2 4 3][5 6]", new Change ("1245376").rotating_sets_as_string);
+		}
+
+		[TestMethod]
 		public void Change_Equality () {
 			// Assert that `==` and `!=` work as expected
 			Assert.AreEqual (true, Change.Rounds (Stage.Major) == Change.Rounds (Stage.Major));
