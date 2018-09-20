@@ -55,43 +55,21 @@ Change transposed_change = rounds * notation; // ==> 17532846
 ### Methods
 Let's create a new method from its place notation
 ```C#
-Method plain_bob_major = new Method ("Plain", Catagory.Bob, Stage.Triples, "x18x18x18x18,12");
+Method plain_bob_major = new Method ("Plain", Classification.Bob, Stage.Major, "x18x18x18x18,12");
 ```
 
-Standard bobs and singles and plain calls are created automagically
-```C#
-List<Call> calls = plain_bob_major.calls; /* ==> 
-[
-	Call {
-		name: "Bob",
-		place_notations: [PlaceNotation ("14")]
-	},
-	Call {
-		name: "Single",
-		place_notations: [PlaceNotation ("1234")]
-	},
-	Call () {
-		name: "Plain",
-		place_notations: [null]
-	}
-]
-*/
-```
-
-Some common methods have their own static properties:
-```C#
-Method grandsire_triples = Method.grandsire_triples;
-Method cambridge_major = Method.cambridge_major;
-```
-
-**(TODO)** You can get any method from the CCCBR's method library (also comes with the standard calls):
-```C#
-Method stedman_triples = MethodLibrary.GetMethodByName ("Stedman Triples");
-```
-
-You only need a name, stage and any place notation to make a method (BobC# can classify methods)
+You don't even need to specify the classification, and BobC# will classify it for you
 ```C#
 Method cambridge_surprise_minor = new Method ("Cambridge", "x3x4x2x3x4x5,2", Stage.Minor);
+
+Classification classification = cambridge_surprise_minor.classification; // ==> Classification.Surprise
+```
+
+Standard bobs and singles and plain calls are created automagically.
+
+**(TODO)** You can get any method from the CCCBR's method library (also comes with the standard calls, even for awkward methods like Stedman and Erin):
+```C#
+Method stedman_triples = Method.GetMethod ("Stedman Triples");
 ```
 
 
@@ -106,7 +84,7 @@ Touch touch = new Touch ();
 
 Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we we've all been there at some point):
 ```C#
-Touch plain_course = Method.plain_bob_doubles.plain_course;
+Touch plain_course = Method.GetMethod ("Plain Bob Doubles").plain_course;
 
 Change change_no_3 = plain_course [2]; // ==> 24153
 
@@ -117,9 +95,18 @@ bool is_extent = plain_course.is_extent; // ==> false
 
 . . . or a basic 120 of plain bob doubles:
 ```C#
-Touch touch = Method.plain_bob_doubles.TouchFromCallList ("MMMB");
+Touch touch = Method.GetMethod ("Plain Bob Doubles").TouchFromCallList ("MMMB");
 
-int length = plain_course.length; // ==> 120
-bool is_true = plain_course.is_true; // ==> true
-bool is_extent = plain_course.is_extent; // ==> true
+int length = touch.length; // ==> 120
+bool is_true = touch.is_true; // ==> true
+bool is_extent = touch.is_extent; // ==> true
+```
+
+. . . or even a peal (composition #1068 by Don Morrison):
+```C#
+Touch touch = Method.GetMethod ("Plain Bob Triples").TouchFromCallingPositions ("OHHH sWHHH WFHHH IH");
+
+int length = touch.length; // ==> 5040
+bool is_true = touch.is_true; // ==> true
+bool is_extent = touch.is_extent; // ==> true
 ```
