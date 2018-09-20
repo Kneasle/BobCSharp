@@ -32,16 +32,6 @@ namespace Bob {
 		// Non-static stuff
 		public StoredMethod [] stored_methods;
 
-		public Method GetMethodByName (string name) {
-			foreach (StoredMethod method in stored_methods) {
-				if (method.name == name) {
-					return method.GetMethod ();
-				}
-			}
-
-			return null;
-		}
-
 		public MethodLibrary (string override_path = null) {
 			string path = override_path ?? library_path;
 
@@ -100,6 +90,16 @@ namespace Bob {
 			Console.WriteLine (library_file_lines.Count.ToString () + " methods copied.");
 
 			System.IO.File.WriteAllLines (library_path, library_file_lines.ToArray ());
+		}
+
+		public static Method GetMethodByName (string name) {
+			foreach (StoredMethod stored_method in library.stored_methods) {
+				if (stored_method.name == name) {
+					return stored_method.method;
+				}
+			}
+
+			return null;
 		}
 
 		private static MethodLibrary m_library = null;

@@ -10,9 +10,7 @@ namespace Bob {
 			public int bell_number { get; private set; }
 			private int [] m_path;
 			public int [] path {
-				get {
-					return m_path;
-				}
+				get => m_path;
 
 				set {
 					m_path = value;
@@ -622,7 +620,9 @@ namespace Bob {
 			}
 		}
 
-		// Static functions
+		// Static stuff
+		public static Method GetMethod (string name) => MethodLibrary.GetMethodByName (name);
+
 		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Classification.Bob, Stage.Doubles);
 		public static Method plain_bob_minor => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
 
