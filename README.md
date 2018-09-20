@@ -14,6 +14,10 @@ using Bob;
 Let's create a new change:
 ```C#
 Change change = new Change ("13524");
+
+int third_bell = change [2]; // ==> 4 (because this treble is bell #0, bell #4 is the 5)
+Parity parity = change.parity; // ==> Parity.Odd
+int order = change.order; // ==> 4
 ```
 
 . . . or some place notation:
@@ -26,53 +30,23 @@ Implicit places are automatically filled in:
 PlaceNotation lazy_notation = new PlaceNotation ("4", Stage.Doubles); ==> 145
 ```
 
-Suppose you want to know the parity (odd/evenness) of the change
-```C#
-Parity p = change.parity; // ==> Parity.Odd
-```
-
-. . . or you want to know how many times this change can be applied before coming round (this is called the order of a change)
-```C#
-int o = change.order; // ==> 4
-```
-
-. . . or you just wanted rounds on 5:
-```C#
-Change rounds = Change.Rounds (Stage.Doubles); // ==> 12345
-```
-
-. . . or even rounds on nineteen:
-```C#
-Change rounds = Change.Rounds (Stage.Nonuples); // ==> 1234567890ETABCDFGH
-```
-
 Stages work up to twenty-two:
 ```C#
-Change rounds = Change.Rounds (Stage.TwentyTwo); // ==> 1234567890ETABCDFGHIJK
+Change rounds = Change.Rounds (Stage.Doubles); // ==> 12345
+Change big_rounds = Change.Rounds (Stage.Nonuples); // ==> 1234567890ETABCDFGH
+Change bigger_rounds = Change.Rounds (Stage.TwentyTwo); // ==> 1234567890ETABCDFGHIJK
 ```
 
-Suppose you wanted to transpose a change by another change:
+Suppose you wanted to transpose a change by another change, or by some place notation:
 ```C#
 Change plain = new Change ("15738264"); // Cambridge Major's lead end
 Change bob = new Change ("13578264"); // Cambridge Major's lead end after a bob
-```
-```C#
-Change plain_then_bob = plain.Transpose (bob); // ==> 17864523
-Change bob_then_plain = bob.Transpose (plain); // ==> 18654327
-```
 
-. . . or even simpler
-```C#
 Change plain_then_bob = plain * bob; // ==> 17864523
 Change bob_then_plain = bob * plain; // ==> 18654327
-```
 
-. . . or you wanted to transpose by some place notation
-```C#
-Change rounds = Change.Rounds (Stage.Maximus);
-PlaceNotation notation = new PlaceNotation ("14ET", Stage.Maximus);
-
-Change transpose_change = rounds * notation; // ==> 1324658709ET
+PlaceNotation notation = new PlaceNotation ("14", Stage.Major);
+Change transposed_change = rounds * notation; // ==> 17532846
 ```
 
 
@@ -112,10 +86,10 @@ Method cambridge_major = Method.cambridge_major;
 
 **(TODO)** You can get any method from the CCCBR's method library (also comes with the standard calls):
 ```C#
-Method stedman_triples = Method.GetMethodFromLibrary ("Stedman Triples");
+Method stedman_triples = MethodLibrary.GetMethodByName ("Stedman Triples");
 ```
 
-**(TODO)** You only need a name, stage and any place notation to make a method (BobC# can classify methods)
+You only need a name, stage and any place notation to make a method (BobC# can classify methods)
 ```C#
 Method cambridge_surprise_minor = new Method ("Cambridge", "x3x4x2x3x4x5,2", Stage.Minor);
 ```
