@@ -13,10 +13,7 @@ namespace Bob {
 			public Stage stage;
 			public string place_notation;
 
-			public Method GetMethod () {
-				throw new NotImplementedException ();
-				return new Method (place_notation, name, Classification.Bob, stage);
-			}
+			public Method method => new Method (place_notation, name, stage);
 
 			public StoredMethod (string name, Stage stage, string place_notation) {
 				this.name = name;
