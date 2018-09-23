@@ -1,7 +1,19 @@
-# BobC# (In development)
-A C# library which can quickly and easily run bellringing-related queries.
+# BobC# (Beta)
+A high-level C# library for computing methods, touches, peals and other bellringing computations.
 
 
+## !! Important !!
+Internally, BobC# references all bells and places as indices starting at zero.
+
+Therefore, the Treble is bell **#0**, the two is bell **#1**, the three is bell **#2**, etc.
+
+Likewise, firsts place/leading is place **#0**, seconds place is place **#1**, thirds place is place **#2**, etc.
+
+When the library converts anything to a string, it looks at these indices in a customisable string `Constants.bell_names`, which defaults to `"1234567890ETABCDFGHIJKLMNOPQRSUVWXYZ"`.
+
+And so bell **#0** (the Treble) comes out as `"1"`, bell **#1** (the two) comes out as `"2"`, bell **#2** (the three) comes out as `"3"`.
+
+So from the outside, everything works as expected.
 
 ## Quickstart
 First things first, import the library to your code: 
@@ -10,12 +22,13 @@ using Bob;
 ```
 
 
+
 ### Changes and Place Notations
 Let's create a new change:
 ```C#
 Change change = new Change ("13524");
 
-int third_bell = change [2]; // ==> 4 (because this treble is bell #0, bell #4 is the 5)
+int third_bell = change [2]; // ==> 4 (place #2 is thirds place, and the 5 is bell #4)
 Parity parity = change.parity; // ==> Parity.Odd
 int order = change.order; // ==> 4
 ```
@@ -48,7 +61,6 @@ Change bob_then_plain = bob * plain; // ==> 18654327
 PlaceNotation notation = new PlaceNotation ("14", Stage.Major);
 Change transposed_change = rounds * notation; // ==> 17532846
 ```
-
 
 
 
