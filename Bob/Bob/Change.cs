@@ -193,6 +193,10 @@ namespace Bob {
 			return change.Transpose (transposition);
 		}
 
+		public static Change operator * (Change change, PlaceNotation [] place_notations) {
+			return change.Transpose (PlaceNotation.CombinePlaceNotations (place_notations));
+		}
+
 		public static bool operator == (Change a, Change b) {
 			return a.Equals (b);
 		}

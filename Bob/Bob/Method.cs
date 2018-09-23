@@ -590,11 +590,12 @@ namespace Bob {
 		}
 
 		// Constructors
-		public Method (string place_notation, string name, Classification classification, Stage stage, string override_title = null, bool is_little = false, bool generate_standard_calls = true) {
+		public Method (string place_notation, string name, Classification classification, Stage stage, string override_title = null, bool is_little = false, bool is_differential = false, bool generate_standard_calls = true) {
 			this.name = name;
 			this.classification = classification;
 			this.stage = stage;
 			this.is_little = is_little;
+			this.is_differential = is_differential;
 			this.override_title = override_title;
 
 			// Do full notation last, because it relies upon stage and catagory
