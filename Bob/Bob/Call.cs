@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
+	/// <summary>
+	/// A class to store all calls.
+	/// </summary>
 	public class Call {
 		/// <summary>
 		/// The method to which this call belongs.
