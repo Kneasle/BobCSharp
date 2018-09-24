@@ -75,10 +75,15 @@ namespace Bob {
 					Change change = this;
 
 					int m_order = 1;
-					while (change != Change.Rounds (stage)) {
+
+					while (change != Rounds (stage)) {
 						change *= this;
+
 						m_order += 1;
 					}
+
+					// This shouldn't need to be here, but otherwise this function doesn't work.
+					return m_order;
 				}
 
 				return m_order;
@@ -269,7 +274,7 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Shorthand for transposing a change by a list of place notations, e.g. a plain lead of method.
+		/// Shorthand for transposing a change by a list of place notations, e.g. a list of the place notations in a plain lead of a method.
 		/// </summary>
 		/// <param name="change">The change which is being transposed.</param>
 		/// <param name="place_notations">The list of place notations over which the change will be transposed.</param>

@@ -92,7 +92,7 @@ namespace Bob {
 			System.IO.File.WriteAllLines (library_path, library_file_lines.ToArray ());
 		}
 
-		public static Method GetMethodByName (string name) {
+		public static Method GetMethodByTitle (string name) {
 			foreach (StoredMethod stored_method in library.stored_methods) {
 				if (stored_method.name == name) {
 					return stored_method.method;

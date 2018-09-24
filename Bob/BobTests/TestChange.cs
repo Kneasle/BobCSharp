@@ -14,7 +14,7 @@ namespace BobTests {
 		[TestMethod]
 		public void Change_Order () {
 			Assert.AreEqual (1, Change.Rounds (Stage.Major).order);
-			Assert.AreEqual (2, new Change (new int [] { 0, 2, 1, 3 }).order);
+			Assert.AreEqual (2, new Change ("1324").order);
 			Assert.AreEqual (3, new Change (new int [] { 0, 2, 3, 1, 4, 5 }).order);
 			Assert.AreEqual (6, new Change (new int [] { 0, 2, 3, 1, 5, 4 }).order);
 		}

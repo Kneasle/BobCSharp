@@ -59,7 +59,7 @@ Change plain_then_bob = plain * bob; // ==> 17864523
 Change bob_then_plain = bob * plain; // ==> 18654327
 
 PlaceNotation notation = new PlaceNotation ("14", Stage.Major);
-Change transposed_change = rounds * notation; // ==> 17532846
+Change transposed_change = plain * notation; // ==> 17532846
 ```
 
 

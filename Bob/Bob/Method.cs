@@ -1,37 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bob {
+	/// <summary>
+	/// A class to represent a method.
+	/// </summary>
 	public class Method {
+		/// <summary>
+		/// A class which represents a hunt bell in a method.  HuntBell objects can't be changed once created.
+		/// </summary>
 		public class HuntBell {
+			/// <summary>
+			/// The number of this bell (indexed from zero).
+			/// </summary>
 			public int bell_number { get; private set; }
-			private int [] m_path;
-			public int [] path {
-				get => m_path;
 
-				set {
-					m_path = value;
-					
-					UpdateRotatedPath ();
-				}
-			}
+			/// <summary>
+			/// A list of places which form the path of this hunt.
+			/// </summary>
+			public int [] path { get; private set; }
 
+			/// <summary>
+			/// The stage of the method which owns this hunt bell.
+			/// </summary>
 			public Stage stage { get; private set; }
 
+			/// <summary>
+			/// True if this hunt bell follows a plain hunting path (in any rotation).
+			/// </summary>
 			public bool is_plain_hunting { get; private set; }
+			/// <summary>
+			/// True if this hunt bell follows a treble bobbing path (in any rotation).
+			/// </summary>
 			public bool is_treble_dodging { get; private set; }
 
+			/// <summary>
+			/// True if this hunt bell path is symmetrical.
+			/// </summary>
 			public bool is_symmetrical { get; private set; }
+			/// <summary>
+			/// True if this hunt bell spends an equal number of blows in every place it visits.
+			/// </summary>
 			public bool spends_same_number_of_blows_in_each_place { get; private set; }
 
+			/// <summary>
+			/// True if this hunt bell is little (doesn't cover every place).
+			/// </summary>
 			public bool is_little { get; private set; }
 
+			/// <summary>
+			/// The rotated path of this hunt bell, such that if the path is symmetrical, so will this path.  Will be null if no symmetry.
+			/// </summary>
 			public int [] rotated_path { get; private set; }
 
-			private void UpdateRotatedPath () {
+			/// <summary>
+			/// Generates the rotated path.
+			/// </summary>
+			private void GenerateRotatedPath () {
 				rotated_path = null;
 
 				// Find the index of two consecutive leads
@@ -58,6 +84,10 @@ namespace Bob {
 				}
 			}
 
+			/// <summary>
+			/// Function to determine whether this hunt bell is plain hunting.
+			/// </summary>
+			/// <returns>True if the hunt bell is plain hunting.</returns>
 			private bool IsPlainHunting () {
 				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
 				if (path.Length % 2 != 0) {
@@ -74,6 +104,10 @@ namespace Bob {
 				return true;
 			}
 
+			/// <summary>
+			/// Function to determine whether this hunt bell is treble dodging.
+			/// </summary>
+			/// <returns>True if the hunt bell is treble dodging.</returns>
 			private bool IsTrebleDodging () {
 				// Check whether path is compatible
 				if (path.Length % 2 != 0) {
@@ -103,6 +137,11 @@ namespace Bob {
 				return true;
 			}
 
+
+			/// <summary>
+			/// Function to determine whether this hunt bell path is symmetrical.
+			/// </summary>
+			/// <returns>True if the hunt bell path is symmetrical.</returns>
 			private bool IsSymmetrical () {
 				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
 				if (path.Length % 2 != 0) {
@@ -119,6 +158,11 @@ namespace Bob {
 				return true;
 			}
 
+
+			/// <summary>
+			/// Function to determine whether this hunt bell spends the same number of blows in every place it visits.
+			/// </summary>
+			/// <returns>True if the number of blows in each place is equal.</returns>
 			private bool SpendsSameNumberOfBlowsInEachPlace () {
 				int [] number_of_blows_in_each_place = new int [path.Max () + 1];
 
@@ -143,10 +187,18 @@ namespace Bob {
 				return true;
 			}
 
+			/// <summary>
+			/// Creates a hunt bell object, and lets BobC# set all the boolean values.
+			/// </summary>
+			/// <param name="bell_number">The index (from 0) of the bell represented by this hunt bell.</param>
+			/// <param name="path">The path of this hunt bell as a list of places (indexed from 0).</param>
+			/// <param name="stage">The stage of the method which this hunt bell is part of.</param>
 			public HuntBell (int bell_number, int [] path, Stage stage) {
 				this.bell_number = bell_number;
 				this.path = path;
 				this.stage = stage;
+
+				GenerateRotatedPath ();
 
 				is_plain_hunting = IsPlainHunting ();
 				is_treble_dodging = IsTrebleDodging ();
@@ -157,10 +209,21 @@ namespace Bob {
 				is_little = path.Max () < (int)stage - 1 || path.Min () > 0;
 			}
 
+			/// <summary>
+			/// Creates a hunt bell object, setting all the boolean values manually (not reccomended).
+			/// </summary>
+			/// <param name="bell_number">The index (from 0) of the bell represented by this hunt bell.</param>
+			/// <param name="path">The path of this hunt bell as a list of places (indexed from 0).</param>
+			/// <param name="stage">The stage of the method which this hunt bell is part of.</param>
+			/// <param name="is_plain_hunting">Whether the hunt bell is plain hunting.</param>
+			/// <param name="is_treble_dodging">Whether the hunt bell is treble dodging.</param>
+			/// <param name="is_little">Whether the hunt bell is little.</param>
 			public HuntBell (int bell_number, int [] path, Stage stage, bool is_plain_hunting, bool is_treble_dodging, bool is_little) {
 				this.bell_number = bell_number;
 				this.path = path;
 				this.stage = stage;
+
+				GenerateRotatedPath ();
 
 				this.is_plain_hunting = is_plain_hunting;
 				this.is_treble_dodging = is_treble_dodging;
@@ -168,25 +231,58 @@ namespace Bob {
 			}
 		}
 
+		/// <summary>
+		/// An exception to be thrown when a method can't be classified.
+		/// </summary>
 		public class MethodNotClassifiedException : Exception { }
 
+		/// <summary>
+		/// An enum to store the symmetry type of a method (used, e.g. for generating calls).
+		/// </summary>
 		public enum SymmetryType { Asymmetric, PlainBobLike, GrandsireLike }
 
 		// Fields
+		/// <summary>
+		/// A private field for the string place notation.
+		/// </summary>
 		private string m_place_notation;
 
+		/// <summary>
+		/// A customisable list of call objects, which define the calls in this method.
+		/// </summary>
 		public List<Call> calls = new List<Call> ();
 
+		/// <summary>
+		/// The name of the method (the first part of the title, e.g. "Cambridge").
+		/// </summary>
 		public string name;
+		/// <summary>
+		/// The classification of the method (e.g. "Surprise").
+		/// </summary>
 		public Classification classification;
+		/// <summary>
+		/// The stage of this method.
+		/// </summary>
 		public Stage stage;
 
+		/// <summary>
+		/// True if the method should have the tag "Little" in its name.
+		/// </summary>
 		public bool is_little = false;
+		/// <summary>
+		/// True if the method should have the tag "Differential" in its name.
+		/// </summary>
 		public bool is_differential = false;
 
+		/// <summary>
+		/// Set this to override the auto-generated title.  Defaults to null.
+		/// </summary>
 		public string override_title = null;
 
 		// Properties
+		/// <summary>
+		/// The string form of this method's place notation.  Setting this will update all the other fields.
+		/// </summary>
 		public string place_notation {
 			get => m_place_notation;
 
@@ -197,6 +293,9 @@ namespace Bob {
 			}
 		}
 		
+		/// <summary>
+		/// The title of the method.  If `override_title` is null, this will generate the title automagically.
+		/// </summary>
 		public string title {
 			get {
 				if (override_title != null) {
@@ -213,28 +312,173 @@ namespace Bob {
 			}
 		}
 
-		public PlaceNotation [] place_notations { get; private set; }
-		public Change[] plain_lead_changes { get; private set; }
+		private PlaceNotation [] m_place_notations = null;
+		/// <summary>
+		/// The decoded place notations for the method.
+		/// </summary>
+		public PlaceNotation [] place_notations {
+			get {
+				m_place_notations = m_place_notations ?? PlaceNotation.DecodeFullNotation (m_place_notation, stage);
 
-		public int lead_length { get; private set; }
-		public int leads_in_plain_course { get; private set; }
+				return m_place_notations;
+			}
+		}
+
+		private Change [] m_plain_lead_changes = null;
+		/// <summary>
+		/// A list of changes in the plain lead (starting from the change after rounds).
+		/// </summary>
+		public Change [] plain_lead_changes {
+			get {
+				m_plain_lead_changes = m_plain_lead_changes ?? PlaceNotation.GenerateChangeArray (place_notations);
+
+				return m_plain_lead_changes;
+			}
+		}
+
+		private Change m_lead_end = null;
+		/// <summary>
+		/// The lead end change of the method.
+		/// </summary>
+		public Change lead_end {
+			get {
+				m_lead_end = m_lead_end ?? PlaceNotation.CombinePlaceNotations (place_notations);
+
+				return m_lead_end;
+			}
+		}
+
+		/// <summary>
+		/// The last place notation of the method (even if the treble is not a hunt bell).
+		/// </summary>
+		public PlaceNotation lead_end_notation => place_notations [place_notations.Length - 1];
+		/// <summary>
+		/// The middle place notation of the method (and null if the lead length is odd).
+		/// </summary>
+		public PlaceNotation half_lead_notation => lead_length % 2 == 0 ? place_notations [place_notations.Length / 2 - 1] : null;
+
+		private int m_leads_in_plain_course = -1;
+		/// <summary>
+		/// The number of leads in the plain course of this method.
+		/// </summary>
+		public int leads_in_plain_course {
+			get {
+				if (m_leads_in_plain_course == -1) {
+					m_leads_in_plain_course = lead_end.order;
+				}
+
+				return m_leads_in_plain_course;
+			}
+		}
+
+		/// <summary>
+		/// The number of changes in one lead of this method.
+		/// </summary>
+		public int lead_length => place_notations.Length;
+		/// <summary>
+		/// The total number of changes in a plain course of this method.
+		/// </summary>
 		public int plain_course_length => lead_length * leads_in_plain_course;
 
-		public Change lead_end { get; private set; }
-		public PlaceNotation lead_end_notation { get; private set; }
-		public PlaceNotation half_lead_notation { get; private set; }
+		private int [] [] m_rotating_sets = null;
+		/// <summary>
+		/// Gets the rotating sets of the lead end of the method (see <see cref="Change.rotating_sets"/>).
+		/// </summary>
+		public int [] [] rotating_sets {
+			get {
+				m_rotating_sets = m_rotating_sets ?? lead_end.rotating_sets;
 
-		public int [] [] rotating_sets { get; private set; }
+				return m_rotating_sets;
+			}
+		}
 
-		public HuntBell[] hunt_bells { get; private set; }
-		public SymmetryType symmetry_type { get; private set; }
-		public bool is_place_method { get; private set; }
+		private HuntBell [] m_hunt_bells = null;
+		/// <summary>
+		/// A list of <see cref="HuntBell"/> object representing the hunt bells in this method. 
+		/// </summary>
+		public HuntBell [] hunt_bells {
+			get {
+				if (m_hunt_bells is null) {
+					List<int> hunt_bell_numbers = new List<int> ();
+					for (int i = 0; i < (int)stage; i++) {
+						if (lead_end.array [i] == i) {
+							hunt_bell_numbers.Add (i);
+						}
+					}
 
+					m_hunt_bells = new HuntBell [hunt_bell_numbers.Count];
+					for (int i = 0; i < hunt_bell_numbers.Count; i++) {
+						int [] path = new int [lead_length];
+
+						for (int j = 0; j < lead_length; j++) {
+							path [j] = plain_lead_changes [j].IndexOf (i);
+						}
+
+						m_hunt_bells [i] = new HuntBell (hunt_bell_numbers [i], path, stage);
+					}
+				}
+
+				return m_hunt_bells;
+			}
+		}
+
+		private SymmetryType m_symmetry_type;
+		private bool has_computed_symmetry_type = false;
+		/// <summary>
+		/// The symmetry type of the method.
+		/// </summary>
+		public SymmetryType symmetry_type {
+			get {
+				if (!has_computed_symmetry_type) {
+					has_computed_symmetry_type = true;
+
+					if (HasPlainBobLikeSymmetry ()) {
+						m_symmetry_type = SymmetryType.PlainBobLike;
+					}
+					else if (HasGrandsireLikeSymmetry ()) {
+						m_symmetry_type = SymmetryType.GrandsireLike;
+					}
+					else {
+						m_symmetry_type = SymmetryType.Asymmetric;
+					}
+				}
+
+				return m_symmetry_type;
+			}
+		}
+
+		private bool m_is_place_method;
+		private bool has_computed_is_place_method = false;
+		/// <summary>
+		/// True if all the working bells never dodge (or make points, snap leads, etc).
+		/// </summary>
+		public bool is_place_method {
+			get {
+				if (!has_computed_is_place_method) {
+					m_is_place_method = IsPlaceMethod ();
+				}
+
+				return m_is_place_method;
+			}
+		}
+
+		/// <summary>
+		/// Generates a <see cref="Touch"/> object representing the plain course of this method.
+		/// </summary>
 		public Touch plain_course => new Touch (this);
+		/// <summary>
+		/// The lowest numbered hunt bell of this method.  Will always be the Treble if the Treble is hunting.
+		/// </summary>
 		public HuntBell main_hunt_bell => hunt_bells.Length > 0 ? hunt_bells [0] : null;
+		/// <summary>
+		/// True if the Treble is plain hunting.
+		/// </summary>
 		public bool is_treble_hunting => main_hunt_bell == null ? false : main_hunt_bell.bell_number == 0;
 
 		// Functions
+		/// <summary>
+		/// Automagically sets the <see cref="classification"/> variable.
+		/// </summary>
 		public void Classify () {
 			// These tags will be possibly set to true
 			is_little = false;
@@ -334,6 +578,11 @@ namespace Bob {
 			}
 		}
 
+		/// <summary>
+		/// Finds the path of any bell as a list of places (indexed from 0).  This is not always the length of the plain course.
+		/// </summary>
+		/// <param name="bell_index">The index (from 0) of the bell.</param>
+		/// <returns>A list of places (index from 0) which represent the bell's path.</returns>
 		public int [] GetPathOfBell (int bell_index) {
 			// Find the rotating set which this bell is in so that we know how many leads long its path
 			int[] rotating_set = null;
@@ -366,6 +615,11 @@ namespace Bob {
 			return path;
 		}
 
+		/// <summary>
+		/// Finds a <see cref="Call"/> object by it's full name (see <see cref="Call.name"/>).
+		/// </summary>
+		/// <param name="name">The full name of the call (see <see cref="Call.name"/>).</param>
+		/// <returns>The <see cref="Call"/> object with the given name, or null.</returns>
 		public Call GetCallByName (string name) {
 			foreach (Call call in calls) {
 				if (call.name.ToUpper () == name.ToUpper ()) {
@@ -376,6 +630,11 @@ namespace Bob {
 			return null;
 		}
 
+		/// <summary>
+		/// Finds a <see cref="Call"/> object by it's notation (see <see cref="Call.notations"/>).
+		/// </summary>
+		/// <param name="notation">The notation of the call (see <see cref="Call.notations"/>).</param>
+		/// <returns>The <see cref="Call"/> object with the given notation, or null.</returns>
 		public Call GetCallByNotation (char notation) {
 			foreach (Call call in calls) {
 				foreach (char n in call.notations) {
@@ -388,6 +647,11 @@ namespace Bob {
 			return null;
 		}
 
+		/// <summary>
+		/// Generates a <see cref="Touch"/> object from an array of calls in the order that they should be called.
+		/// </summary>
+		/// <param name="calls">An array of <see cref="Call"/> objects in the order that they're called.</param>
+		/// <returns>The requested <see cref="Touch"/> object.</returns>
 		public Touch TouchFromCallList (Call [] calls) {
 			BasicCall [] basic_calls = new BasicCall [calls.Length];
 
@@ -398,6 +662,11 @@ namespace Bob {
 			return new Touch (this, basic_calls);
 		}
 
+		/// <summary>
+		/// Generates a <see cref="Touch"/> object from a string of call notations, in upper- or lower-case.
+		/// </summary>
+		/// <param name="notation">The string of call notations in the order that they'll be called.</param>
+		/// <returns>The requested <see cref="Touch"/> object.</returns>
 		public Touch TouchFromCallList (string notation) {
 			List<Call> calls = new List<Call> ();
 
@@ -412,7 +681,13 @@ namespace Bob {
 			return TouchFromCallList (calls.ToArray ());
 		}
 
-		public Touch TouchFromCallingPositions (string notation) {
+		/// <summary>
+		/// Generates a <see cref="Touch"/> object from a string representing the calling positions.
+		/// </summary>
+		/// <param name="notation">An array of <see cref="Call"/> objects in the order that they're called.</param>
+		/// <param name="conductor_bell">The bell index (from 0) from which the touch is called.</param>
+		/// <returns>The requested <see cref="Touch"/> object.</returns>
+		public Touch TouchFromCallingPositions (string notation, int conductor_bell = Constants.tenor) {
 			List<BasicCall> calls = new List<BasicCall> ();
 
 			Call current_call = GetCallByName (Call.bob_name);
@@ -433,10 +708,14 @@ namespace Bob {
 				// Otherwise `c` is a random character, and should be ignored
 			}
 
-			return new Touch (this, calls.ToArray ());
+			return new Touch (this, calls.ToArray (), true, conductor_bell);
 		}
 
 		// Private functions
+		/// <summary>
+		/// Determines whether this method has Plain Bob-like symmetry.
+		/// </summary>
+		/// <returns>True if this method has Plain Bob-like symmetry.</returns>
 		private bool HasPlainBobLikeSymmetry () {
 			if (lead_length % 2 != 0) {
 				return false;
@@ -451,6 +730,10 @@ namespace Bob {
 			return true;
 		}
 
+		/// <summary>
+		/// Determines whether this method has Grandsire-like symmetry.
+		/// </summary>
+		/// <returns>True if this method has Grandsire-like symmetry.</returns>
 		private bool HasGrandsireLikeSymmetry () {
 			if (lead_length % 2 != 0) {
 				return false;
@@ -465,6 +748,10 @@ namespace Bob {
 			return true;
 		}
 
+		/// <summary>
+		/// Determines whether the working bells only make places.
+		/// </summary>
+		/// <returns>False if any working bell makes any dodges (or snaps, points, etc.).</returns>
 		private bool IsPlaceMethod () {
 			foreach (int[] set in rotating_sets) {
 				if (set.Length == 1) {
@@ -502,45 +789,28 @@ namespace Bob {
 			return true;
 		}
 
+		/// <summary>
+		/// Called whenever the method's <see cref="place_notation"/> is updated.
+		/// </summary>
 		private void RefreshNotation () {
-			place_notations = PlaceNotation.DecodeFullNotation (m_place_notation, stage);
-			plain_lead_changes = PlaceNotation.GenerateChangeArray (place_notations);
+			m_place_notations = null;
+			m_plain_lead_changes = null;
 
-			lead_end = PlaceNotation.CombinePlaceNotations (place_notations);
-			lead_length = place_notations.Length;
-			leads_in_plain_course = lead_end.order;
+			m_lead_end = null;
+			m_leads_in_plain_course = -1;
 
-			rotating_sets = lead_end.rotating_sets;
+			m_rotating_sets = null;
 
-			lead_end_notation = place_notations [place_notations.Length - 1];
-			half_lead_notation = lead_length % 2 == 0 ? place_notations [place_notations.Length / 2 - 1] : null;
-
-			symmetry_type = SymmetryType.Asymmetric;
-			if (HasPlainBobLikeSymmetry ()) { symmetry_type = SymmetryType.PlainBobLike; }
-			if (HasGrandsireLikeSymmetry ()) { symmetry_type = SymmetryType.GrandsireLike; }
-
-			is_place_method = IsPlaceMethod ();
-
-			// Hunt bells
-			List<int> hunt_bell_numbers = new List<int> ();
-			for (int i = 0; i < (int)stage; i++) {
-				if (lead_end.array [i] == i) {
-					hunt_bell_numbers.Add (i);
-				}
-			}
-
-			hunt_bells = new HuntBell [hunt_bell_numbers.Count];
-			for (int i = 0; i < hunt_bell_numbers.Count; i++) {
-				int [] path = new int [lead_length];
-
-				for (int j = 0; j < lead_length; j++) {
-					path [j] = plain_lead_changes [j].IndexOf (i);
-				}
-
-				hunt_bells [i] = new HuntBell (hunt_bell_numbers [i], path, stage);
-			}
+			has_computed_symmetry_type = false;
+			has_computed_is_place_method = false;
+			
+			m_hunt_bells = null;
 		}
 
+		/// <summary>
+		/// Generates standard (Bob, Single and Plain) <see cref="Call"/> objects for this method.
+		/// </summary>
+		/// <param name="overwrite_current">Determines whether to overwrite the current call array.</param>
 		private void GenerateStandardCalls (bool overwrite_current = true) {
 			if ((int)stage < 4) {
 				return;
@@ -568,9 +838,9 @@ namespace Bob {
 							calls.Clear ();
 						}
 
-						string n_minus_2 = Constants.GetBellNameIndexingFromOne ((int)stage - 2);
-						string n_minus_1 = Constants.GetBellNameIndexingFromOne ((int)stage - 1);
-						string n = Constants.GetBellNameIndexingFromOne ((int)stage);
+						char n_minus_2 = Constants.GetBellNameIndexingFromOne ((int)stage - 2);
+						char n_minus_1 = Constants.GetBellNameIndexingFromOne ((int)stage - 1);
+						char n = Constants.GetBellNameIndexingFromOne ((int)stage);
 
 						calls.Add (Call.LeadEndBob (this, "1" + n_minus_2));
 						calls.Add (Call.LeadEndBob (this, "1" + n_minus_2 + n_minus_1 + n));
@@ -590,6 +860,17 @@ namespace Bob {
 		}
 
 		// Constructors
+		/// <summary>
+		/// Generates a method and specifying all classifications.
+		/// </summary>
+		/// <param name="place_notation">The place notation of the method, e.g. "x3x4x25x36x4x5x6x7,2". Can have implicit places.</param>
+		/// <param name="name">The name of the method, e.g. "Cambridge".</param>
+		/// <param name="classification">The classification of the method, e.g. <see cref="Classification.Surprise"/></param>
+		/// <param name="stage">The stage of the method, e.g. <see cref="Stage.Major"/></param>
+		/// <param name="override_title">Set this to manually set the <see cref="title"/> value, e.g. for Gransire.</param>
+		/// <param name="is_little">True if the "Little" tag should appear in the method title.</param>
+		/// <param name="is_differential">True if the "Differential" tag should appear in the method title.</param>
+		/// <param name="generate_standard_calls">If, true BobC# will automagically set the standard Bob, Single and Plain calls.</param>
 		public Method (string place_notation, string name, Classification classification, Stage stage, string override_title = null, bool is_little = false, bool is_differential = false, bool generate_standard_calls = true) {
 			this.name = name;
 			this.classification = classification;
@@ -606,6 +887,14 @@ namespace Bob {
 			}
 		}
 
+		/// <summary>
+		/// Generates a method without specifying any classifications, leaving BobC# to classify it for you.
+		/// </summary>
+		/// <param name="place_notation">The place notation of the method, e.g. "x3x4x25x36x4x5x6x7,2". Can have implicit places.</param>
+		/// <param name="name">The name of the method, e.g. "Cambridge".</param>
+		/// <param name="stage">The stage of the method, e.g. <see cref="Stage.Major"/></param>
+		/// <param name="override_title">Set this to manually set the <see cref="title"/> value, e.g. for Gransire.</param>
+		/// <param name="generate_standard_calls">If, true BobC# will automagically set the standard Bob, Single and Plain calls.</param>
 		public Method (string place_notation, string name, Stage stage, string override_title = null, bool generate_standard_calls = true) {
 			this.name = name;
 			this.stage = stage;
@@ -622,14 +911,34 @@ namespace Bob {
 		}
 
 		// Static stuff
-		public static Method GetMethod (string name) => MethodLibrary.GetMethodByName (name);
+		/// <summary>
+		/// Gets a method from the CCCBR method library (null if no method of that title exists).
+		/// </summary>
+		/// <param name="title">The title of the method you want to find.</param>
+		/// <returns>The <see cref="Method"/> object with that title (or null).</returns>
+		public static Method GetMethod (string title) => MethodLibrary.GetMethodByTitle (title);
 
+		/// <summary>
+		/// Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).
+		/// </summary>
 		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Classification.Bob, Stage.Doubles);
+		/// <summary>
+		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor)</c> instead).
+		/// </summary>
 		public static Method plain_bob_minor => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
 
+		/// <summary>
+		/// Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
+		/// </summary>
 		public static Method grandsire_doubles => new Method ("3,1.5.1.5.1", "Grandsire", Classification.Bob, Stage.Doubles, "Grandsire Doubles");
+		/// <summary>
+		/// Shortcut to generate Grandsire Triples. (Only for testing; use <c>Method.GetMethod ("Grandsire Triples")</c> instead).
+		/// </summary>
 		public static Method grandsire_triples => new Method ("3,1.7.1.7.1.7.1", "Grandsire", Classification.Bob, Stage.Triples, "Grandsire Triples");
 
+		/// <summary>
+		/// Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
+		/// </summary>
 		public static Method cambridge_major => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Classification.Surprise, Stage.Major);
 	}
 }
