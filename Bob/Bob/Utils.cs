@@ -6,7 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
+	/// <summary>
+	/// A class to store utility functions.
+	/// </summary>
 	public static class Utils {
+		/// <summary>
+		/// Converts a <see cref="Stage"/> to a string.
+		/// </summary>
+		/// <param name="stage">The <see cref="Stage"/> who's string representation is needed.</param>
+		/// <returns>A string representing the given stage.</returns>
 		public static string StageToString (Stage stage) {
 			if (stage == Stage.TwentyTwo) {
 				return "Twenty-two";
@@ -15,22 +23,32 @@ namespace Bob {
 			return stage.ToString ();
 		}
 
-		public static string CatagoryToString (Classification catagory) {
-			if (catagory == Classification.SlowCourse) {
+		/// <summary>
+		/// Converts a <see cref="Classification"/> to a string.
+		/// </summary>
+		/// <param name="classification">The <see cref="Classification"/> who's string representation is needed.</param>
+		/// <returns>A string representing the given Classification</returns>
+		public static string ClassificationToString (Classification classification) {
+			if (classification == Classification.SlowCourse) {
 				return "Slow Course";
 			}
 
-			if (catagory == Classification.TreblePlace) {
+			if (classification == Classification.TreblePlace) {
 				return "Treble Place";
 			}
 
-			if (catagory == Classification.TrebleBob) {
+			if (classification == Classification.TrebleBob) {
 				return "Treble Bob";
 			}
 
-			return catagory.ToString ();
+			return classification.ToString ();
 		}
 
+		/// <summary>
+		/// Computes the factorial of an integer `n`.  Please do NOT put large numbers into this function, or your computer will crash.
+		/// </summary>
+		/// <param name="n">The integer who's factorial is required.</param>
+		/// <returns>The factoral of that integer.</returns>
 		public static int Factorial (int n) {
 			int result = 1;
 

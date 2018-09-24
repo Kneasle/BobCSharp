@@ -5,28 +5,65 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
+	/// <summary>
+	/// A class to store a representation of any touch.
+	/// </summary>
 	public class Touch {
+		/// <summary>
+		/// A class to store a pairing of a Call and the point at which it is called.
+		/// </summary>
 		public class CallPoint {
+			/// <summary>
+			/// The call which is being called.
+			/// </summary>
 			public Call call;
+			/// <summary>
+			/// The index of the first change which the call is called.
+			/// </summary>
 			public int start_index;
 
+			/// <summary>
+			/// The number of changes covered by this <see cref="CallPoint"/>.
+			/// </summary>
 			public int length => call.length;
+			/// <summary>
+			/// The index of the last change covered by this <see cref="CallPoint"/>. 
+			/// </summary>
 			public int end_index => start_index + length - 1;
 
+			/// <summary>
+			/// Gets the <see cref="PlaceNotation"/> at a given absolute index since the start of the touch.
+			/// </summary>
+			/// <param name="index">The absolute index of the <see cref="PlaceNotation"/>.</param>
+			/// <returns>The place notation at absolute index `index`.</returns>
 			public PlaceNotation GetNotationAtIndex (int index) {
 				return call.place_notations [index - start_index];
 			}
 
+			/// <summary>
+			/// Creates a <see cref="CallPoint"/> from a call and an index.
+			/// </summary>
+			/// <param name="call">The call being called.</param>
+			/// <param name="start_index">The index of the first change of the call.</param>
 			public CallPoint (Call call, int start_index) {
 				this.call = call;
 				this.start_index = start_index;
 			}
 		}
 
+		/// <summary>
+		/// An array of method splicing calls (splicing in development).
+		/// </summary>
 		public MethodCall [] method_calls;
+		/// <summary>
+		/// An array of basic (e.g. Bob, Single, Plain) calls and their locations.
+		/// </summary>
 		public BasicCall [] basic_calls;
-
+		
 		private int m_conductor_bell = Constants.tenor;
+		/// <summary>
+		/// The bell from which the touch is called.  If set to <see cref="Constants.tenor"/> (-1), then this is set to the heaviest bell.
+		/// </summary>
 		public int conductor_bell {
 			get {
 				return m_conductor_bell == Constants.tenor ? (int)stage - 1 : m_conductor_bell;
@@ -37,20 +74,59 @@ namespace Bob {
 		}
 
 		private Change m_target_change = null;
+		/// <summary>
+		/// The change at which the touch will stop.  Defaults to rounds.
+		/// </summary>
 		public Change target_change {
 			get {
 				return m_target_change ?? Change.Rounds (stage);
 			}
+
 			set {
+				if (value != m_target_change) {
+					m_changes = null;
+				}
+
 				m_target_change = value;
 			}
 		}
 
-		public Change [] changes { get; private set; }
+		private Change [] m_changes = null;
+		/// <summary>
+		/// An array of all the changes in the touch.  Calls <see cref="ComputeChanges"/> once when accessed.
+		/// </summary>
+		public Change [] changes {
+			get {
+				if (m_changes is null) {
+					ComputeChanges ();
+				}
+
+				return m_changes;
+			}
+		}
+
+		/// <summary>
+		/// A dictionary to store where the calls are placed in the touch.
+		/// </summary>
 		public Dictionary<int, Call> calls { get; private set; }
 
-		private Dictionary<int, int> change_repeat_frequencies;
+		private Dictionary<int, int> m_change_repeat_frequencies = null;
+		/// <summary>
+		/// A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).
+		/// </summary>
+		public Dictionary<int, int> change_repeat_frequencies {
+			get {
+				if (m_change_repeat_frequencies is null) {
+					ComputeChangeRepeatFrequencies ();
+				}
 
+				return m_change_repeat_frequencies;
+			}
+		}
+
+		/// <summary>
+		/// True if every possible change is rung once and once only.
+		/// </summary>
 		public bool is_extent {
 			get {
 				if (change_repeat_frequencies.Keys.Count != 1) {
@@ -64,6 +140,9 @@ namespace Bob {
 				return change_repeat_frequencies [1] == Utils.Factorial ((int)stage);
 			}
 		}
+		/// <summary>
+		/// True if every possible change is rung an equal number of times. 
+		/// </summary>
 		public bool is_multiple_extent {
 			get {
 				if (change_repeat_frequencies.Keys.Count != 1) {
@@ -77,7 +156,13 @@ namespace Bob {
 				return change_repeat_frequencies [1] % Utils.Factorial ((int)stage) == 0;
 			}
 		}
+		/// <summary>
+		/// True if no change is repeated more than once.
+		/// </summary>
 		public bool is_true => change_repeat_frequencies.Keys.Count == 1 && change_repeat_frequencies.Keys.ToArray () [0] == 1;
+		/// <summary>
+		/// True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
+		/// </summary>
 		public bool is_quarter_peal_true {
 			get {
 				int [] keys = change_repeat_frequencies.Keys.ToArray ();
@@ -94,6 +179,9 @@ namespace Bob {
 			}
 		}
 
+		/// <summary>
+		/// The stage of the touch (the largest stage of all the methods spliced, allowing different staged methods to be spliced).
+		/// </summary>
 		public Stage stage {
 			get {
 				int max_stage = int.MinValue;
@@ -106,6 +194,9 @@ namespace Bob {
 			}
 		}
 
+		/// <summary>
+		/// The number of changes in this touch.
+		/// </summary>
 		public int Length {
 			get {
 				if (changes == null) {
@@ -116,13 +207,21 @@ namespace Bob {
 			}
 		}
 
-		public Change this [int k] {
+		/// <summary>
+		/// Gets the change at a given index in the touch.
+		/// </summary>
+		/// <param name="i">The index of the requested change.</param>
+		/// <returns>The change at index `i`.</returns>
+		public Change this [int i] {
 			get {
-				return changes [k];
+				return changes [i];
 			}
 		}
 
-		void UpdateChangeData () {
+		/// <summary>
+		/// Generates the dictionary of change repeats (could be computationally intensive for long touches).
+		/// </summary>
+		private void ComputeChangeRepeatFrequencies () {
 			if (changes == null) {
 				return;
 			}
@@ -140,20 +239,23 @@ namespace Bob {
 				}
 			}
 
-			change_repeat_frequencies = new Dictionary<int, int> ();
+			m_change_repeat_frequencies = new Dictionary<int, int> ();
 
 			foreach (string k in change_repeats.Keys) {
 				int v = change_repeats [k];
 
 				try {
-					change_repeat_frequencies [v] += 1;
+					m_change_repeat_frequencies [v] += 1;
 				} catch (KeyNotFoundException) {
-					change_repeat_frequencies [v] = 1;
+					m_change_repeat_frequencies [v] = 1;
 				}
 			}
 		}
 
-		public void ComputeChanges () {
+		/// <summary>
+		/// Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="changes"/> is accessed.
+		/// </summary>
+		private void ComputeChanges () {
 			List<Change> changes = new List<Change> ();
 			calls = new Dictionary<int, Call> ();
 
@@ -240,11 +342,15 @@ namespace Bob {
 				}
 			}
 
-			this.changes = changes.ToArray ();
+			this.m_changes = changes.ToArray ();
 
-			UpdateChangeData ();
+			ComputeChangeRepeatFrequencies ();
 		}
 
+		/// <summary>
+		/// Returns a string representing this touch (could be very large for long touches).
+		/// </summary>
+		/// <returns>A string representation of this touch.</returns>
 		public override string ToString () {
 			if (changes == null) {
 				return "<Touch: changes not computed yet>";
@@ -271,76 +377,154 @@ namespace Bob {
 			return output;
 		}
 
-		public Touch (Method method, bool automatically_compute_changes = true, int conductor_bell = Constants.tenor) {
+		/// <summary>
+		/// Creates a <see cref="Touch"/> object representing the plain course of a given method.
+		/// </summary>
+		/// <param name="method">The method who's plain course is being generated.</param>
+		public Touch (Method method) {
 			method_calls = new MethodCall [] { new MethodCall (method) };
 			basic_calls = new BasicCall [0];
 
 			m_conductor_bell = conductor_bell;
-
-			if (automatically_compute_changes) {
-				ComputeChanges ();
-			}
 		}
 
-		public Touch (Method method, BasicCall[] calls, bool automatically_compute_changes = true, int conductor_bell = Constants.tenor) {
+		/// <summary>
+		/// Creates a <see cref="Touch"/> object representing a single-method touch.
+		/// </summary>
+		/// <param name="method">The method of the touch.</param>
+		/// <param name="calls">The calls which make up the touch.</param>
+		/// <param name="conductor_bell">The bell from which the touch is called.</param>
+		public Touch (Method method, BasicCall[] calls, int conductor_bell = Constants.tenor) {
 			method_calls = new MethodCall [] { new MethodCall (method) };
 			basic_calls = calls;
 
 			m_conductor_bell = conductor_bell;
-
-			if (automatically_compute_changes) {
-				ComputeChanges ();
-			}
 		}
 	}
 
+	/// <summary>
+	/// A class to store method splicing calls.
+	/// </summary>
 	public class MethodCall {
+		/// <summary>
+		/// The method to be changed to.
+		/// </summary>
 		public Method method;
+		/// <summary>
+		/// The location of the call.
+		/// </summary>
 		public ICallLocation location;
 
+		/// <summary>
+		/// Creates a blank <see cref="MethodCall"/>.
+		/// </summary>
 		public MethodCall () { }
 
+		/// <summary>
+		/// Creates a <see cref="MethodCall"/> with just a <see cref="Method"/>.
+		/// </summary>
+		/// <param name="method">The method which is being spliced to.</param>
 		public MethodCall (Method method) {
 			this.method = method;
 		}
 
+		/// <summary>
+		/// Creates a fully-defined <see cref="MethodCall"/>.
+		/// </summary>
+		/// <param name="method">The method to spliced to.</param>
+		/// <param name="location">The location of the splice.</param>
 		public MethodCall (Method method, ICallLocation location) {
 			this.method = method;
 			this.location = location;
 		}
 	}
 
+	/// <summary>
+	/// A class to store a basic (Bob, Single, Plain) call.
+	/// </summary>
 	public class BasicCall {
+		/// <summary>
+		/// The <see cref="Call"/> being called.
+		/// </summary>
 		public Call call;
+		/// <summary>
+		/// The location of the call.
+		/// </summary>
 		public ICallLocation call_location;
 
+		/// <summary>
+		/// Creates a blank <see cref="BasicCall"/>.
+		/// </summary>
 		public BasicCall () { }
 
+		/// <summary>
+		/// Creates a fully-defined <see cref="BasicCall"/>.
+		/// </summary>
+		/// <param name="call">The call being called.</param>
+		/// <param name="call_location">The location of the call.</param>
 		public BasicCall (Call call, ICallLocation call_location) {
 			this.call = call;
 			this.call_location = call_location;
 		}
 	}
 
+	/// <summary>
+	/// An interface for denoting where calls can be called.
+	/// </summary>
 	public interface ICallLocation {
+		/// <summary>
+		/// This should return true if the given data should result in a call being called.
+		/// </summary>
+		/// <param name="call">The call which could be called.</param>
+		/// <param name="start_change">The last change before the call could take effect.</param>
+		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
+		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
+		/// <returns>True if the call should be called.</returns>
 		bool Evaluate (Call call, Change start_change, int start_index, Touch touch);
 	}
 
+	/// <summary>
+	/// A class to specify the locations of calls which are given as a list (so calls are always called.
+	/// </summary>
 	public class CallLocationList : ICallLocation {
-		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
-			return true;
-		}
+		/// <summary>
+		/// This should return true if the given data should result in a call being called.
+		/// </summary>
+		/// <param name="call">The call which could be called.</param>
+		/// <param name="start_change">The last change before the call could take effect.</param>
+		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
+		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
+		/// <returns>Always true.</returns>
+		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) => true;
 	}
 
+	/// <summary>
+	/// A class to specify the location of a calling-position based call.
+	/// </summary>
 	public class CallLocationCallingPosition : ICallLocation {
+		/// <summary>
+		/// The notation for the calling position
+		/// </summary>
 		public char calling_position;
 
+		/// <summary>
+		/// This should return true if the given data should result in a call being called.
+		/// </summary>
+		/// <param name="call">The call which could be called.</param>
+		/// <param name="start_change">The last change before the call could take effect.</param>
+		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
+		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
+		/// <returns>True if the call should be called.</returns>
 		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
 			Change end_change = start_change * call.overall_transposition;
 
 			return end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
 		}
 
+		/// <summary>
+		/// Creates a <see cref="CallLocationCallingPosition"/> class given a calling position notation.
+		/// </summary>
+		/// <param name="calling_position">The notation of the calling position.</param>
 		public CallLocationCallingPosition (char calling_position) {
 			this.calling_position = calling_position;
 		}

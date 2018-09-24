@@ -1066,5 +1066,293 @@
             <param name="message">The message display.</param>
             <param name="inner">The other exception.</param>
         </member>
+        <member name="T:Bob.Touch">
+            <summary>
+            A class to store a representation of any touch.
+            </summary>
+        </member>
+        <member name="T:Bob.Touch.CallPoint">
+            <summary>
+            A class to store a pairing of a Call and the point at which it is called.
+            </summary>
+        </member>
+        <member name="F:Bob.Touch.CallPoint.call">
+            <summary>
+            The call which is being called.
+            </summary>
+        </member>
+        <member name="F:Bob.Touch.CallPoint.start_index">
+            <summary>
+            The index of the first change which the call is called.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.CallPoint.length">
+            <summary>
+            The number of changes covered by this <see cref="T:Bob.Touch.CallPoint"/>.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.CallPoint.end_index">
+            <summary>
+            The index of the last change covered by this <see cref="T:Bob.Touch.CallPoint"/>. 
+            </summary>
+        </member>
+        <member name="M:Bob.Touch.CallPoint.GetNotationAtIndex(System.Int32)">
+            <summary>
+            Gets the <see cref="T:Bob.PlaceNotation"/> at a given absolute index since the start of the touch.
+            </summary>
+            <param name="index">The absolute index of the <see cref="T:Bob.PlaceNotation"/>.</param>
+            <returns>The place notation at absolute index `index`.</returns>
+        </member>
+        <member name="M:Bob.Touch.CallPoint.#ctor(Bob.Call,System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.Touch.CallPoint"/> from a call and an index.
+            </summary>
+            <param name="call">The call being called.</param>
+            <param name="start_index">The index of the first change of the call.</param>
+        </member>
+        <member name="F:Bob.Touch.method_calls">
+            <summary>
+            An array of method splicing calls (splicing in development).
+            </summary>
+        </member>
+        <member name="F:Bob.Touch.basic_calls">
+            <summary>
+            An array of basic (e.g. Bob, Single, Plain) calls and their locations.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.conductor_bell">
+            <summary>
+            The bell from which the touch is called.  If set to <see cref="F:Bob.Constants.tenor"/> (-1), then this is set to the heaviest bell.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.target_change">
+            <summary>
+            The change at which the touch will stop.  Defaults to rounds.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.changes">
+            <summary>
+            An array of all the changes in the touch.  Calls <see cref="M:Bob.Touch.ComputeChanges"/> once when accessed.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.calls">
+            <summary>
+            A dictionary to store where the calls are placed in the touch.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.change_repeat_frequencies">
+            <summary>
+            A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.is_extent">
+            <summary>
+            True if every possible change is rung once and once only.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.is_multiple_extent">
+            <summary>
+            True if every possible change is rung an equal number of times. 
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.is_true">
+            <summary>
+            True if no change is repeated more than once.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.is_quarter_peal_true">
+            <summary>
+            True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.stage">
+            <summary>
+            The stage of the touch (the largest stage of all the methods spliced, allowing different staged methods to be spliced).
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.Length">
+            <summary>
+            The number of changes in this touch.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.Item(System.Int32)">
+            <summary>
+            Gets the change at a given index in the touch.
+            </summary>
+            <param name="i">The index of the requested change.</param>
+            <returns>The change at index `i`.</returns>
+        </member>
+        <member name="M:Bob.Touch.ComputeChangeRepeatFrequencies">
+            <summary>
+            Generates the dictionary of change repeats (could be computationally intensive for long touches).
+            </summary>
+        </member>
+        <member name="M:Bob.Touch.ComputeChanges">
+            <summary>
+            Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="P:Bob.Touch.changes"/> is accessed.
+            </summary>
+        </member>
+        <member name="M:Bob.Touch.ToString">
+            <summary>
+            Returns a string representing this touch (could be very large for long touches).
+            </summary>
+            <returns>A string representation of this touch.</returns>
+        </member>
+        <member name="M:Bob.Touch.#ctor(Bob.Method)">
+            <summary>
+            Creates a <see cref="T:Bob.Touch"/> object representing the plain course of a given method.
+            </summary>
+            <param name="method">The method who's plain course is being generated.</param>
+        </member>
+        <member name="M:Bob.Touch.#ctor(Bob.Method,Bob.BasicCall[],System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.Touch"/> object representing a single-method touch.
+            </summary>
+            <param name="method">The method of the touch.</param>
+            <param name="calls">The calls which make up the touch.</param>
+            <param name="conductor_bell">The bell from which the touch is called.</param>
+        </member>
+        <member name="T:Bob.MethodCall">
+            <summary>
+            A class to store method splicing calls.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodCall.method">
+            <summary>
+            The method to be changed to.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodCall.location">
+            <summary>
+            The location of the call.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodCall.#ctor">
+            <summary>
+            Creates a blank <see cref="T:Bob.MethodCall"/>.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodCall.#ctor(Bob.Method)">
+            <summary>
+            Creates a <see cref="T:Bob.MethodCall"/> with just a <see cref="T:Bob.Method"/>.
+            </summary>
+            <param name="method">The method which is being spliced to.</param>
+        </member>
+        <member name="M:Bob.MethodCall.#ctor(Bob.Method,Bob.ICallLocation)">
+            <summary>
+            Creates a fully-defined <see cref="T:Bob.MethodCall"/>.
+            </summary>
+            <param name="method">The method to spliced to.</param>
+            <param name="location">The location of the splice.</param>
+        </member>
+        <member name="T:Bob.BasicCall">
+            <summary>
+            A class to store a basic (Bob, Single, Plain) call.
+            </summary>
+        </member>
+        <member name="F:Bob.BasicCall.call">
+            <summary>
+            The <see cref="T:Bob.Call"/> being called.
+            </summary>
+        </member>
+        <member name="F:Bob.BasicCall.call_location">
+            <summary>
+            The location of the call.
+            </summary>
+        </member>
+        <member name="M:Bob.BasicCall.#ctor">
+            <summary>
+            Creates a blank <see cref="T:Bob.BasicCall"/>.
+            </summary>
+        </member>
+        <member name="M:Bob.BasicCall.#ctor(Bob.Call,Bob.ICallLocation)">
+            <summary>
+            Creates a fully-defined <see cref="T:Bob.BasicCall"/>.
+            </summary>
+            <param name="call">The call being called.</param>
+            <param name="call_location">The location of the call.</param>
+        </member>
+        <member name="T:Bob.ICallLocation">
+            <summary>
+            An interface for denoting where calls can be called.
+            </summary>
+        </member>
+        <member name="M:Bob.ICallLocation.Evaluate(Bob.Call,Bob.Change,System.Int32,Bob.Touch)">
+            <summary>
+            This should return true if the given data should result in a call being called.
+            </summary>
+            <param name="call">The call which could be called.</param>
+            <param name="start_change">The last change before the call could take effect.</param>
+            <param name="start_index">The absolute index of the first change of the potential call.</param>
+            <param name="touch">The <see cref="T:Bob.Touch"/> object from which the queiry comes.</param>
+            <returns>True if the call should be called.</returns>
+        </member>
+        <member name="T:Bob.CallLocationList">
+            <summary>
+            A class to specify the locations of calls which are given as a list (so calls are always called.
+            </summary>
+        </member>
+        <member name="M:Bob.CallLocationList.Evaluate(Bob.Call,Bob.Change,System.Int32,Bob.Touch)">
+            <summary>
+            This should return true if the given data should result in a call being called.
+            </summary>
+            <param name="call">The call which could be called.</param>
+            <param name="start_change">The last change before the call could take effect.</param>
+            <param name="start_index">The absolute index of the first change of the potential call.</param>
+            <param name="touch">The <see cref="T:Bob.Touch"/> object from which the queiry comes.</param>
+            <returns>Always true.</returns>
+        </member>
+        <member name="T:Bob.CallLocationCallingPosition">
+            <summary>
+            A class to specify the location of a calling-position based call.
+            </summary>
+        </member>
+        <member name="F:Bob.CallLocationCallingPosition.calling_position">
+            <summary>
+            The notation for the calling position
+            </summary>
+        </member>
+        <member name="M:Bob.CallLocationCallingPosition.Evaluate(Bob.Call,Bob.Change,System.Int32,Bob.Touch)">
+            <summary>
+            This should return true if the given data should result in a call being called.
+            </summary>
+            <param name="call">The call which could be called.</param>
+            <param name="start_change">The last change before the call could take effect.</param>
+            <param name="start_index">The absolute index of the first change of the potential call.</param>
+            <param name="touch">The <see cref="T:Bob.Touch"/> object from which the queiry comes.</param>
+            <returns>True if the call should be called.</returns>
+        </member>
+        <member name="M:Bob.CallLocationCallingPosition.#ctor(System.Char)">
+            <summary>
+            Creates a <see cref="T:Bob.CallLocationCallingPosition"/> class given a calling position notation.
+            </summary>
+            <param name="calling_position">The notation of the calling position.</param>
+        </member>
+        <member name="T:Bob.Utils">
+            <summary>
+            A class to store utility functions.
+            </summary>
+        </member>
+        <member name="M:Bob.Utils.StageToString(Bob.Stage)">
+            <summary>
+            Converts a <see cref="T:Bob.Stage"/> to a string.
+            </summary>
+            <param name="stage">The <see cref="T:Bob.Stage"/> who's string representation is needed.</param>
+            <returns>A string representing the given stage.</returns>
+        </member>
+        <member name="M:Bob.Utils.ClassificationToString(Bob.Classification)">
+            <summary>
+            Converts a <see cref="T:Bob.Classification"/> to a string.
+            </summary>
+            <param name="classification">The <see cref="T:Bob.Classification"/> who's string representation is needed.</param>
+            <returns>A string representing the given Classification</returns>
+        </member>
+        <member name="M:Bob.Utils.Factorial(System.Int32)">
+            <summary>
+            Computes the factorial of an integer `n`.  Please do NOT put large numbers into this function, or your computer will crash.
+            </summary>
+            <param name="n">The integer who's factorial is required.</param>
+            <returns>The factoral of that integer.</returns>
+        </member>
     </members>
 </doc>

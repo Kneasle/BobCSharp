@@ -307,7 +307,7 @@ namespace Bob {
 				if (classification == Classification.Principle) {
 					return name + " " + Utils.StageToString (stage);
 				} else {
-					return name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.CatagoryToString (classification) + " " + Utils.StageToString (stage);
+					return name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.ClassificationToString (classification) + " " + Utils.StageToString (stage);
 				}
 			}
 		}
@@ -708,7 +708,7 @@ namespace Bob {
 				// Otherwise `c` is a random character, and should be ignored
 			}
 
-			return new Touch (this, calls.ToArray (), true, conductor_bell);
+			return new Touch (this, calls.ToArray (), conductor_bell);
 		}
 
 		// Private functions
