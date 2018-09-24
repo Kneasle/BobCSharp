@@ -239,7 +239,20 @@ namespace Bob {
 		/// <summary>
 		/// An enum to store the symmetry type of a method (used, e.g. for generating calls).
 		/// </summary>
-		public enum SymmetryType { Asymmetric, PlainBobLike, GrandsireLike }
+		public enum SymmetryType {
+			/// <summary>
+			/// This method has asymmetric place notation. Could still have a symmetrical line, e.g. Stedman.
+			/// </summary>
+			Asymmetric,
+			/// <summary>
+			/// This method is symmetric over the treble's lead.
+			/// </summary>
+			PlainBobLike,
+			/// <summary>
+			/// This methodo is symmetric over the blow after the treble's lead.
+			/// </summary>
+			GrandsireLike
+		}
 
 		// Fields
 		/// <summary>
