@@ -1,0 +1,1070 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bob</name>
+    </assembly>
+    <members>
+        <member name="T:Bob.Call">
+            <summary>
+            A class to store all calls.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.method">
+            <summary>
+            The method to which this call belongs.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.name">
+            <summary>
+            The full name of this call, e.g. "Bob".
+            </summary>
+        </member>
+        <member name="F:Bob.Call.notations">
+            <summary>
+            A list of possible notations of this call. Sould be lower case or a symbol, as calling positions are uppercase.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.place_notations">
+            <summary>
+            The place notations which make up the call.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.calling_positions">
+            <summary>
+            A list of strings which contain the possible calling positions for the call, indexed from zero.  Each string should be a list of the possible alternative calling positions, e.g. "IB" for In and Before.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.every">
+            <summary>
+            Every how many changes the calling position can be called.  Must be a factor of the lead length of the method.  For lead end calls this is set automagically.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.from">
+            <summary>
+            How many changes away from every `every` changes the call can be called.  E.g. for Stedman this will be -3, and `every` will be 6.  For lead-end calls this is set automagically.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.cover">
+            <summary>
+            How many plain changes this call covers, because CCCBR now allow calls to extend the lead length of a method.  For lead end calls this is set automagically.
+            </summary>
+        </member>
+        <member name="P:Bob.Call.overall_transposition">
+            <summary>
+            The overall transposition caused by the call (note this is not the lead end after the call).
+            </summary>
+        </member>
+        <member name="P:Bob.Call.is_plain">
+            <summary>
+            True if the call is a `plain` call, otherwise false.  In BobC# these exist, so that call list touches (e.g. PPBPS) work properly.
+            </summary>
+        </member>
+        <member name="P:Bob.Call.length">
+            <summary>
+            The number of changes which the change covers.
+            </summary>
+        </member>
+        <member name="P:Bob.Call.preferred_notation">
+            <summary>
+            The preferred notation of the call (this is always the first value in the list of notations).
+            </summary>
+        </member>
+        <member name="M:Bob.Call.GetCallingPositionIndex(System.Char)">
+            <summary>
+            Gets the index (from 0) of the calling position denoted by `notation`.
+            </summary>
+            <param name="notation">The notation of the calling position who's index is wanted.</param>
+            <returns>The index of calling position denotated by `notation`.</returns>
+        </member>
+        <member name="M:Bob.Call.Init">
+            <summary>
+            Initialises the call (right now it just calls an exception if `every` is not a factor of the method's lead length).
+            </summary>
+        </member>
+        <member name="M:Bob.Call.#ctor(Bob.Method,System.String,System.Char[],Bob.PlaceNotation[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a call without calling positions.
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <param name="every">Every how many changes the call can be called.</param>
+            <param name="from">How many changes from the `every` changes the call can be called.  E.g. for Stedman, this is -3 and `every` is 6.</param>
+            <param name="cover">How many plain course changes this change covers (CCCBR now allow calls which change the lead length of the method).</param>
+        </member>
+        <member name="M:Bob.Call.#ctor(Bob.Method,System.String,System.Char[],Bob.PlaceNotation,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a single change call without calling positions.
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case.</param>
+            <param name="place_notation">The place notation of the call.</param>
+            <param name="every">Every how many changes the call can be called.</param>
+            <param name="from">How many changes from the `every` changes the call can be called.  E.g. for Stedman, this is -3 and `every` is 6.</param>
+            <param name="cover">How many plain course changes this change covers (CCCBR now allow calls which change the lead length of the method).</param>
+        </member>
+        <member name="M:Bob.Call.#ctor(Bob.Method,System.String,System.Char[],Bob.PlaceNotation[],System.String[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a call with calling positions.
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).</param>
+            <param name="every">Every how many changes the call can be called.</param>
+            <param name="from">How many changes from the `every` changes the call can be called.  E.g. for Stedman, this is -3 and `every` is 6.</param>
+            <param name="cover">How many plain course changes this change covers (CCCBR now allow calls which change the lead length of the method).</param>
+        </member>
+        <member name="M:Bob.Call.#ctor(Bob.Method,System.String,System.Char[],Bob.PlaceNotation,System.String[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a single change call with calling positions.
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case or symbols.</param>
+            <param name="place_notation">The place notation of the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).</param>
+            <param name="every">Every how many changes the call can be called.</param>
+            <param name="from">How many changes from the `every` changes the call can be called.  E.g. for Stedman, this is -3 and `every` is 6.</param>
+            <param name="cover">How many plain course changes this change covers (CCCBR now allow calls which change the lead length of the method).</param>
+        </member>
+        <member name="M:Bob.Call.LeadEndCall(Bob.Method,System.String,System.Char[],Bob.PlaceNotation[])">
+            <summary>
+            Creates a given call over the lead end of a given method (without calling positions).
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case or symbols.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <returns>A call over the lead end of the given method.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndCall(Bob.Method,System.String,System.Char[],Bob.PlaceNotation[],System.String[])">
+            <summary>
+            Creates a given call over the lead end of a given method (with calling positions).
+            </summary>
+            <param name="method">The method to which this call belongs.</param>
+            <param name="name">The full name of the call, e.g. "Bob".</param>
+            <param name="notations">A list of possible notations, e.g. ['-'. 'b'].  Should be lower case or symbols.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).</param>
+            <returns>A call over the lead end of the given method.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndBob(Bob.Method,Bob.PlaceNotation[],System.String[])">
+            <summary>
+            Creates a `bob` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `bob` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndBob(Bob.Method,Bob.PlaceNotation,System.String[])">
+            <summary>
+            Creates a `bob` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="place_notation">The place notation of the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `bob` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndBob(Bob.Method,System.String,System.String[])">
+            <summary>
+            Creates a `bob` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="notation">The full place notation of the call, e.g. "3.1" for Grandsire Bobs.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `bob` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation[],System.Boolean)">
+            <summary>
+            Creates a `single` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="place_notations">A list of the place notations which make up the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `single` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation)">
+            <summary>
+            Creates a `single` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="place_notation">The place notation of the call.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `single` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,System.String)">
+            <summary>
+            Creates a `single` call over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="notation">The full place notation of the call, e.g. "3.123" for Grandsire Singles.</param>
+            <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+            <returns>The `single` call that was created.</returns>
+        </member>
+        <member name="M:Bob.Call.LeadEndPlain(Bob.Method,System.Int32)">
+            <summary>
+            Creates a `plain` call (a call which does nothing) over the lead end of a given method.
+            </summary>
+            <param name="method">The method to which the call belongs.</param>
+            <param name="length">How many changes the call covers.</param>
+            <returns></returns>
+        </member>
+        <member name="F:Bob.Call.bob_name">
+            <summary>
+            The standard full name for any `bob` calls.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.single_name">
+            <summary>
+            The standard full name for any `single` calls.
+            </summary>
+        </member>
+        <member name="F:Bob.Call.plain_name">
+            <summary>
+            The standard full name for any `plain` calls.
+            </summary>
+        </member>
+        <member name="P:Bob.Call.bob_notations">
+            <summary>
+            List of standard notations for bobs. Defaults to ['-', 'b'].
+            </summary>
+        </member>
+        <member name="P:Bob.Call.single_notations">
+            <summary>
+            List of standard notations for singles. Defaults to ['s'].
+            </summary>
+        </member>
+        <member name="P:Bob.Call.plain_notations">
+            <summary>
+            List of standard notations for plain calls. Defaults to ['m', 'p'].
+            </summary>
+        </member>
+        <member name="P:Bob.Call.standard_calling_positions_bob">
+            <summary>
+            Gets the standard calling positions for lead-end bobs.
+            </summary>
+        </member>
+        <member name="P:Bob.Call.standard_calling_positions_single">
+            <summary>
+            Gets the standard calling positions for lead-end singles.
+            </summary>
+        </member>
+        <member name="T:Bob.Change">
+            <summary>
+            A class to store rows of ringing, as well as all transpositions (Change objects are read-only).
+            </summary>
+        </member>
+        <member name="P:Bob.Change.array">
+            <summary>
+            The array of integers (indexed from 0) which represent the change.
+            </summary>
+        </member>
+        <member name="P:Bob.Change.Item(System.Int32)">
+            <summary>
+            Gets the bell at some index in the change.
+            </summary>
+            <param name="i">The index of the bell (starting from 0).</param>
+            <returns>The index of the bell in that position (starting from 0).</returns>
+        </member>
+        <member name="P:Bob.Change.stage">
+            <summary>
+            Gets the stage of this change.
+            </summary>
+        </member>
+        <member name="P:Bob.Change.parity">
+            <summary>
+            Gets the parity (oddness/evennes) of the change.  This depends on how many called changes are required to get to this change.
+            </summary>
+        </member>
+        <member name="P:Bob.Change.order">
+            <summary>
+            Gets the number of times the change can be repeated before returning to rounds.
+            </summary>
+        </member>
+        <member name="P:Bob.Change.clone">
+            <summary>
+            Gets a cloned copy of the change.
+            </summary>
+        </member>
+        <member name="P:Bob.Change.rotating_sets">
+            <summary>
+            Returns a jagged 2D array of sets of bells which follow a common path when this change is repeated.
+            </summary>
+            <example>
+            In the change "1245376", the 1 and 2 follow their own path; the 3, 4 and 5 rotate together, and the 6 and 7 repeatedly swap.
+            Therefore the array (indexing from 0) would be [ [0], [1], [2, 3, 4], [6, 7] ].
+            </example>
+        </member>
+        <member name="P:Bob.Change.rotating_sets_as_string">
+            <summary>
+            Gets the rotating sets of this change as a string, to prevent user conversions.
+            </summary>
+        </member>
+        <member name="M:Bob.Change.Transpose(Bob.ITransposition)">
+            <summary>
+            Transposes this change by another transposable object, e.g. place notations and other changes.
+            </summary>
+            <param name="transposable">The transposable object by which this change will be transposed.</param>
+            <returns>The transposed change.</returns>
+        </member>
+        <member name="M:Bob.Change.IndexOf(System.Int32)">
+            <summary>
+            Gets the index of a given bell (all indices from 0).
+            </summary>
+            <param name="bell">The bell you want to find the index of (indexing from 0).</param>
+            <returns>The index (from 0) of the bell.  Returns -1 if the bell isn't in the change.</returns>
+        </member>
+        <member name="M:Bob.Change.GetArray">
+            <summary>
+            Gets the array of the change.  Satisfies the interface ITransposable.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bob.Change.#ctor(System.Int32[])">
+            <summary>
+            Creates a change with an integer array.
+            </summary>
+            <param name="array">The array of bells (indexed from 0) in the change you want to create.</param>
+        </member>
+        <member name="M:Bob.Change.#ctor(System.String)">
+            <summary>
+            Creates a change from the text (e.g. "13256478").
+            </summary>
+            <param name="text">The text representing your change.</param>
+        </member>
+        <member name="M:Bob.Change.op_Multiply(Bob.Change,Bob.ITransposition)">
+            <summary>
+            Shorthand for transposing a changes by any transposable object.
+            </summary>
+            <param name="change">The change which is being transposed.</param>
+            <param name="transposition">The object which the change is being transposed by.</param>
+            <returns>The transposed change.</returns>
+        </member>
+        <member name="M:Bob.Change.op_Multiply(Bob.Change,Bob.PlaceNotation[])">
+            <summary>
+            Shorthand for transposing a change by a list of place notations, e.g. a list of the place notations in a plain lead of a method.
+            </summary>
+            <param name="change">The change which is being transposed.</param>
+            <param name="place_notations">The list of place notations over which the change will be transposed.</param>
+            <returns>The transposed change.</returns>
+        </member>
+        <member name="M:Bob.Change.op_Equality(Bob.Change,Bob.Change)">
+            <summary>
+            Checks whether changes `a` and `b` are equal.
+            </summary>
+            <param name="a">The left hand change.</param>
+            <param name="b">The right hand change.</param>
+            <returns>True if the changes are equal, otherwise false.</returns>
+        </member>
+        <member name="M:Bob.Change.op_Inequality(Bob.Change,Bob.Change)">
+            <summary>
+            Checks whether changes `a` and `b` are not equal.
+            </summary>
+            <param name="a">The left hand change.</param>
+            <param name="b">The right hand change.</param>
+            <returns>False if the changes are equal, otherwise true.</returns>
+        </member>
+        <member name="M:Bob.Change.Rounds(Bob.Stage)">
+            <summary>
+            Gets a change representing rounds on a given stage.
+            </summary>
+            <param name="stage">The stage which you want rounds for.</param>
+            <returns>A change representing rounds.</returns>
+        </member>
+        <member name="M:Bob.Change.RotatingSetsToString(System.Int32[][])">
+            <summary>
+            Converts a jagged array of rotating sets into a human readable string.
+            </summary>
+            <param name="rotating_sets">The jagged array of rotating sets.</param>
+            <returns>A human readable string representing the rotating sets.</returns>
+        </member>
+        <member name="M:Bob.Change.Equals(System.Object)">
+            <summary>
+            Determines whether this change equals another object.
+            </summary>
+            <param name="obj">The other change.</param>
+            <returns>True if this change is equal to `obj`, otherwise false.</returns>
+        </member>
+        <member name="M:Bob.Change.GetHashCode">
+            <summary>
+            Gets the integer hash code of the change (the compiler wanted me to do this).
+            </summary>
+            <returns>The hash code of this change.</returns>
+        </member>
+        <member name="M:Bob.Change.ToString">
+            <summary>
+            Generates a human readable string representation of this change, as you would expect it to be written.
+            </summary>
+            <returns>A string representing the change.</returns>
+        </member>
+        <member name="T:Bob.Constants">
+            <summary>
+            A static class to store the generic constants for BobC#
+            </summary>
+        </member>
+        <member name="F:Bob.Constants.bell_names">
+            <summary>
+            A string of all bell names (basically, rounds will always be a substring of this string).
+            </summary>
+        </member>
+        <member name="F:Bob.Constants.tenor">
+            <summary>
+            An integer to represent the heaviest bell (used when specifying which bell is conducting).
+            </summary>
+        </member>
+        <member name="F:Bob.Constants.alpha">
+            <summary>
+            A string of every lowercase character.
+            </summary>
+        </member>
+        <member name="F:Bob.Constants.ALPHA">
+            <summary>
+            A string of every uppercase character.
+            </summary>
+        </member>
+        <member name="M:Bob.Constants.GetBellNameIndexingFromZero(System.Int32)">
+            <summary>
+            Gets the bell name representing bell `n` where the treble is bell #0.
+            </summary>
+            <param name="n">The requested bell's index.</param>
+            <returns>The character representing bell `n`.</returns>
+        </member>
+        <member name="M:Bob.Constants.GetBellNameIndexingFromOne(System.Int32)">
+            <summary>
+            Gets the bell name representing bell `n` where the treble is bell #1.
+            </summary>
+            <param name="n">The requested bell's index.</param>
+            <returns>The character representing bell `n`.</returns>
+        </member>
+        <member name="M:Bob.Constants.GetBellIndexFromZero(System.Char)">
+            <summary>
+            Gets the index of a character representing a bell, where the treble will return 0.
+            </summary>
+            <param name="value">The character representing a bell.</param>
+            <returns>The index (from 0) of the bell.</returns>
+        </member>
+        <member name="M:Bob.Constants.GetBellIndexFromOne(System.Char)">
+            <summary>
+            Gets the index of a character representing a bell, where the treble will return 1.
+            </summary>
+            <param name="value">The character representing a bell.</param>
+            <returns>The index (from 1) of the bell.</returns>
+        </member>
+        <member name="T:Bob.Parity">
+            <summary>
+            An enum which represents parity (oddness/evenness) of changes.
+            </summary>
+        </member>
+        <member name="T:Bob.Stage">
+            <summary>
+            An enum to represent a stage.  They also return the correct number when cast to an int.
+            </summary>
+        </member>
+        <member name="T:Bob.Classification">
+            <summary>
+            An enum to store classifications of methods.
+            </summary>
+        </member>
+        <member name="T:Bob.ITransposition">
+            <summary>
+            An interface for any transposable object, e.g. Change or PlaceNotation.
+            </summary>
+        </member>
+        <member name="M:Bob.ITransposition.GetArray">
+            <summary>
+            A function to get an integer array representing the transposition of this object.
+            </summary>
+            <returns>An integer array representing the transposition.</returns>
+        </member>
+        <member name="T:Bob.Method">
+            <summary>
+            A class to represent a method.
+            </summary>
+        </member>
+        <member name="T:Bob.Method.HuntBell">
+            <summary>
+            A class which represents a hunt bell in a method.  HuntBell objects can't be changed once created.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.bell_number">
+            <summary>
+            The number of this bell (indexed from zero).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.path">
+            <summary>
+            A list of places which form the path of this hunt.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.stage">
+            <summary>
+            The stage of the method which owns this hunt bell.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.is_plain_hunting">
+            <summary>
+            True if this hunt bell follows a plain hunting path (in any rotation).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.is_treble_dodging">
+            <summary>
+            True if this hunt bell follows a treble bobbing path (in any rotation).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.is_symmetrical">
+            <summary>
+            True if this hunt bell path is symmetrical.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.spends_same_number_of_blows_in_each_place">
+            <summary>
+            True if this hunt bell spends an equal number of blows in every place it visits.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.is_little">
+            <summary>
+            True if this hunt bell is little (doesn't cover every place).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.HuntBell.rotated_path">
+            <summary>
+            The rotated path of this hunt bell, such that if the path is symmetrical, so will this path.  Will be null if no symmetry.
+            </summary>
+        </member>
+        <member name="M:Bob.Method.HuntBell.GenerateRotatedPath">
+            <summary>
+            Generates the rotated path.
+            </summary>
+        </member>
+        <member name="M:Bob.Method.HuntBell.IsPlainHunting">
+            <summary>
+            Function to determine whether this hunt bell is plain hunting.
+            </summary>
+            <returns>True if the hunt bell is plain hunting.</returns>
+        </member>
+        <member name="M:Bob.Method.HuntBell.IsTrebleDodging">
+            <summary>
+            Function to determine whether this hunt bell is treble dodging.
+            </summary>
+            <returns>True if the hunt bell is treble dodging.</returns>
+        </member>
+        <member name="M:Bob.Method.HuntBell.IsSymmetrical">
+            <summary>
+            Function to determine whether this hunt bell path is symmetrical.
+            </summary>
+            <returns>True if the hunt bell path is symmetrical.</returns>
+        </member>
+        <member name="M:Bob.Method.HuntBell.SpendsSameNumberOfBlowsInEachPlace">
+            <summary>
+            Function to determine whether this hunt bell spends the same number of blows in every place it visits.
+            </summary>
+            <returns>True if the number of blows in each place is equal.</returns>
+        </member>
+        <member name="M:Bob.Method.HuntBell.#ctor(System.Int32,System.Int32[],Bob.Stage)">
+            <summary>
+            Creates a hunt bell object, and lets BobC# set all the boolean values.
+            </summary>
+            <param name="bell_number">The index (from 0) of the bell represented by this hunt bell.</param>
+            <param name="path">The path of this hunt bell as a list of places (indexed from 0).</param>
+            <param name="stage">The stage of the method which this hunt bell is part of.</param>
+        </member>
+        <member name="M:Bob.Method.HuntBell.#ctor(System.Int32,System.Int32[],Bob.Stage,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a hunt bell object, setting all the boolean values manually (not reccomended).
+            </summary>
+            <param name="bell_number">The index (from 0) of the bell represented by this hunt bell.</param>
+            <param name="path">The path of this hunt bell as a list of places (indexed from 0).</param>
+            <param name="stage">The stage of the method which this hunt bell is part of.</param>
+            <param name="is_plain_hunting">Whether the hunt bell is plain hunting.</param>
+            <param name="is_treble_dodging">Whether the hunt bell is treble dodging.</param>
+            <param name="is_little">Whether the hunt bell is little.</param>
+        </member>
+        <member name="T:Bob.Method.MethodNotClassifiedException">
+            <summary>
+            An exception to be thrown when a method can't be classified.
+            </summary>
+        </member>
+        <member name="T:Bob.Method.SymmetryType">
+            <summary>
+            An enum to store the symmetry type of a method (used, e.g. for generating calls).
+            </summary>
+        </member>
+        <member name="F:Bob.Method.m_place_notation">
+            <summary>
+            A private field for the string place notation.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.calls">
+            <summary>
+            A customisable list of call objects, which define the calls in this method.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.name">
+            <summary>
+            The name of the method (the first part of the title, e.g. "Cambridge").
+            </summary>
+        </member>
+        <member name="F:Bob.Method.classification">
+            <summary>
+            The classification of the method (e.g. "Surprise").
+            </summary>
+        </member>
+        <member name="F:Bob.Method.stage">
+            <summary>
+            The stage of this method.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.is_little">
+            <summary>
+            True if the method should have the tag "Little" in its name.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.is_differential">
+            <summary>
+            True if the method should have the tag "Differential" in its name.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.override_title">
+            <summary>
+            Set this to override the auto-generated title.  Defaults to null.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.place_notation">
+            <summary>
+            The string form of this method's place notation.  Setting this will update all the other fields.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.title">
+            <summary>
+            The title of the method.  If `override_title` is null, this will generate the title automagically.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.place_notations">
+            <summary>
+            The decoded place notations for the method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.plain_lead_changes">
+            <summary>
+            A list of changes in the plain lead (starting from the change after rounds).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.lead_end">
+            <summary>
+            The lead end change of the method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.lead_end_notation">
+            <summary>
+            The last place notation of the method (even if the treble is not a hunt bell).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.half_lead_notation">
+            <summary>
+            The middle place notation of the method (and null if the lead length is odd).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.leads_in_plain_course">
+            <summary>
+            The number of leads in the plain course of this method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.lead_length">
+            <summary>
+            The number of changes in one lead of this method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.plain_course_length">
+            <summary>
+            The total number of changes in a plain course of this method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.rotating_sets">
+            <summary>
+            Gets the rotating sets of the lead end of the method (see <see cref="P:Bob.Change.rotating_sets"/>).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.hunt_bells">
+            <summary>
+            A list of <see cref="T:Bob.Method.HuntBell"/> object representing the hunt bells in this method. 
+            </summary>
+        </member>
+        <member name="P:Bob.Method.symmetry_type">
+            <summary>
+            The symmetry type of the method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.is_place_method">
+            <summary>
+            True if all the working bells never dodge (or make points, snap leads, etc).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.plain_course">
+            <summary>
+            Generates a <see cref="T:Bob.Touch"/> object representing the plain course of this method.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.main_hunt_bell">
+            <summary>
+            The lowest numbered hunt bell of this method.  Will always be the Treble if the Treble is hunting.
+            </summary>
+        </member>
+        <member name="P:Bob.Method.is_treble_hunting">
+            <summary>
+            True if the Treble is plain hunting.
+            </summary>
+        </member>
+        <member name="M:Bob.Method.Classify">
+            <summary>
+            Automagically sets the <see cref="F:Bob.Method.classification"/> variable.
+            </summary>
+        </member>
+        <member name="M:Bob.Method.GetPathOfBell(System.Int32)">
+            <summary>
+            Finds the path of any bell as a list of places (indexed from 0).  This is not always the length of the plain course.
+            </summary>
+            <param name="bell_index">The index (from 0) of the bell.</param>
+            <returns>A list of places (index from 0) which represent the bell's path.</returns>
+        </member>
+        <member name="M:Bob.Method.GetCallByName(System.String)">
+            <summary>
+            Finds a <see cref="T:Bob.Call"/> object by it's full name (see <see cref="F:Bob.Call.name"/>).
+            </summary>
+            <param name="name">The full name of the call (see <see cref="F:Bob.Call.name"/>).</param>
+            <returns>The <see cref="T:Bob.Call"/> object with the given name, or null.</returns>
+        </member>
+        <member name="M:Bob.Method.GetCallByNotation(System.Char)">
+            <summary>
+            Finds a <see cref="T:Bob.Call"/> object by it's notation (see <see cref="F:Bob.Call.notations"/>).
+            </summary>
+            <param name="notation">The notation of the call (see <see cref="F:Bob.Call.notations"/>).</param>
+            <returns>The <see cref="T:Bob.Call"/> object with the given notation, or null.</returns>
+        </member>
+        <member name="M:Bob.Method.TouchFromCallList(Bob.Call[])">
+            <summary>
+            Generates a <see cref="T:Bob.Touch"/> object from an array of calls in the order that they should be called.
+            </summary>
+            <param name="calls">An array of <see cref="T:Bob.Call"/> objects in the order that they're called.</param>
+            <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
+        </member>
+        <member name="M:Bob.Method.TouchFromCallList(System.String)">
+            <summary>
+            Generates a <see cref="T:Bob.Touch"/> object from a string of call notations, in upper- or lower-case.
+            </summary>
+            <param name="notation">The string of call notations in the order that they'll be called.</param>
+            <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
+        </member>
+        <member name="M:Bob.Method.TouchFromCallingPositions(System.String,System.Int32)">
+            <summary>
+            Generates a <see cref="T:Bob.Touch"/> object from a string representing the calling positions.
+            </summary>
+            <param name="notation">An array of <see cref="T:Bob.Call"/> objects in the order that they're called.</param>
+            <param name="conductor_bell">The bell index (from 0) from which the touch is called.</param>
+            <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
+        </member>
+        <member name="M:Bob.Method.HasPlainBobLikeSymmetry">
+            <summary>
+            Determines whether this method has Plain Bob-like symmetry.
+            </summary>
+            <returns>True if this method has Plain Bob-like symmetry.</returns>
+        </member>
+        <member name="M:Bob.Method.HasGrandsireLikeSymmetry">
+            <summary>
+            Determines whether this method has Grandsire-like symmetry.
+            </summary>
+            <returns>True if this method has Grandsire-like symmetry.</returns>
+        </member>
+        <member name="M:Bob.Method.IsPlaceMethod">
+            <summary>
+            Determines whether the working bells only make places.
+            </summary>
+            <returns>False if any working bell makes any dodges (or snaps, points, etc.).</returns>
+        </member>
+        <member name="M:Bob.Method.RefreshNotation">
+            <summary>
+            Called whenever the method's <see cref="P:Bob.Method.place_notation"/> is updated.
+            </summary>
+        </member>
+        <member name="M:Bob.Method.GenerateStandardCalls(System.Boolean)">
+            <summary>
+            Generates standard (Bob, Single and Plain) <see cref="T:Bob.Call"/> objects for this method.
+            </summary>
+            <param name="overwrite_current">Determines whether to overwrite the current call array.</param>
+        </member>
+        <member name="M:Bob.Method.#ctor(System.String,System.String,Bob.Classification,Bob.Stage,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a method and specifying all classifications.
+            </summary>
+            <param name="place_notation">The place notation of the method, e.g. "x3x4x25x36x4x5x6x7,2". Can have implicit places.</param>
+            <param name="name">The name of the method, e.g. "Cambridge".</param>
+            <param name="classification">The classification of the method, e.g. <see cref="F:Bob.Classification.Surprise"/></param>
+            <param name="stage">The stage of the method, e.g. <see cref="F:Bob.Stage.Major"/></param>
+            <param name="override_title">Set this to manually set the <see cref="P:Bob.Method.title"/> value, e.g. for Gransire.</param>
+            <param name="is_little">True if the "Little" tag should appear in the method title.</param>
+            <param name="is_differential">True if the "Differential" tag should appear in the method title.</param>
+            <param name="generate_standard_calls">If, true BobC# will automagically set the standard Bob, Single and Plain calls.</param>
+        </member>
+        <member name="M:Bob.Method.#ctor(System.String,System.String,Bob.Stage,System.String,System.Boolean)">
+            <summary>
+            Generates a method without specifying any classifications, leaving BobC# to classify it for you.
+            </summary>
+            <param name="place_notation">The place notation of the method, e.g. "x3x4x25x36x4x5x6x7,2". Can have implicit places.</param>
+            <param name="name">The name of the method, e.g. "Cambridge".</param>
+            <param name="stage">The stage of the method, e.g. <see cref="F:Bob.Stage.Major"/></param>
+            <param name="override_title">Set this to manually set the <see cref="P:Bob.Method.title"/> value, e.g. for Gransire.</param>
+            <param name="generate_standard_calls">If, true BobC# will automagically set the standard Bob, Single and Plain calls.</param>
+        </member>
+        <member name="M:Bob.Method.GetMethod(System.String)">
+            <summary>
+            Gets a method from the CCCBR method library (null if no method of that title exists).
+            </summary>
+            <param name="title">The title of the method you want to find.</param>
+            <returns>The <see cref="T:Bob.Method"/> object with that title (or null).</returns>
+        </member>
+        <member name="P:Bob.Method.plain_bob_doubles">
+            <summary>
+            Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.plain_bob_minor">
+            <summary>
+            Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor)</c> instead).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.grandsire_doubles">
+            <summary>
+            Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.grandsire_triples">
+            <summary>
+            Shortcut to generate Grandsire Triples. (Only for testing; use <c>Method.GetMethod ("Grandsire Triples")</c> instead).
+            </summary>
+        </member>
+        <member name="P:Bob.Method.cambridge_major">
+            <summary>
+            Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
+            </summary>
+        </member>
+        <member name="T:Bob.MethodLibrary">
+            <summary>
+            A class to store the CCCBR library of methods.
+            </summary>
+        </member>
+        <member name="T:Bob.MethodLibrary.StoredMethod">
+            <summary>
+            A performant representation of a method, to avoid having to make 20,000+ <see cref="T:Bob.Method"/> objets.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.name">
+            <summary>
+            The name of the method.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.stage">
+            <summary>
+            The stage of the method.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.place_notation">
+            <summary>
+            The place notation of the method.
+            </summary>
+        </member>
+        <member name="P:Bob.MethodLibrary.StoredMethod.method">
+            <summary>
+            Generates a proper method object for this method class.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodLibrary.StoredMethod.#ctor(System.String,Bob.Stage,System.String)">
+            <summary>
+            Creates a <see cref="T:Bob.MethodLibrary.StoredMethod"/> object.s
+            </summary>
+            <param name="name">The name of the method.</param>
+            <param name="stage">The stage of the method.</param>
+            <param name="place_notation">The place notation of the method.</param>
+        </member>
+        <member name="F:Bob.MethodLibrary.stored_methods">
+            <summary>
+            An array of <see cref="T:Bob.MethodLibrary.StoredMethod"/> objects of every method in the library.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodLibrary.#ctor(System.String)">
+            <summary>
+            Creates a method library from a compressed text file.
+            </summary>
+            <param name="override_path">Set this to override the default path (<see cref="F:Bob.MethodLibrary.library_path"/>).</param>
+        </member>
+        <member name="F:Bob.MethodLibrary.library_path">
+            <summary>
+            The default path to the compressed version of the CCCBR method library.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodLibrary.GetMethodByTitle(System.String)">
+            <summary>
+            Finds a method with a given title in the CCCBR method library.
+            </summary>
+            <param name="title">The title of the method.</param>
+            <returns>The method with the given title (null if no such method exists in the CCCBR library).</returns>
+        </member>
+        <member name="P:Bob.MethodLibrary.library">
+            <summary>
+            Gets/creates a <see cref="T:Bob.MethodLibrary"/> object for the CCCBR method library.
+            </summary>
+        </member>
+        <member name="T:Bob.PlaceNotation">
+            <summary>
+            A class to represent any single place notation.  Once created, <see cref="T:Bob.PlaceNotation"/> objects cannot be changed.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.notation">
+            <summary>
+            The string notation for this place notation.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.array">
+            <summary>
+            An array representing the transposition caused by this place notation.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.places_made">
+            <summary>
+            An array of places (indexed from 0) made in this place notation.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.stage">
+            <summary>
+            Gets the stage of this place notation.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.is_12">
+            <summary>
+            True if this place notation is a "12" or a "12n" place notation.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.is_1n">
+            <summary>
+            True if this place notation is "1n".  For all odd-staged notations, this returns false.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.has_internal_places">
+            <summary>
+            True if this place notation contains internal places (places not at either end of the notation).
+            </summary>
+        </member>
+        <member name="M:Bob.PlaceNotation.GetArray">
+            <summary>
+            Gets the array representing the transposition of this place notation.  Satisfies the <see cref="T:Bob.ITransposition"/> interface.
+            </summary>
+            <returns>An array representing this transposition.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.Equals(System.Object)">
+            <summary>
+            Checks equality between this object and another object.
+            </summary>
+            <param name="obj">The other object.</param>
+            <returns>True if this is equal to `obj`.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.GetHashCode">
+            <summary>
+            Gets the hash code for this place notation.
+            </summary>
+            <returns>The hash code summing up this place notation.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.ToString">
+            <summary>
+            Gets the string representation of this object.
+            </summary>
+            <returns>A string representation of this object.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.#ctor(System.String,Bob.Stage)">
+            <summary>
+            Generates a single <see cref="T:Bob.PlaceNotation"/> object from a string notation and a <see cref="T:Bob.Stage"/>.
+            </summary>
+            <param name="notation">The string notation of this place notation.</param>
+            <param name="stage">The stage of this place notation.</param>
+        </member>
+        <member name="M:Bob.PlaceNotation.DecodeFullNotation(System.String,Bob.Stage)">
+            <summary>
+            Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of place notations.
+            </summary>
+            <param name="full_notation">The string of place notations.</param>
+            <param name="stage">The <see cref="T:Bob.Stage"/> of the place notations.</param>
+            <returns>An array of converted place notations</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.CombinePlaceNotations(Bob.PlaceNotation[])">
+            <summary>
+            Generates the combined transposition caused by consecutively applying an array of place notations.
+            </summary>
+            <param name="notations">The list of place notations, in the order of transposition.</param>
+            <returns>The change representing the combined transposition.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.GenerateChangeArray(Bob.PlaceNotation[],Bob.Change)">
+            <summary>
+            Generates a list of every change caused by applying each of `notations`.
+            </summary>
+            <param name="notations">The notations to apply.</param>
+            <param name="start_change">Set the start change to something other than rounds.</param>
+            <returns></returns>
+        </member>
+        <member name="F:Bob.PlaceNotation.x_notations">
+            <summary>
+            A customisable array of possible notations for a 'cross' place notations.
+            </summary>
+        </member>
+        <member name="F:Bob.PlaceNotation.basic_delimiters">
+            <summary>
+            A customisable array of generic delimiters for between changes.
+            </summary>
+        </member>
+        <member name="F:Bob.PlaceNotation.leadend_delimiters">
+            <summary>
+            A customisable array of delimiters to represent lead end symmetry.
+            </summary>
+        </member>
+        <member name="M:Bob.PlaceNotation.op_Equality(Bob.PlaceNotation,Bob.PlaceNotation)">
+            <summary>
+            Operator which returns true if two <see cref="T:Bob.PlaceNotation"/> objects are equal.
+            </summary>
+            <param name="notation1">The left hand notation.</param>
+            <param name="notation2">The right hand notation.</param>
+            <returns>True if `notation1` equals `notation2`.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.op_Inequality(Bob.PlaceNotation,Bob.PlaceNotation)">
+            <summary>
+            Operator which returns true if two <see cref="T:Bob.PlaceNotation"/> objects are not equal.
+            </summary>
+            <param name="notation1">The left hand notation.</param>
+            <param name="notation2">The right hand notation.</param>
+            <returns>True if `notation1` does not equals `notation2`.</returns>
+        </member>
+        <member name="T:Bob.XNotationWithTenorCoverException">
+            <summary>
+            An exception to be thrown when the 'X' notation is used on an odd-stage method.
+            </summary>
+        </member>
+        <member name="M:Bob.XNotationWithTenorCoverException.#ctor">
+            <summary>
+            Throws a new exception with no message.
+            </summary>
+        </member>
+        <member name="M:Bob.XNotationWithTenorCoverException.#ctor(System.String)">
+            <summary>
+            Throws a new exception with a message.
+            </summary>
+            <param name="message">The message to display.</param>
+        </member>
+        <member name="M:Bob.XNotationWithTenorCoverException.#ctor(System.String,System.Exception)">
+            <summary>
+            Throw a new exception with a message and another exception.
+            </summary>
+            <param name="message">The message display.</param>
+            <param name="inner">The other exception.</param>
+        </member>
+    </members>
+</doc>

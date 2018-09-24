@@ -9,7 +9,7 @@ namespace Bob {
 	/// <summary>
 	/// A class to store the CCCBR library of methods.
 	/// </summary>
-	class MethodLibrary {
+	public class MethodLibrary {
 		// Classes/enums
 		/// <summary>
 		/// A performant representation of a method, to avoid having to make 20,000+ <see cref="Method"/> objets.
