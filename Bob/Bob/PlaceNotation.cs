@@ -5,51 +5,109 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Bob {
+	/// <summary>
+	/// A class to represent any single place notation.  Once created, <see cref="PlaceNotation"/> objects cannot be changed.
+	/// </summary>
 	public class PlaceNotation : ITransposition {
+		// These 3 fields are set by the constructor.
+		/// <summary>
+		/// The string notation for this place notation.
+		/// </summary>
 		public string notation { get; private set; }
+		/// <summary>
+		/// An array representing the transposition caused by this place notation.
+		/// </summary>
 		public int [] array { get; private set; }
+		/// <summary>
+		/// An array of places (indexed from 0) made in this place notation.
+		/// </summary>
 		public int [] places_made { get; private set; }
 
 		// Properties
+		/// <summary>
+		/// Gets the stage of this place notation.
+		/// </summary>
 		public Stage stage => (Stage)array.Length;
 
+		private bool m_is_12;
+		private bool has_set_is_12 = false;
+		/// <summary>
+		/// True if this place notation is a "12" or a "12n" place notation.
+		/// </summary>
 		public bool is_12 {
 			get {
-				if ((int)stage % 2 == 0) {
-					return Enumerable.SequenceEqual (places_made, new int [] { 0, 1 });
-				} else {
-					return Enumerable.SequenceEqual (places_made, new int [] { 0, 1, (int)stage - 1 });
-				}
-			}
-		}
+				if (!has_set_is_12) {
+					has_set_is_12 = true;
 
-		public bool is_1n {
-			get {
-				if ((int)stage % 2 == 0) {
-					return Enumerable.SequenceEqual (places_made, new int [] { 0, (int)stage - 1 });
-				} else {
-					return false;
-				}
-			}
-		}
-
-		public bool has_internal_places {
-			get {
-				for (int i = 1; i < (int)stage - 1; i++) {
-					if (places_made.Contains (i)) {
-						return true;
+					if ((int)stage % 2 == 0) {
+						m_is_12 = Enumerable.SequenceEqual (places_made, new int [] { 0, 1 });
+					} else {
+						m_is_12 = Enumerable.SequenceEqual (places_made, new int [] { 0, 1, (int)stage - 1 });
 					}
 				}
 
-				return false;
+				return m_is_12;
+			}
+		}
+
+		private bool m_is_1n;
+		private bool has_set_is_1n = false;
+		/// <summary>
+		/// True if this place notation is "1n".  For all odd-staged notations, this returns false.
+		/// </summary>
+		public bool is_1n {
+			get {
+				if (!has_set_is_1n) {
+					has_set_is_1n = true;
+
+					if ((int)stage % 2 == 0) {
+						m_is_1n = Enumerable.SequenceEqual (places_made, new int [] { 0, (int)stage - 1 });
+					} else {
+						m_is_1n = false;
+					}
+				}
+
+				return m_is_1n;
+			}
+		}
+
+		private bool m_has_internal_places;
+		private bool has_set_has_internal_places = false;
+		/// <summary>
+		/// True if this place notation contains internal places (places not at either end of the notation).
+		/// </summary>
+		public bool has_internal_places {
+			get {
+				if (!has_set_has_internal_places) {
+					has_set_has_internal_places = true;
+
+					for (int i = 1; i < (int)stage - 1; i++) {
+						if (places_made.Contains (i)) {
+							m_has_internal_places = true;
+							return true;
+						}
+					}
+
+					m_has_internal_places = false;
+					return false;
+				}
+
+				return m_has_internal_places;
 			}
 		}
 
 		// Functions
-		public int [] GetArray () {
-			return array;
-		}
+		/// <summary>
+		/// Gets the array representing the transposition of this place notation.  Satisfies the <see cref="ITransposition"/> interface.
+		/// </summary>
+		/// <returns>An array representing this transposition.</returns>
+		public int [] GetArray () => array;
 
+		/// <summary>
+		///	Checks equality between this object and another object.
+		/// </summary>
+		/// <param name="obj">The other object.</param>
+		/// <returns>True if this is equal to `obj`.</returns>
 		public override bool Equals (object obj) {
 			if (!(obj is PlaceNotation)) {
 				return false;
@@ -70,15 +128,28 @@ namespace Bob {
 			return true;
 		}
 
+		/// <summary>
+		/// Gets the hash code for this place notation.
+		/// </summary>
+		/// <returns>The hash code summing up this place notation.</returns>
 		public override int GetHashCode () {
 			return -1984574666 + EqualityComparer<int []>.Default.GetHashCode (array);
 		}
 
+		/// <summary>
+		/// Gets the string representation of this object.
+		/// </summary>
+		/// <returns>A string representation of this object.</returns>
 		public override string ToString () {
 			return notation + " => " + Change.Rounds (stage) * this;
 		}
 
 		// Constructors
+		/// <summary>
+		/// Generates a single <see cref="PlaceNotation"/> object from a string notation and a <see cref="Stage"/>.
+		/// </summary>
+		/// <param name="notation">The string notation of this place notation.</param>
+		/// <param name="stage">The stage of this place notation.</param>
 		public PlaceNotation (string notation, Stage stage) {
 			array = new int [(int)stage];
 			this.notation = notation;
@@ -137,7 +208,13 @@ namespace Bob {
 		}
 
 		// Static Stuff
-		public static PlaceNotation[] DecodeFullNotation (string full_notation, Stage stage) {
+		/// <summary>
+		/// Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of place notations.
+		/// </summary>
+		/// <param name="full_notation">The string of place notations.</param>
+		/// <param name="stage">The <see cref="Stage"/> of the place notations.</param>
+		/// <returns>An array of converted place notations</returns>
+		public static PlaceNotation [] DecodeFullNotation (string full_notation, Stage stage) {
 			full_notation = full_notation.ToUpper ();
 
 			List<string> segments = new List<string> ();
@@ -271,6 +348,11 @@ namespace Bob {
 			return notations;
 		}
 
+		/// <summary>
+		/// Generates the combined transposition caused by consecutively applying an array of place notations.
+		/// </summary>
+		/// <param name="notations">The list of place notations, in the order of transposition.</param>
+		/// <returns>The change representing the combined transposition.</returns>
 		public static Change CombinePlaceNotations (PlaceNotation [] notations) {
 			Change change = Change.Rounds (notations [0].stage);
 
@@ -281,7 +363,13 @@ namespace Bob {
 			return change;
 		}
 
-		public static Change[] GenerateChangeArray (PlaceNotation[] notations, Change start_change = null) {
+		/// <summary>
+		/// Generates a list of every change caused by applying each of `notations`.
+		/// </summary>
+		/// <param name="notations">The notations to apply.</param>
+		/// <param name="start_change">Set the start change to something other than rounds.</param>
+		/// <returns></returns>
+		public static Change [] GenerateChangeArray (PlaceNotation [] notations, Change start_change = null) {
 			Change change = start_change ?? Change.Rounds (notations [0].stage);
 
 			Change [] changes = new Change [notations.Length];
@@ -295,27 +383,61 @@ namespace Bob {
 		}
 
 		// Constants
+		/// <summary>
+		/// A customisable array of possible notations for a 'cross' place notations.
+		/// </summary>
 		public static string [] x_notations =  new string [] { "X", "-" };
 
+		/// <summary>
+		/// A customisable array of generic delimiters for between changes.
+		/// </summary>
 		public static string [] basic_delimiters = new string [] { ".", " " };
 
+		/// <summary>
+		/// A customisable array of delimiters to represent lead end symmetry.
+		/// </summary>
 		public static string [] leadend_delimiters = new string [] { ",", "LE" };
 
 		// Operators
-		public static bool operator == (PlaceNotation notation1, PlaceNotation notation2) {
-			return EqualityComparer<PlaceNotation>.Default.Equals (notation1, notation2);
-		}
+		/// <summary>
+		/// Operator which returns true if two <see cref="PlaceNotation"/> objects are equal.
+		/// </summary>
+		/// <param name="notation1">The left hand notation.</param>
+		/// <param name="notation2">The right hand notation.</param>
+		/// <returns>True if `notation1` equals `notation2`.</returns>
+		public static bool operator == (PlaceNotation notation1, PlaceNotation notation2) => EqualityComparer<PlaceNotation>.Default.Equals (notation1, notation2);
 
+		/// <summary>
+		/// Operator which returns true if two <see cref="PlaceNotation"/> objects are not equal.
+		/// </summary>
+		/// <param name="notation1">The left hand notation.</param>
+		/// <param name="notation2">The right hand notation.</param>
+		/// <returns>True if `notation1` does not equals `notation2`.</returns>
 		public static bool operator != (PlaceNotation notation1, PlaceNotation notation2) {
 			return !(notation1 == notation2);
 		}
 	}
 
+	/// <summary>
+	/// An exception to be thrown when the 'X' notation is used on an odd-stage method.
+	/// </summary>
 	public class XNotationWithTenorCoverException : Exception {
+		/// <summary>
+		/// Throws a new exception with no message.
+		/// </summary>
 		public XNotationWithTenorCoverException () { }
 
+		/// <summary>
+		/// Throws a new exception with a message.
+		/// </summary>
+		/// <param name="message">The message to display.</param>
 		public XNotationWithTenorCoverException (string message) : base (message) { }
 
+		/// <summary>
+		/// Throw a new exception with a message and another exception.
+		/// </summary>
+		/// <param name="message">The message display.</param>
+		/// <param name="inner">The other exception.</param>
 		public XNotationWithTenorCoverException (string message, Exception inner) : base (message, inner) { }
 	}
 }
