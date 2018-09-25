@@ -52,6 +52,136 @@ namespace Bob {
 		}
 
 		/// <summary>
+		/// A class to send parameters into <see cref="ICallLocation"/> methods.
+		/// </summary>
+		public class CallLocationParameters {
+			/// <summary>
+			/// The current <see cref="Method"/> being rung.
+			/// </summary>
+			public Method current_method;
+			/// <summary>
+			/// The last change before the potential call takes effect.
+			/// </summary>
+			public Change start_change;
+			/// <summary>
+			/// The number of changes since the start of the touch.
+			/// </summary>
+			public int start_index;
+			/// <summary>
+			/// The number of changes since the last lead end.
+			/// </summary>
+			public int sub_lead_index;
+			/// <summary>
+			/// The number of lead ends since the start of the touch.
+			/// </summary>
+			public int lead_index;
+			/// <summary>
+			/// The touch from which this class is being generated.
+			/// </summary>
+			public Touch touch;
+
+			/// <summary>
+			/// Creates a fully defined <see cref="CallLocationParameters"/> object.
+			/// </summary>
+			/// <param name="current_method">The current <see cref="Method"/> being rung.</param>
+			/// <param name="start_change">The last change before the potential call takes effect.</param>
+			/// <param name="start_index">The number of changes since the start of the touch.</param>
+			/// <param name="sub_lead_index">The number of changes sinc the last lead end.s</param>
+			/// <param name="lead_index">The number of lead ends since the start of the touch.</param>
+			/// <param name="touch">The touch from which this class is being generated.</param>
+			public CallLocationParameters (Method current_method, Change start_change, int start_index, int sub_lead_index, int lead_index, Touch touch) {
+				this.current_method = current_method;
+				this.start_change = start_change;
+				this.start_index = start_index;
+				this.sub_lead_index = sub_lead_index;
+				this.lead_index = lead_index;
+				this.touch = touch;
+			}
+		}
+
+		/// <summary>
+		/// An interface for denoting where calls can be called.
+		/// </summary>
+		public interface ICallLocation {
+			/// <summary>
+			/// This should return true if the given data should result in a call being called.
+			/// </summary>
+			/// <param name="call">The call that would be called.</param>
+			/// <param name="location">The location where the call would be called.</param>
+			/// <returns>True if the call should be called.</returns>
+			bool EvaluateBasicCall (Call call, CallLocationParameters location);
+
+			/// <summary>
+			/// This should return true if the given data should result in a method splice being called.
+			/// </summary>
+			/// <param name="next_method">The method being spliced to.</param>
+			/// <param name="location">The location of the potential call.</param>
+			/// <returns>True if the method splice should happen here.</returns>
+			bool EvaluateMethodCall (Method next_method, CallLocationParameters location);
+		}
+
+		/// <summary>
+		/// A class to specify the locations of calls which are given as a list (so calls are always called.
+		/// </summary>
+		public class CallLocationList : ICallLocation {
+			/// <summary>
+			/// This should return true if the given data should result in a call being called.
+			/// </summary>
+			/// <param name="call">The call that would be called.</param>
+			/// <param name="location">The location where the call would be called.</param>
+			/// <returns>Always true</returns>
+			public bool EvaluateBasicCall (Call call, CallLocationParameters location) => true;
+
+			/// <summary>
+			/// This should return true if the given data should result in a method splice being called.
+			/// </summary>
+			/// <param name="next_method">The method being spliced to.</param>
+			/// <param name="location">The location of the potential call.</param>
+			/// <returns>Always true.</returns>
+			public bool EvaluateMethodCall (Method next_method, CallLocationParameters location) => true;
+		}
+
+		/// <summary>
+		/// A class to specify the location of a calling-position based call.
+		/// </summary>
+		public class CallLocationCallingPosition : ICallLocation {
+			/// <summary>
+			/// The notation for the calling position
+			/// </summary>
+			public char calling_position;
+
+			/// <summary>
+			/// This should return true if the given data should result in a call being called.
+			/// </summary>
+			/// <param name="call">The call that would be called.</param>
+			/// <param name="location">The location where the call would be called.</param>
+			/// <returns>True if the call should be called.</returns>
+			public bool EvaluateBasicCall (Call call, CallLocationParameters location) {
+				Change end_change = location.start_change * call.overall_transposition;
+
+				return end_change.IndexOf (location.touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
+			}
+
+			/// <summary>
+			/// This should return true if the given data should result in a method splice being called.
+			/// </summary>
+			/// <param name="next_method">The method being spliced to.</param>
+			/// <param name="location">The location of the potential call.</param>
+			/// <returns>True if the method splice should happen here.</returns>
+			public bool EvaluateMethodCall (Method next_method, CallLocationParameters location) {
+				throw new NotImplementedException ();
+			}
+
+			/// <summary>
+			/// Creates a <see cref="CallLocationCallingPosition"/> class given a calling position notation.
+			/// </summary>
+			/// <param name="calling_position">The notation of the calling position.</param>
+			public CallLocationCallingPosition (char calling_position) {
+				this.calling_position = calling_position;
+			}
+		}
+
+		/// <summary>
 		/// An array of method splicing calls (splicing in development).
 		/// </summary>
 		public MethodCall [] method_calls;
@@ -278,7 +408,9 @@ namespace Bob {
 						Call call = basic_call.call;
 
 						if ((sub_lead_index - call.from) % call.every == 0) {
-							if (basic_call.call_location.Evaluate (call, current_change, absolute_change_index, this)) {
+							CallLocationParameters call_location_parameters = new CallLocationParameters (current_method, current_change, absolute_change_index, sub_lead_index, lead_index, this);
+
+							if (basic_call.call_location.EvaluateBasicCall (call, call_location_parameters)) {
 								current_callpoint = new CallPoint (call, absolute_change_index);
 								calls.Add (absolute_change_index, call);
 							}
@@ -403,43 +535,6 @@ namespace Bob {
 	}
 
 	/// <summary>
-	/// A class to store method splicing calls.
-	/// </summary>
-	public class MethodCall {
-		/// <summary>
-		/// The method to be changed to.
-		/// </summary>
-		public Method method;
-		/// <summary>
-		/// The location of the call.
-		/// </summary>
-		public ICallLocation location;
-
-		/// <summary>
-		/// Creates a blank <see cref="MethodCall"/>.
-		/// </summary>
-		public MethodCall () { }
-
-		/// <summary>
-		/// Creates a <see cref="MethodCall"/> with just a <see cref="Method"/>.
-		/// </summary>
-		/// <param name="method">The method which is being spliced to.</param>
-		public MethodCall (Method method) {
-			this.method = method;
-		}
-
-		/// <summary>
-		/// Creates a fully-defined <see cref="MethodCall"/>.
-		/// </summary>
-		/// <param name="method">The method to spliced to.</param>
-		/// <param name="location">The location of the splice.</param>
-		public MethodCall (Method method, ICallLocation location) {
-			this.method = method;
-			this.location = location;
-		}
-	}
-
-	/// <summary>
 	/// A class to store a basic (Bob, Single, Plain) call.
 	/// </summary>
 	public class BasicCall {
@@ -450,7 +545,7 @@ namespace Bob {
 		/// <summary>
 		/// The location of the call.
 		/// </summary>
-		public ICallLocation call_location;
+		public Touch.ICallLocation call_location;
 
 		/// <summary>
 		/// Creates a blank <see cref="BasicCall"/>.
@@ -462,71 +557,68 @@ namespace Bob {
 		/// </summary>
 		/// <param name="call">The call being called.</param>
 		/// <param name="call_location">The location of the call.</param>
-		public BasicCall (Call call, ICallLocation call_location) {
+		public BasicCall (Call call, Touch.ICallLocation call_location) {
 			this.call = call;
 			this.call_location = call_location;
 		}
 	}
 
 	/// <summary>
-	/// An interface for denoting where calls can be called.
+	/// A class to store method splicing calls.
 	/// </summary>
-	public interface ICallLocation {
+	public class MethodCall {
 		/// <summary>
-		/// This should return true if the given data should result in a call being called.
+		/// The method to be changed to.
 		/// </summary>
-		/// <param name="call">The call which could be called.</param>
-		/// <param name="start_change">The last change before the call could take effect.</param>
-		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
-		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
-		/// <returns>True if the call should be called.</returns>
-		bool Evaluate (Call call, Change start_change, int start_index, Touch touch);
-	}
-
-	/// <summary>
-	/// A class to specify the locations of calls which are given as a list (so calls are always called.
-	/// </summary>
-	public class CallLocationList : ICallLocation {
+		public Method method;
 		/// <summary>
-		/// This should return true if the given data should result in a call being called.
+		/// The location of the call.
 		/// </summary>
-		/// <param name="call">The call which could be called.</param>
-		/// <param name="start_change">The last change before the call could take effect.</param>
-		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
-		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
-		/// <returns>Always true.</returns>
-		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) => true;
-	}
-
-	/// <summary>
-	/// A class to specify the location of a calling-position based call.
-	/// </summary>
-	public class CallLocationCallingPosition : ICallLocation {
+		public Touch.ICallLocation location;
 		/// <summary>
-		/// The notation for the calling position
+		/// How far from the lead end of the last method the splice takes effect (should be negative).
 		/// </summary>
-		public char calling_position;
+		public int splice_end_index = 0;
+		/// <summary>
+		/// How far through the lead of the next method the splice starts (should be positive).
+		/// </summary>
+		public int splice_start_index = 0;
 
 		/// <summary>
-		/// This should return true if the given data should result in a call being called.
+		/// Creates a blank <see cref="MethodCall"/> (should only be used for debug purposes).
 		/// </summary>
-		/// <param name="call">The call which could be called.</param>
-		/// <param name="start_change">The last change before the call could take effect.</param>
-		/// <param name="start_index">The absolute index of the first change of the potential call.</param>
-		/// <param name="touch">The <see cref="Touch"/> object from which the queiry comes.</param>
-		/// <returns>True if the call should be called.</returns>
-		public bool Evaluate (Call call, Change start_change, int start_index, Touch touch) {
-			Change end_change = start_change * call.overall_transposition;
+		public MethodCall () { }
 
-			return end_change.IndexOf (touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
+		/// <summary>
+		/// Creates a <see cref="MethodCall"/> with just a <see cref="Method"/>.  This is the 'go x' call at the start of a <see cref="Touch"/>.
+		/// </summary>
+		/// <param name="method">The <see cref="Method"/> being spliced to.</param>
+		public MethodCall (Method method) {
+			this.method = method;
 		}
 
 		/// <summary>
-		/// Creates a <see cref="CallLocationCallingPosition"/> class given a calling position notation.
+		/// Creates a fully-defined <see cref="MethodCall"/> for a lead-end to lead-end splice.
 		/// </summary>
-		/// <param name="calling_position">The notation of the calling position.</param>
-		public CallLocationCallingPosition (char calling_position) {
-			this.calling_position = calling_position;
+		/// <param name="method">The <see cref="Method"/> being spliced to.</param>
+		/// <param name="location">The location of the splice.</param>
+		public MethodCall (Method method, Touch.ICallLocation location) {
+			this.method = method;
+			this.location = location;
+		}
+
+		/// <summary>
+		/// Creates a fully-defined <see cref="MethodCall"/> for any splice.
+		/// </summary>
+		/// <param name="method">The <see cref="Method"/> being spliced to.</param>
+		/// <param name="location">The location of the splice.</param>
+		/// <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="splice_end_index"/>.</param>
+		/// <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="splice_start_index"/>.</param>
+		public MethodCall (Method method, Touch.ICallLocation location, int splice_end_index, int splice_start_index) {
+			this.method = method;
+			this.location = location;
+			this.splice_end_index = splice_end_index;
+			this.splice_start_index = splice_start_index;
 		}
 	}
 }

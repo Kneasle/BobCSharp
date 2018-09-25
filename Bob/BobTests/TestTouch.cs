@@ -25,7 +25,7 @@ namespace BobTests {
 			Touch touch = new Touch (
 				Method.plain_bob_doubles,
 				new BasicCall [] {
-					new BasicCall (bob, new CallLocationList ())
+					new BasicCall (bob, new Touch.CallLocationList ())
 				}
 			);
 			
@@ -67,6 +67,15 @@ namespace BobTests {
 			Assert.AreEqual (false, touch.is_multiple_extent);
 			Assert.AreEqual (false, touch.is_true);
 			Assert.AreEqual (true, touch.is_quarter_peal_true);
+		}
+
+		[TestMethod]
+		public void Touch_FullPeal () {
+			Touch touch = Method.plain_bob_triples.TouchFromCallingPositions ("OHHH sWHHH WFHHH IH");
+
+			Assert.AreEqual (5040, touch.Length);
+			Assert.AreEqual (true, touch.is_extent);
+			Assert.AreEqual (true, touch.is_true);
 		}
 	}
 }

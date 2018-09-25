@@ -230,8 +230,8 @@ namespace Bob {
 		/// <param name="place_notation">The place notation of the call.</param>
 		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `bob` call that was created.</returns>
-		public static Call LeadEndBob (Method method, PlaceNotation place_notation, string [] calling_postions = null) {
-			return LeadEndBob (method, new PlaceNotation [] { place_notation }, calling_postions);
+		public static Call LeadEndBob (Method method, PlaceNotation place_notation, string [] calling_positions = null) {
+			return LeadEndBob (method, new PlaceNotation [] { place_notation }, calling_positions);
 		}
 
 		/// <summary>
@@ -251,7 +251,7 @@ namespace Bob {
 		/// </summary>
 		/// <param name="method">The method to which the call belongs.</param>
 		/// <param name="place_notations">A list of the place notations which make up the call.</param>
-		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
+		/// <param name="add_standard_calling_positions">If true, BobC# will generate the standard calls automagically.</param>
 		/// <returns>The `single` call that was created.</returns>
 		public static Call LeadEndSingle (Method method, PlaceNotation [] place_notations, bool add_standard_calling_positions = true) {
 			if (add_standard_calling_positions) {
@@ -266,7 +266,6 @@ namespace Bob {
 		/// </summary>
 		/// <param name="method">The method to which the call belongs.</param>
 		/// <param name="place_notation">The place notation of the call.</param>
-		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `single` call that was created.</returns>
 		public static Call LeadEndSingle (Method method, PlaceNotation place_notation) {
 			return LeadEndSingle (method, new PlaceNotation [] { place_notation });
@@ -277,7 +276,6 @@ namespace Bob {
 		/// </summary>
 		/// <param name="method">The method to which the call belongs.</param>
 		/// <param name="notation">The full place notation of the call, e.g. "3.123" for Grandsire Singles.</param>
-		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `single` call that was created.</returns>
 		public static Call LeadEndSingle (Method method, string notation) {
 			return LeadEndSingle (method, PlaceNotation.DecodeFullNotation (notation, method.stage));

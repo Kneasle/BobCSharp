@@ -669,7 +669,7 @@ namespace Bob {
 			BasicCall [] basic_calls = new BasicCall [calls.Length];
 
 			for (int i = 0; i < calls.Length; i++) {
-				basic_calls [i] = new BasicCall (calls [i], new CallLocationList ());
+				basic_calls [i] = new BasicCall (calls [i], new Touch.CallLocationList ());
 			}
 
 			return new Touch (this, basic_calls);
@@ -712,7 +712,7 @@ namespace Bob {
 				if (Constants.ALPHA.Contains (c)) { // `c` is upper-case, and therefore a calling position
 					calls.Add (new BasicCall (
 						current_call,
-						new CallLocationCallingPosition (c)
+						new Touch.CallLocationCallingPosition (c)
 					));
 
 					current_call = GetCallByName (Call.bob_name);
@@ -936,9 +936,13 @@ namespace Bob {
 		/// </summary>
 		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Classification.Bob, Stage.Doubles);
 		/// <summary>
-		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor)</c> instead).
+		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor")</c> instead).
 		/// </summary>
 		public static Method plain_bob_minor => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
+		/// <summary>
+		/// Shortcut to generate Plain Bob Triples. (Only for testing; use <c>Method.GetMethod ("Plain Bob Triples")</c> instead).
+		/// </summary>
+		public static Method plain_bob_triples => new Method ("7.1.7.1.7.1.7,12", "Plain", Classification.Bob, Stage.Triples);
 
 		/// <summary>
 		/// Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
