@@ -199,7 +199,7 @@ namespace Bob {
 			for (int i = 0; i < size; i++) {
 				int transpose_index = i;
 
-				if (i <= transpose_array.Length) {
+				if (i < transpose_array.Length) {
 					transpose_index = transpose_array [i];
 				}
 

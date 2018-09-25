@@ -1424,12 +1424,22 @@
             The number of lead ends since the start of the touch.
             </summary>
         </member>
+        <member name="F:Bob.Touch.CallLocationParameters.attempted_calls_since_last_call">
+            <summary>
+            The number of attempted calls since the last successful calls.
+            </summary>
+        </member>
+        <member name="F:Bob.Touch.CallLocationParameters.attempted_splices_since_last_splice">
+            <summary>
+            The number of attempted splices since the last successful splice.
+            </summary>
+        </member>
         <member name="F:Bob.Touch.CallLocationParameters.touch">
             <summary>
             The touch from which this class is being generated.
             </summary>
         </member>
-        <member name="M:Bob.Touch.CallLocationParameters.#ctor(Bob.Method,Bob.Change,System.Int32,System.Int32,System.Int32,Bob.Touch)">
+        <member name="M:Bob.Touch.CallLocationParameters.#ctor(Bob.Method,Bob.Change,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,Bob.Touch)">
             <summary>
             Creates a fully defined <see cref="T:Bob.Touch.CallLocationParameters"/> object.
             </summary>
@@ -1438,6 +1448,8 @@
             <param name="start_index">The number of changes since the start of the touch.</param>
             <param name="sub_lead_index">The number of changes sinc the last lead end.s</param>
             <param name="lead_index">The number of lead ends since the start of the touch.</param>
+            <param name="attempted_calls_since_last_call">The number of calls since the last successful call.</param>
+            <param name="attempted_splices_since_last_splice">The number of splices since the last successful splice.</param>
             <param name="touch">The touch from which this class is being generated.</param>
         </member>
         <member name="T:Bob.Touch.ICallLocation">
@@ -1450,15 +1462,15 @@
             This should return true if the given data should result in a call being called.
             </summary>
             <param name="call">The call that would be called.</param>
-            <param name="location">The location where the call would be called.</param>
+            <param name="parameters">The location where the call would be called.</param>
             <returns>True if the call should be called.</returns>
         </member>
-        <member name="M:Bob.Touch.ICallLocation.EvaluateMethodCall(Bob.Method,Bob.Touch.CallLocationParameters)">
+        <member name="M:Bob.Touch.ICallLocation.EvaluateMethodCall(Bob.MethodCall,Bob.Touch.CallLocationParameters)">
             <summary>
             This should return true if the given data should result in a method splice being called.
             </summary>
             <param name="next_method">The method being spliced to.</param>
-            <param name="location">The location of the potential call.</param>
+            <param name="parameters">The location of the potential call.</param>
             <returns>True if the method splice should happen here.</returns>
         </member>
         <member name="T:Bob.Touch.CallLocationList">
@@ -1471,15 +1483,15 @@
             This should return true if the given data should result in a call being called.
             </summary>
             <param name="call">The call that would be called.</param>
-            <param name="location">The location where the call would be called.</param>
+            <param name="parameters">The location where the call would be called.</param>
             <returns>Always true</returns>
         </member>
-        <member name="M:Bob.Touch.CallLocationList.EvaluateMethodCall(Bob.Method,Bob.Touch.CallLocationParameters)">
+        <member name="M:Bob.Touch.CallLocationList.EvaluateMethodCall(Bob.MethodCall,Bob.Touch.CallLocationParameters)">
             <summary>
             This should return true if the given data should result in a method splice being called.
             </summary>
             <param name="next_method">The method being spliced to.</param>
-            <param name="location">The location of the potential call.</param>
+            <param name="parameters">The location of the potential call.</param>
             <returns>Always true.</returns>
         </member>
         <member name="T:Bob.Touch.CallLocationCallingPosition">
@@ -1497,15 +1509,15 @@
             This should return true if the given data should result in a call being called.
             </summary>
             <param name="call">The call that would be called.</param>
-            <param name="location">The location where the call would be called.</param>
+            <param name="parameters">The location where the call would be called.</param>
             <returns>True if the call should be called.</returns>
         </member>
-        <member name="M:Bob.Touch.CallLocationCallingPosition.EvaluateMethodCall(Bob.Method,Bob.Touch.CallLocationParameters)">
+        <member name="M:Bob.Touch.CallLocationCallingPosition.EvaluateMethodCall(Bob.MethodCall,Bob.Touch.CallLocationParameters)">
             <summary>
             This should return true if the given data should result in a method splice being called.
             </summary>
             <param name="next_method">The method being spliced to.</param>
-            <param name="location">The location of the potential call.</param>
+            <param name="parameters">The location of the potential call.</param>
             <returns>True if the method splice should happen here.</returns>
         </member>
         <member name="M:Bob.Touch.CallLocationCallingPosition.#ctor(System.Char)">
@@ -1514,9 +1526,57 @@
             </summary>
             <param name="calling_position">The notation of the calling position.</param>
         </member>
+        <member name="T:Bob.Touch.CallLocationCountDown">
+            <summary>
+            A class to specify that a call should be called after a certain number of attempts.
+            </summary>
+        </member>
+        <member name="P:Bob.Touch.CallLocationCountDown.number_of_attempts">
+            <summary>
+            The number of attempted calls before the call should actually be called.
+            </summary>
+        </member>
+        <member name="M:Bob.Touch.CallLocationCountDown.EvaluateBasicCall(Bob.Call,Bob.Touch.CallLocationParameters)">
+            <summary>
+            Determines whether a <see cref="T:Bob.BasicCall"/> should be called.
+            </summary>
+            <param name="call">The call about to be called.</param>
+            <param name="parameters">Extra data about the call location.</param>
+            <returns>True if the call should be called.</returns>
+        </member>
+        <member name="M:Bob.Touch.CallLocationCountDown.EvaluateMethodCall(Bob.MethodCall,Bob.Touch.CallLocationParameters)">
+            <summary>
+            Determines whether a <see cref="T:Bob.MethodCall"/> should be called.
+            </summary>
+            <param name="next_method">The <see cref="T:Bob.MethodCall"/> about to be called.</param>
+            <param name="parameters">Extra data about the call location.</param>
+            <returns>True if the call should be called.</returns>
+        </member>
+        <member name="M:Bob.Touch.CallLocationCountDown.#ctor(System.Int32)">
+            <summary>
+            Generates a fully-defined <see cref="T:Bob.Touch.CallLocationCountDown"/> object.
+            </summary>
+            <param name="number_of_attempts">The number of call attempts before actually calling.  Note that if you want the nth call, you should set this to n - 1 (e.g. the 4th call will have had 3 prior attempts)</param>
+        </member>
+        <member name="T:Bob.Touch.YourPealRingersDiedOfExhaustionException">
+            <summary>
+            An exception to call if the peals get too long without coming back to rounds.  In lieu of a way of checking if touches never come back to rounds.
+            </summary>
+        </member>
+        <member name="M:Bob.Touch.YourPealRingersDiedOfExhaustionException.#ctor(System.String)">
+            <summary>
+            Throws an exception with a message.
+            </summary>
+            <param name="message">The message to show.</param>
+        </member>
+        <member name="F:Bob.Touch.start_method">
+            <summary>
+            The starting method of the touch.
+            </summary>
+        </member>
         <member name="F:Bob.Touch.method_calls">
             <summary>
-            An array of method splicing calls (splicing in development).
+            An array of method splicing calls.
             </summary>
         </member>
         <member name="F:Bob.Touch.basic_calls">
@@ -1602,18 +1662,29 @@
             </summary>
             <returns>A string representation of this touch.</returns>
         </member>
-        <member name="M:Bob.Touch.#ctor(Bob.Method)">
-            <summary>
-            Creates a <see cref="T:Bob.Touch"/> object representing the plain course of a given method.
-            </summary>
-            <param name="method">The method who's plain course is being generated.</param>
-        </member>
         <member name="M:Bob.Touch.#ctor(Bob.Method,Bob.BasicCall[],System.Int32)">
             <summary>
             Creates a <see cref="T:Bob.Touch"/> object representing a single-method touch.
             </summary>
             <param name="method">The method of the touch.</param>
             <param name="calls">The calls which make up the touch.</param>
+            <param name="conductor_bell">The bell from which the touch is called.</param>
+        </member>
+        <member name="M:Bob.Touch.#ctor(Bob.Method,Bob.MethodCall[],Bob.BasicCall[],System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.Touch"/> object representing a touch of multiple methods spliced.
+            </summary>
+            <param name="start_method">The method to start the touch.  Will be added as a <see cref="T:Bob.MethodCall"/> to the start of `method_calls`.</param>
+            <param name="method_calls">The splices in methods.</param>
+            <param name="calls">The calls (Bobs, Singles, etc.) which make up the touch.</param>
+            <param name="conductor_bell">The bell from which the touch is called.</param>
+        </member>
+        <member name="M:Bob.Touch.#ctor(Bob.Method[],Bob.BasicCall[],System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.Touch"/> object representing a touch of multiple methods spliced lead-by-lead.
+            </summary>
+            <param name="methods">The methods which will be spliced each lead.</param>
+            <param name="calls">The calls (Bobs, Singles, etc.) which make up the touch.</param>
             <param name="conductor_bell">The bell from which the touch is called.</param>
         </member>
         <member name="T:Bob.BasicCall">
@@ -1658,12 +1729,12 @@
             The location of the call.
             </summary>
         </member>
-        <member name="F:Bob.MethodCall.splice_end_index">
+        <member name="F:Bob.MethodCall.splice_start_index">
             <summary>
             How far from the lead end of the last method the splice takes effect (should be negative).
             </summary>
         </member>
-        <member name="F:Bob.MethodCall.splice_start_index">
+        <member name="F:Bob.MethodCall.splice_end_index">
             <summary>
             How far through the lead of the next method the splice starts (should be positive).
             </summary>
@@ -1692,8 +1763,8 @@
             </summary>
             <param name="method">The <see cref="T:Bob.Method"/> being spliced to.</param>
             <param name="location">The location of the splice.</param>
-            <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="F:Bob.MethodCall.splice_end_index"/>.</param>
-            <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="F:Bob.MethodCall.splice_start_index"/>.</param>
+            <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="F:Bob.MethodCall.splice_start_index"/>.</param>
+            <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="F:Bob.MethodCall.splice_end_index"/>.</param>
         </member>
         <member name="T:Bob.Utils">
             <summary>

@@ -76,6 +76,14 @@ namespace Bob {
 			/// </summary>
 			public int lead_index;
 			/// <summary>
+			/// The number of attempted calls since the last successful calls.
+			/// </summary>
+			public int attempted_calls_since_last_call;
+			/// <summary>
+			/// The number of attempted splices since the last successful splice.
+			/// </summary>
+			public int attempted_splices_since_last_splice;
+			/// <summary>
 			/// The touch from which this class is being generated.
 			/// </summary>
 			public Touch touch;
@@ -88,13 +96,17 @@ namespace Bob {
 			/// <param name="start_index">The number of changes since the start of the touch.</param>
 			/// <param name="sub_lead_index">The number of changes sinc the last lead end.s</param>
 			/// <param name="lead_index">The number of lead ends since the start of the touch.</param>
+			/// <param name="attempted_calls_since_last_call">The number of calls since the last successful call.</param>
+			/// <param name="attempted_splices_since_last_splice">The number of splices since the last successful splice.</param>
 			/// <param name="touch">The touch from which this class is being generated.</param>
-			public CallLocationParameters (Method current_method, Change start_change, int start_index, int sub_lead_index, int lead_index, Touch touch) {
+			public CallLocationParameters (Method current_method, Change start_change, int start_index, int sub_lead_index, int lead_index, int attempted_calls_since_last_call, int attempted_splices_since_last_splice, Touch touch) {
 				this.current_method = current_method;
 				this.start_change = start_change;
 				this.start_index = start_index;
 				this.sub_lead_index = sub_lead_index;
 				this.lead_index = lead_index;
+				this.attempted_calls_since_last_call = attempted_calls_since_last_call;
+				this.attempted_splices_since_last_splice = attempted_splices_since_last_splice;
 				this.touch = touch;
 			}
 		}
@@ -107,17 +119,17 @@ namespace Bob {
 			/// This should return true if the given data should result in a call being called.
 			/// </summary>
 			/// <param name="call">The call that would be called.</param>
-			/// <param name="location">The location where the call would be called.</param>
+			/// <param name="parameters">The location where the call would be called.</param>
 			/// <returns>True if the call should be called.</returns>
-			bool EvaluateBasicCall (Call call, CallLocationParameters location);
+			bool EvaluateBasicCall (Call call, CallLocationParameters parameters);
 
 			/// <summary>
 			/// This should return true if the given data should result in a method splice being called.
 			/// </summary>
 			/// <param name="next_method">The method being spliced to.</param>
-			/// <param name="location">The location of the potential call.</param>
+			/// <param name="parameters">The location of the potential call.</param>
 			/// <returns>True if the method splice should happen here.</returns>
-			bool EvaluateMethodCall (Method next_method, CallLocationParameters location);
+			bool EvaluateMethodCall (MethodCall next_method, CallLocationParameters parameters);
 		}
 
 		/// <summary>
@@ -128,17 +140,17 @@ namespace Bob {
 			/// This should return true if the given data should result in a call being called.
 			/// </summary>
 			/// <param name="call">The call that would be called.</param>
-			/// <param name="location">The location where the call would be called.</param>
+			/// <param name="parameters">The location where the call would be called.</param>
 			/// <returns>Always true</returns>
-			public bool EvaluateBasicCall (Call call, CallLocationParameters location) => true;
+			public bool EvaluateBasicCall (Call call, CallLocationParameters parameters) => true;
 
 			/// <summary>
 			/// This should return true if the given data should result in a method splice being called.
 			/// </summary>
 			/// <param name="next_method">The method being spliced to.</param>
-			/// <param name="location">The location of the potential call.</param>
+			/// <param name="parameters">The location of the potential call.</param>
 			/// <returns>Always true.</returns>
-			public bool EvaluateMethodCall (Method next_method, CallLocationParameters location) => true;
+			public bool EvaluateMethodCall (MethodCall next_method, CallLocationParameters parameters) => true;
 		}
 
 		/// <summary>
@@ -154,21 +166,21 @@ namespace Bob {
 			/// This should return true if the given data should result in a call being called.
 			/// </summary>
 			/// <param name="call">The call that would be called.</param>
-			/// <param name="location">The location where the call would be called.</param>
+			/// <param name="parameters">The location where the call would be called.</param>
 			/// <returns>True if the call should be called.</returns>
-			public bool EvaluateBasicCall (Call call, CallLocationParameters location) {
-				Change end_change = location.start_change * call.overall_transposition;
+			public bool EvaluateBasicCall (Call call, CallLocationParameters parameters) {
+				Change end_change = parameters.start_change * call.overall_transposition;
 
-				return end_change.IndexOf (location.touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
+				return end_change.IndexOf (parameters.touch.conductor_bell) == call.GetCallingPositionIndex (calling_position);
 			}
 
 			/// <summary>
 			/// This should return true if the given data should result in a method splice being called.
 			/// </summary>
 			/// <param name="next_method">The method being spliced to.</param>
-			/// <param name="location">The location of the potential call.</param>
+			/// <param name="parameters">The location of the potential call.</param>
 			/// <returns>True if the method splice should happen here.</returns>
-			public bool EvaluateMethodCall (Method next_method, CallLocationParameters location) {
+			public bool EvaluateMethodCall (MethodCall next_method, CallLocationParameters parameters) {
 				throw new NotImplementedException ();
 			}
 
@@ -182,7 +194,60 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// An array of method splicing calls (splicing in development).
+		/// A class to specify that a call should be called after a certain number of attempts.
+		/// </summary>
+		public class CallLocationCountDown : ICallLocation {
+			/// <summary>
+			/// The number of attempted calls before the call should actually be called.
+			/// </summary>
+			public int number_of_attempts { get; private set; }
+
+			/// <summary>
+			/// Determines whether a <see cref="BasicCall"/> should be called.
+			/// </summary>
+			/// <param name="call">The call about to be called.</param>
+			/// <param name="parameters">Extra data about the call location.</param>
+			/// <returns>True if the call should be called.</returns>
+			public bool EvaluateBasicCall (Call call, CallLocationParameters parameters) => number_of_attempts == parameters.attempted_calls_since_last_call;
+
+			/// <summary>
+			/// Determines whether a <see cref="MethodCall"/> should be called.
+			/// </summary>
+			/// <param name="next_method">The <see cref="MethodCall"/> about to be called.</param>
+			/// <param name="parameters">Extra data about the call location.</param>
+			/// <returns>True if the call should be called.</returns>
+			public bool EvaluateMethodCall (MethodCall next_method, CallLocationParameters parameters) => number_of_attempts == parameters.attempted_splices_since_last_splice;
+
+			/// <summary>
+			/// Generates a fully-defined <see cref="CallLocationCountDown"/> object.
+			/// </summary>
+			/// <param name="number_of_attempts">The number of call attempts before actually calling.  Note that if you want the nth call, you should set this to n - 1 (e.g. the 4th call will have had 3 prior attempts)</param>
+			public CallLocationCountDown (int number_of_attempts) {
+				if (this.number_of_attempts < 0) {
+					throw new ArgumentOutOfRangeException ("number_of_attempts", "Cannot have a negative number of attempts before calling.");
+				}
+
+				this.number_of_attempts = number_of_attempts;
+			}
+		}
+
+		/// <summary>
+		/// An exception to call if the peals get too long without coming back to rounds.  In lieu of a way of checking if touches never come back to rounds.
+		/// </summary>
+		public class YourPealRingersDiedOfExhaustionException : Exception {
+			/// <summary>
+			/// Throws an exception with a message.
+			/// </summary>
+			/// <param name="message">The message to show.</param>
+			public YourPealRingersDiedOfExhaustionException (string message) : base (message) { }
+		}
+
+		/// <summary>
+		/// The starting method of the touch.
+		/// </summary>
+		public Method start_method;
+		/// <summary>
+		/// An array of method splicing calls.
 		/// </summary>
 		public MethodCall [] method_calls;
 		/// <summary>
@@ -314,10 +379,12 @@ namespace Bob {
 		/// </summary>
 		public Stage stage {
 			get {
-				int max_stage = int.MinValue;
+				int max_stage = (int)start_method.stage;
 
-				foreach (MethodCall m in method_calls) {
-					max_stage = Math.Max (max_stage, (int)m.method.stage);
+				if (method_calls != null) {
+					foreach (MethodCall m in method_calls) {
+						max_stage = Math.Max (max_stage, (int)m.method.stage);
+					}
 				}
 
 				return (Stage)max_stage;
@@ -392,31 +459,45 @@ namespace Bob {
 			int lead_index = 0;
 			int sub_lead_index = 0;
 			int call_index = 0;
+			int method_call_index = 0;
+
+			int sub_splice_change_index = 0;
+			int sub_splice_lead_index = 0;
+
+			int attempted_calls_since_last_call = 0;
+			int attempted_splices_since_last_splice = 0;
 
 			int absolute_change_index = 0;
 
 			CallPoint current_callpoint = null;
 
 			Change current_change = Change.Rounds (stage);
-			Method current_method = method_calls [0].method;
+			Method current_method = start_method;
 
 			while (true) {
-				// Update calls
+				#region Update calls
 				if (current_callpoint == null) {
+					// Not in a call => Could be starting a call
 					if (basic_calls != null && basic_calls.Length > 0) {
 						BasicCall basic_call = basic_calls [call_index];
 						Call call = basic_call.call;
 
 						if ((sub_lead_index - call.from) % call.every == 0) {
-							CallLocationParameters call_location_parameters = new CallLocationParameters (current_method, current_change, absolute_change_index, sub_lead_index, lead_index, this);
+							CallLocationParameters call_location_parameters = new CallLocationParameters (current_method, current_change, absolute_change_index, sub_lead_index, lead_index, attempted_calls_since_last_call, attempted_splices_since_last_splice, this);
 
 							if (basic_call.call_location.EvaluateBasicCall (call, call_location_parameters)) {
 								current_callpoint = new CallPoint (call, absolute_change_index);
+
+								attempted_calls_since_last_call = 0;
+
 								calls.Add (absolute_change_index, call);
+							} else {
+								attempted_calls_since_last_call += 1;
 							}
 						}
 					}
 				} else {
+					// In a call, so could be stopping a call
 					if (absolute_change_index > current_callpoint.end_index) {
 						sub_lead_index += current_callpoint.call.cover;
 						if (sub_lead_index >= current_method.place_notations.Length) {
@@ -432,8 +513,9 @@ namespace Bob {
 						current_callpoint = null;
 					}
 				}
+				#endregion
 
-				// Update change
+				#region Update change
 				PlaceNotation notation;
 				if (current_callpoint == null) {
 					notation = current_method.place_notations [sub_lead_index];
@@ -449,32 +531,67 @@ namespace Bob {
 
 				// Add change to list
 				changes.Add (current_change);
+				#endregion
 
-				// Stop if it comes round (to whatever is the target change)
+				#region Update method splicing calls
+				if (method_calls != null && method_calls.Length > 0) {
+					MethodCall current_method_call = method_calls [method_call_index];
+
+					if (sub_lead_index == current_method.lead_length + current_method_call.splice_start_index - 1) {
+						CallLocationParameters parameters = new CallLocationParameters (current_method, current_change, absolute_change_index, sub_lead_index, lead_index, attempted_calls_since_last_call, attempted_splices_since_last_splice, this);
+
+						if (current_method_call.location.EvaluateMethodCall (current_method_call, parameters)) {
+							current_method = current_method_call.method;
+
+							method_call_index += 1;
+
+							sub_lead_index = current_method_call.splice_end_index - 1; // Set to splice_end_index - 1, because later in this iteration of the while loop, 1 will be added to it, to get splice_end_index.
+
+							sub_splice_change_index = 0;
+							sub_splice_lead_index = 0;
+
+							attempted_splices_since_last_splice = 0;
+
+							if (method_call_index >= method_calls.Length) {
+								method_call_index = 0;
+							}
+						} else {
+							attempted_splices_since_last_splice += 1;
+						}
+					}
+				}
+				#endregion
+
+				#region Stop if it comes to rounds (to whatever is the target change is)
 				if (current_change == target_change) {
 					break;
 				}
+				#endregion
 
-				// Update indices
+				#region Update indices & lead ends.
 				if (current_callpoint == null) {
 					sub_lead_index += 1;
 
 					if (sub_lead_index >= current_method.place_notations.Length) {
 						sub_lead_index = 0;
+						sub_splice_lead_index += 1;
+
 						lead_index += 1;
 					}
 				}
 
 				absolute_change_index += 1;
+				sub_splice_change_index += 1;
+				#endregion
 
-				// Stop if touch probably goes on forever
-				if (absolute_change_index > 100000) {
-					Console.WriteLine ("Broke the laws of human endurance and got to 100,000 changes without coming round.");
-					break;
+				#region Stop if touch goes on forever.  At the moment, that's just after 100,000 changes.
+				if (absolute_change_index > 1e5) {
+					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 100,000 changes without coming round.");
 				}
+				#endregion
 			}
 
-			this.m_changes = changes.ToArray ();
+			m_changes = changes.ToArray ();
 
 			ComputeChangeRepeatFrequencies ();
 		}
@@ -510,27 +627,53 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Creates a <see cref="Touch"/> object representing the plain course of a given method.
-		/// </summary>
-		/// <param name="method">The method who's plain course is being generated.</param>
-		public Touch (Method method) {
-			method_calls = new MethodCall [] { new MethodCall (method) };
-			basic_calls = new BasicCall [0];
-
-			m_conductor_bell = conductor_bell;
-		}
-
-		/// <summary>
 		/// Creates a <see cref="Touch"/> object representing a single-method touch.
 		/// </summary>
 		/// <param name="method">The method of the touch.</param>
 		/// <param name="calls">The calls which make up the touch.</param>
 		/// <param name="conductor_bell">The bell from which the touch is called.</param>
-		public Touch (Method method, BasicCall[] calls, int conductor_bell = Constants.tenor) {
-			method_calls = new MethodCall [] { new MethodCall (method) };
+		public Touch (Method method, BasicCall[] calls = null, int conductor_bell = Constants.tenor) {
+			start_method = method;
+
+			method_calls = null;
 			basic_calls = calls;
 
 			m_conductor_bell = conductor_bell;
+		}
+
+		/// <summary>
+		/// Creates a <see cref="Touch"/> object representing a touch of multiple methods spliced.
+		/// </summary>
+		/// <param name="start_method">The method to start the touch.  Will be added as a <see cref="MethodCall"/> to the start of `method_calls`.</param>
+		/// <param name="method_calls">The splices in methods.</param>
+		/// <param name="calls">The calls (Bobs, Singles, etc.) which make up the touch.</param>
+		/// <param name="conductor_bell">The bell from which the touch is called.</param>
+		public Touch (Method start_method, MethodCall[] method_calls, BasicCall[] calls = null, int conductor_bell = Constants.tenor) {
+			this.start_method = start_method;
+			this.method_calls = method_calls;
+
+			basic_calls = calls;
+			this.conductor_bell = conductor_bell;
+		}
+
+		/// <summary>
+		/// Creates a <see cref="Touch"/> object representing a touch of multiple methods spliced lead-by-lead.
+		/// </summary>
+		/// <param name="methods">The methods which will be spliced each lead.</param>
+		/// <param name="calls">The calls (Bobs, Singles, etc.) which make up the touch.</param>
+		/// <param name="conductor_bell">The bell from which the touch is called.</param>
+		public Touch (Method [] methods, BasicCall [] calls = null, int conductor_bell = Constants.tenor) {
+			start_method = methods [0];
+
+			method_calls = new MethodCall [methods.Length];
+
+			method_calls [methods.Length - 1] = new MethodCall (methods [0], new CallLocationList ());
+			for (int i = 1; i < methods.Length; i++) {
+				method_calls [i - 1] = new MethodCall (methods [i], new CallLocationList ());
+			}
+
+			basic_calls = calls;
+			this.conductor_bell = conductor_bell;
 		}
 	}
 
@@ -578,11 +721,11 @@ namespace Bob {
 		/// <summary>
 		/// How far from the lead end of the last method the splice takes effect (should be negative).
 		/// </summary>
-		public int splice_end_index = 0;
+		public int splice_start_index = 0;
 		/// <summary>
 		/// How far through the lead of the next method the splice starts (should be positive).
 		/// </summary>
-		public int splice_start_index = 0;
+		public int splice_end_index = 0;
 
 		/// <summary>
 		/// Creates a blank <see cref="MethodCall"/> (should only be used for debug purposes).
@@ -612,13 +755,13 @@ namespace Bob {
 		/// </summary>
 		/// <param name="method">The <see cref="Method"/> being spliced to.</param>
 		/// <param name="location">The location of the splice.</param>
-		/// <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="splice_end_index"/>.</param>
-		/// <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="splice_start_index"/>.</param>
+		/// <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="splice_start_index"/>.</param>
+		/// <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="splice_end_index"/>.</param>
 		public MethodCall (Method method, Touch.ICallLocation location, int splice_end_index, int splice_start_index) {
 			this.method = method;
 			this.location = location;
-			this.splice_end_index = splice_end_index;
-			this.splice_start_index = splice_start_index;
+			this.splice_start_index = splice_end_index;
+			this.splice_end_index = splice_start_index;
 		}
 	}
 }

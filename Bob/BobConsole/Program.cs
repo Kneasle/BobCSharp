@@ -16,12 +16,15 @@ namespace BobConsole {
 			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH"));
 			Console.WriteLine ("\n\n\n\n\n");
 			*/
-
-			Change plain = new Change ("15738264"); // Cambridge Major's lead end
-			PlaceNotation notation = new PlaceNotation ("14", Stage.Major);
-
-			Console.WriteLine (plain * notation);
-
+			
+			Console.WriteLine (new Touch (
+				Method.cambridge_major,
+				new MethodCall [] {new MethodCall (
+					new Method ("X18", "Original", Stage.Major),
+					new Touch.CallLocationCountDown (3),
+					-2, 0
+				)}
+			));
 			Console.ReadLine ();
 		}
 	}

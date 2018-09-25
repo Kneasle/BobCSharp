@@ -77,5 +77,25 @@ namespace BobTests {
 			Assert.AreEqual (true, touch.is_extent);
 			Assert.AreEqual (true, touch.is_true);
 		}
+
+		[TestMethod]
+		public void Touch_Splicing () {
+			Touch plain_bob_splicing = new Touch (
+				new Method [] { Method.plain_bob_doubles, Method.plain_bob_minor }
+			);
+
+			Assert.AreEqual (132, plain_bob_splicing.Length);
+
+			Touch half_course_of_cambridge = new Touch (
+				Method.cambridge_major,
+				new MethodCall [] {new MethodCall (
+					new Method ("X18", "Original", Stage.Major),
+					new Touch.CallLocationCountDown (3),
+					-2, 0
+				)}
+			);
+
+			Assert.AreEqual (128, half_course_of_cambridge.Length);
+		}
 	}
 }
