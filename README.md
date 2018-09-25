@@ -94,7 +94,7 @@ Any piece of ringing is a **Touch** object:
 Touch touch = new Touch ();
 ```
 
-Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we we've all been there at some point):
+Let's suppose we wanted to look at a plain course of Plain Bob Doubles ('cos we've all been there at some point):
 ```C#
 Touch plain_course = Method.GetMethod ("Plain Bob Doubles").plain_course;
 
