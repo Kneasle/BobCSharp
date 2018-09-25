@@ -22,7 +22,7 @@ namespace BobConsole {
 				new MethodCall [] {new MethodCall (
 					new Method ("X18", "Original", Stage.Major),
 					new Touch.CallLocationCountDown (3),
-					-2, 0
+					-2
 				)}
 			));
 			Console.ReadLine ();

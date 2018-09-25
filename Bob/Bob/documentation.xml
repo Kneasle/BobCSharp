@@ -1604,6 +1604,11 @@
             A dictionary to store where the calls are placed in the touch.
             </summary>
         </member>
+        <member name="P:Bob.Touch.splices">
+            <summary>
+            A dictionary to store where the method splices are placed in the touch.
+            </summary>
+        </member>
         <member name="P:Bob.Touch.change_repeat_frequencies">
             <summary>
             A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).

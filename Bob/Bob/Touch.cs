@@ -9,6 +9,7 @@ namespace Bob {
 	/// A class to store a representation of any touch.
 	/// </summary>
 	public class Touch {
+		#region Sub-classes and Exceptions
 		/// <summary>
 		/// A class to store a pairing of a Call and the point at which it is called.
 		/// </summary>
@@ -241,7 +242,9 @@ namespace Bob {
 			/// <param name="message">The message to show.</param>
 			public YourPealRingersDiedOfExhaustionException (string message) : base (message) { }
 		}
+		#endregion
 
+		#region Fields and Properties
 		/// <summary>
 		/// The starting method of the touch.
 		/// </summary>
@@ -304,6 +307,10 @@ namespace Bob {
 		/// A dictionary to store where the calls are placed in the touch.
 		/// </summary>
 		public Dictionary<int, Call> calls { get; private set; }
+		/// <summary>
+		/// A dictionary to store where the method splices are placed in the touch.
+		/// </summary>
+		public Dictionary<int, Method> splices { get; private set; }
 
 		private Dictionary<int, int> m_change_repeat_frequencies = null;
 		/// <summary>
@@ -403,7 +410,9 @@ namespace Bob {
 				return changes.Length;
 			}
 		}
+		#endregion
 
+		// Functions
 		/// <summary>
 		/// Gets the change at a given index in the touch.
 		/// </summary>
@@ -454,7 +463,9 @@ namespace Bob {
 		/// </summary>
 		private void ComputeChanges () {
 			List<Change> changes = new List<Change> ();
+
 			calls = new Dictionary<int, Call> ();
+			splices = new Dictionary<int, Method> ();
 
 			int lead_index = 0;
 			int sub_lead_index = 0;
@@ -473,6 +484,8 @@ namespace Bob {
 
 			Change current_change = Change.Rounds (stage);
 			Method current_method = start_method;
+
+			splices.Add (0, start_method);
 
 			while (true) {
 				#region Update calls
@@ -552,6 +565,8 @@ namespace Bob {
 
 							attempted_splices_since_last_splice = 0;
 
+							splices.Add (absolute_change_index, current_method);
+
 							if (method_call_index >= method_calls.Length) {
 								method_call_index = 0;
 							}
@@ -618,7 +633,7 @@ namespace Bob {
 					call_symbol = calls [i + 2].preferred_notation;
 				}
 
-				output += " " + call_symbol + " " + c.ToString () + "\n";
+				output += " " + call_symbol + " " + c.ToString () + (splices.Keys.Contains (i) ? (i == 0 ? " Go" : "") + " " + splices [i].title : "") + "\n";
 			}
 
 			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
@@ -757,7 +772,7 @@ namespace Bob {
 		/// <param name="location">The location of the splice.</param>
 		/// <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="splice_start_index"/>.</param>
 		/// <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="splice_end_index"/>.</param>
-		public MethodCall (Method method, Touch.ICallLocation location, int splice_end_index, int splice_start_index) {
+		public MethodCall (Method method, Touch.ICallLocation location, int splice_end_index, int splice_start_index = 0) {
 			this.method = method;
 			this.location = location;
 			this.splice_start_index = splice_end_index;
