@@ -13,6 +13,6 @@ namespace Bob {
 		/// A function to get an integer array representing the transposition of this object.
 		/// </summary>
 		/// <returns>An integer array representing the transposition.</returns>
-		int [] GetArray ();
+		int [] GetArray (Change original);
 	}
 }

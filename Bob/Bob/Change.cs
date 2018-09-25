@@ -190,7 +190,7 @@ namespace Bob {
 		/// <returns>The transposed change.</returns>
 		public Change Transpose (ITransposition transposable) {
 			int [] in_array = array;
-			int [] transpose_array = transposable.GetArray ();
+			int [] transpose_array = transposable.GetArray (this);
 
 			int size = Math.Max (in_array.Length, transpose_array.Length);
 
@@ -230,16 +230,14 @@ namespace Bob {
 
 		// Functions which implement interfaces' requirements
 		/// <summary>
-		/// Gets the array of the change.  Satisfies the interface ITransposable.
+		/// Gets the array of the change.  Implements <see cref="ITransposition"/>.
 		/// </summary>
-		/// <returns></returns>
-		public int [] GetArray () {
-			return array;
-		}
+		/// <returns>The array representing the transposition caused by this change.</returns>
+		public int [] GetArray (Change other) => array;
 
 		// Constructors
 		/// <summary>
-		/// Creates a change with an integer array.
+		/// Creates a change from an integer array.
 		/// </summary>
 		/// <param name="array">The array of bells (indexed from 0) in the change you want to create.</param>
 		public Change (int [] array) {

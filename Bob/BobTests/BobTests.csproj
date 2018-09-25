@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="HandyStuff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCalledChanges.cs" />
     <Compile Include="TestChange.cs" />
     <Compile Include="TestPlaceNotation.cs" />
     <Compile Include="TestMethod.cs" />

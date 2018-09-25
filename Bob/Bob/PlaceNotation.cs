@@ -98,10 +98,10 @@ namespace Bob {
 
 		// Functions
 		/// <summary>
-		/// Gets the array representing the transposition of this place notation.  Satisfies the <see cref="ITransposition"/> interface.
+		/// Gets the array representing the transposition of this place notation.  Implements <see cref="ITransposition"/>.
 		/// </summary>
 		/// <returns>An array representing this transposition.</returns>
-		public int [] GetArray () => array;
+		public int [] GetArray (Change original) => array;
 
 		/// <summary>
 		///	Checks equality between this object and another object.
@@ -209,7 +209,7 @@ namespace Bob {
 
 		// Static Stuff
 		/// <summary>
-		/// Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of place notations.
+		/// Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of <see cref="PlaceNotation"/> objects.
 		/// </summary>
 		/// <param name="full_notation">The string of place notations.</param>
 		/// <param name="stage">The <see cref="Stage"/> of the place notations.</param>

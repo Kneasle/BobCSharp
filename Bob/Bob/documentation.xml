@@ -254,6 +254,102 @@
             Gets the standard calling positions for lead-end singles.
             </summary>
         </member>
+        <member name="T:Bob.CalledChange">
+            <summary>
+            A class to store called changes.
+            </summary>
+        </member>
+        <member name="T:Bob.CalledChange.CallingType">
+            <summary>
+            An enum to store what method of determining the call is used.
+            </summary>
+        </member>
+        <member name="F:Bob.CalledChange.CallingType.ByBellCalledUp">
+            <summary>
+            Called by calling a given bell up (see <see cref="P:Bob.CalledChange.bell_called_up"/>).
+            </summary>
+        </member>
+        <member name="F:Bob.CalledChange.CallingType.ByBellCalledDown">
+            <summary>
+            Called by calling a given bell down (see <see cref="P:Bob.CalledChange.bell_called_down"/>).
+            </summary>
+        </member>
+        <member name="F:Bob.CalledChange.CallingType.ByPlaceCalledUp">
+            <summary>
+            Called by calling a bell in a given place up (see <see cref="P:Bob.CalledChange.place_called_up"/>).
+            </summary>
+        </member>
+        <member name="F:Bob.CalledChange.calling_type">
+            <summary>
+            The type of called change.
+            </summary>
+        </member>
+        <member name="P:Bob.CalledChange.bell_called_up">
+            <summary>
+            The bell who will be called up.  (e.g. "&lt;this bell&gt; follow &lt;other bell&gt;").
+            </summary>
+        </member>
+        <member name="P:Bob.CalledChange.bell_called_down">
+            <summary>
+            The bell who will be called down.  (e.g. "&lt;other bell&gt; follow &lt;this bell&gt;").
+            </summary>
+        </member>
+        <member name="P:Bob.CalledChange.place_called_up">
+            <summary>
+            The place (indexed from zero) of the first bell to be swapped, e.g. `2` would represent "3 follow 4" from rounds.
+            </summary>
+        </member>
+        <member name="M:Bob.CalledChange.GetArray(Bob.Change)">
+            <summary>
+            Gets the array caused by this transposition.  Implements <see cref="T:Bob.ITransposition"/>.
+            </summary>
+            <returns>The array representing the transposition caused by this called change.</returns>
+        </member>
+        <member name="M:Bob.CalledChange.#ctor(Bob.CalledChange.CallingType,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.CalledChange"/> object.  I don't reccomend using this; use 
+            </summary>
+            <param name="calling_type">The way this called change is called.</param>
+            <param name="bell_called_up">The bell (indexed from 0) which is called up.</param>
+            <param name="bell_called_down">The bell (indexed from 0) which is called down.</param>
+            <param name="place_called_up">The place (indexed from 0) of the bell which is called up.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByPlaceCalledUp(System.Int32)">
+            <summary>
+            Creates a called change guided by place.
+            </summary>
+            <param name="place_called_up">The place of the lower bell which will be swapped.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByPlaceCalledUp(System.Char)">
+            <summary>
+            Creates a called change guided by place.
+            </summary>
+            <param name="place_called_up">The place of the lower bell which will be swapped.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByBellCalledUp(System.Int32)">
+            <summary>
+            Creates a called change guided by which bell is called over another bell.
+            </summary>
+            <param name="bell_called_up">The number (indexed from 0) of the bell which will moved up a place.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByBellCalledUp(System.Char)">
+            <summary>
+            Creates a called change guided by which bell is called over another bell.
+            </summary>
+            <param name="bell_called_up">The number (indexed from 0) of the bell which will moved up a place.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByBellCalledDown(System.Int32)">
+            <summary>
+            Creates a called change guided by which bell is called under another bell.
+            </summary>
+            <param name="bell_called_down">The number (indexed from 0) of the bell which will moved downra a place.</param>
+        </member>
+        <member name="M:Bob.CalledChange.ByBellCalledDown(System.Char)">
+            <summary>
+            Creates a called change guided by which bell is called under another bell.
+            </summary>
+            <param name="bell_called_down">The number (indexed from 0) of the bell which will moved downra a place.</param>
+        </member>
         <member name="T:Bob.Change">
             <summary>
             A class to store rows of ringing, as well as all transpositions (Change objects are read-only).
@@ -319,15 +415,15 @@
             <param name="bell">The bell you want to find the index of (indexing from 0).</param>
             <returns>The index (from 0) of the bell.  Returns -1 if the bell isn't in the change.</returns>
         </member>
-        <member name="M:Bob.Change.GetArray">
+        <member name="M:Bob.Change.GetArray(Bob.Change)">
             <summary>
-            Gets the array of the change.  Satisfies the interface ITransposable.
+            Gets the array of the change.  Implements <see cref="T:Bob.ITransposition"/>.
             </summary>
-            <returns></returns>
+            <returns>The array representing the transposition caused by this change.</returns>
         </member>
         <member name="M:Bob.Change.#ctor(System.Int32[])">
             <summary>
-            Creates a change with an integer array.
+            Creates a change from an integer array.
             </summary>
             <param name="array">The array of bells (indexed from 0) in the change you want to create.</param>
         </member>
@@ -460,9 +556,119 @@
             An enum which represents parity (oddness/evenness) of changes.
             </summary>
         </member>
+        <member name="F:Bob.Parity.Even">
+            <summary>
+            An even number of called changes are needed to get from rounds to this change.
+            </summary>
+        </member>
+        <member name="F:Bob.Parity.Odd">
+            <summary>
+            An odd number of called changes are needed to get from rounds to this change.
+            </summary>
+        </member>
         <member name="T:Bob.Stage">
             <summary>
             An enum to represent a stage.  They also return the correct number when cast to an int.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Singles">
+            <summary>
+            A method on 3 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Minimus">
+            <summary>
+            A method on 4 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Doubles">
+            <summary>
+            A method on 5 bells (usually on 6 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Minor">
+            <summary>
+            A method on 6 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Triples">
+            <summary>
+            A method on 7 bells (usually on 8 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Major">
+            <summary>
+            A method on 8 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Caters">
+            <summary>
+            A method on 9 bells (usually on 10 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Royal">
+            <summary>
+            A method on 10 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Cinques">
+            <summary>
+            A method on 11 bells (usually on 12 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Maximus">
+            <summary>
+            A method on 12 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Sextuples">
+            <summary>
+            A method on 13 bells (usually on 14 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Fourteen">
+            <summary>
+            A method on 14 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Septuples">
+            <summary>
+            A method on 15 bells (usually on 16 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Sixteen">
+            <summary>
+            A method on 16 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Octuples">
+            <summary>
+            A method on 17 bells (usually on 18 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Eighteen">
+            <summary>
+            A method on 18 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Nonuples">
+            <summary>
+            A method on 19 bells (usually on 20 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Twenty">
+            <summary>
+            A method on 20 bells.
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.Decuples">
+            <summary>
+            A method on 21 bells (usually on 22 bells with a tenor cover).
+            </summary>
+        </member>
+        <member name="F:Bob.Stage.TwentyTwo">
+            <summary>
+            A method on 22 bells.
             </summary>
         </member>
         <member name="T:Bob.Classification">
@@ -470,12 +676,72 @@
             An enum to store classifications of methods.
             </summary>
         </member>
+        <member name="F:Bob.Classification.Bob">
+            <summary>
+            A method with a plain hunting treble, where the working bells dodge/make points.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Place">
+            <summary>
+            A method with a plain hunting treble, where the working bells never dodge/make points.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.SlowCourse">
+            <summary>
+            A method with a plain hunting treble, and a second hunt bell which makes 2nds over the lead end.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Principle">
+            <summary>
+            A method with no hunt bells (all bells are working bells).
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.TrebleBob">
+            <summary>
+            A treble-dodge method where no internal places are made as the treble hunts between dodges.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Surprise">
+            <summary>
+            A treble-dodge method where internal places are always made as the treble hunts between dodges.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Delight">
+            <summary>
+            A treble-dodge method where some internal places are made as the treble hunts between changes.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.TreblePlace">
+            <summary>
+            A treble-hunting method where the treble's path is symmetric and spends an equal number of blows in every place it visits.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Alliance">
+            <summary>
+            A treble-hunting method where the treble's path is symmetric and spends an non-equal number of blows in every place it visits.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Hybrid">
+            <summary>
+            A treble-hunting method where the treble's path is asymmetric.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Differential">
+            <summary>
+            A method with no hunt bells, but multiple sets of working bells doing different work.
+            </summary>
+        </member>
+        <member name="F:Bob.Classification.Unclassified">
+            <summary>
+            An unclassifiable method.  This should never be used.
+            </summary>
+        </member>
         <member name="T:Bob.ITransposition">
             <summary>
             An interface for any transposable object, e.g. Change or PlaceNotation.
             </summary>
         </member>
-        <member name="M:Bob.ITransposition.GetArray">
+        <member name="M:Bob.ITransposition.GetArray(Bob.Change)">
             <summary>
             A function to get an integer array representing the transposition of this object.
             </summary>
@@ -592,6 +858,21 @@
         <member name="T:Bob.Method.SymmetryType">
             <summary>
             An enum to store the symmetry type of a method (used, e.g. for generating calls).
+            </summary>
+        </member>
+        <member name="F:Bob.Method.SymmetryType.Asymmetric">
+            <summary>
+            This method has asymmetric place notation. Could still have a symmetrical line, e.g. Stedman.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.SymmetryType.PlainBobLike">
+            <summary>
+            This method is symmetric over the treble's lead.
+            </summary>
+        </member>
+        <member name="F:Bob.Method.SymmetryType.GrandsireLike">
+            <summary>
+            This methodo is symmetric over the blow after the treble's lead.
             </summary>
         </member>
         <member name="F:Bob.Method.m_place_notation">
@@ -957,9 +1238,9 @@
             True if this place notation contains internal places (places not at either end of the notation).
             </summary>
         </member>
-        <member name="M:Bob.PlaceNotation.GetArray">
+        <member name="M:Bob.PlaceNotation.GetArray(Bob.Change)">
             <summary>
-            Gets the array representing the transposition of this place notation.  Satisfies the <see cref="T:Bob.ITransposition"/> interface.
+            Gets the array representing the transposition of this place notation.  Implements <see cref="T:Bob.ITransposition"/>.
             </summary>
             <returns>An array representing this transposition.</returns>
         </member>
@@ -991,7 +1272,7 @@
         </member>
         <member name="M:Bob.PlaceNotation.DecodeFullNotation(System.String,Bob.Stage)">
             <summary>
-            Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of place notations.
+            Converts a string of place notations (with lead end shortcuts, implicit places, etc.) to an array of <see cref="T:Bob.PlaceNotation"/> objects.
             </summary>
             <param name="full_notation">The string of place notations.</param>
             <param name="stage">The <see cref="T:Bob.Stage"/> of the place notations.</param>
