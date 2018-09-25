@@ -1609,6 +1609,11 @@
             A dictionary to store where the method splices are placed in the touch.
             </summary>
         </member>
+        <member name="P:Bob.Touch.lead_ends">
+            <summary>
+            A list of the indices of each lead end in this touch.  Used in <see cref="M:Bob.Touch.ToString"/>.
+            </summary>
+        </member>
         <member name="P:Bob.Touch.change_repeat_frequencies">
             <summary>
             A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).

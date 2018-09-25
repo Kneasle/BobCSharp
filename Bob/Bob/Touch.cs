@@ -311,6 +311,10 @@ namespace Bob {
 		/// A dictionary to store where the method splices are placed in the touch.
 		/// </summary>
 		public Dictionary<int, Method> splices { get; private set; }
+		/// <summary>
+		/// A list of the indices of each lead end in this touch.  Used in <see cref="ToString"/>.
+		/// </summary>
+		public List<int> lead_ends { get; private set; }
 
 		private Dictionary<int, int> m_change_repeat_frequencies = null;
 		/// <summary>
@@ -463,9 +467,10 @@ namespace Bob {
 		/// </summary>
 		private void ComputeChanges () {
 			List<Change> changes = new List<Change> ();
-
+			
 			calls = new Dictionary<int, Call> ();
 			splices = new Dictionary<int, Method> ();
+			lead_ends = new List<int> ();
 
 			int lead_index = 0;
 			int sub_lead_index = 0;
@@ -484,8 +489,6 @@ namespace Bob {
 
 			Change current_change = Change.Rounds (stage);
 			Method current_method = start_method;
-
-			splices.Add (0, start_method);
 
 			while (true) {
 				#region Update calls
@@ -560,6 +563,11 @@ namespace Bob {
 
 							sub_lead_index = current_method_call.splice_end_index - 1; // Set to splice_end_index - 1, because later in this iteration of the while loop, 1 will be added to it, to get splice_end_index.
 
+							// Make sure that lead ends get counted even if there was a splice over the lead end.
+							if (current_method_call.splice_end_index == 0) {
+								sub_lead_index = current_method.lead_length - 1;
+							}
+
 							sub_splice_change_index = 0;
 							sub_splice_lead_index = 0;
 
@@ -579,6 +587,11 @@ namespace Bob {
 
 				#region Stop if it comes to rounds (to whatever is the target change is)
 				if (current_change == target_change) {
+					// Add a final lead end.
+					if (sub_lead_index == current_method.lead_length - 1) {
+						lead_ends.Add (absolute_change_index);
+					}
+
 					break;
 				}
 				#endregion
@@ -588,6 +601,8 @@ namespace Bob {
 					sub_lead_index += 1;
 
 					if (sub_lead_index >= current_method.place_notations.Length) {
+						lead_ends.Add (absolute_change_index);
+
 						sub_lead_index = 0;
 						sub_splice_lead_index += 1;
 
@@ -624,7 +639,8 @@ namespace Bob {
 				return "<Touch: changes not computed yet>";
 			}
 
-			string output = "";
+			string output = "   " + Change.Rounds (stage) + " Go " + start_method.title + "\n";
+
 			for (int i = 0; i < changes.Length; i++) {
 				Change c = changes [i];
 
@@ -633,7 +649,17 @@ namespace Bob {
 					call_symbol = calls [i + 2].preferred_notation;
 				}
 
-				output += " " + call_symbol + " " + c.ToString () + (splices.Keys.Contains (i) ? (i == 0 ? " Go" : "") + " " + splices [i].title : "") + "\n";
+				if (lead_ends.Contains (i)) {
+					output += "   ";
+
+					for (int p = 0; p < (int)stage; p++) {
+						output += "-";
+					}
+
+					output += "\n";
+				}
+
+				output += " " + call_symbol + " " + c.ToString () + (splices.Keys.Contains (i) ? " " + splices [i].title : "") + "\n";
 			}
 
 			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
