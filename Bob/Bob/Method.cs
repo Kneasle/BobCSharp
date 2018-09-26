@@ -12,6 +12,11 @@ namespace Bob {
 		/// </summary>
 		public class HuntBell {
 			/// <summary>
+			/// Exception to allow jumping out of two for loops.
+			/// </summary>
+			private class GetMeOutOfHereException : Exception { }
+
+			/// <summary>
 			/// The number of this bell (indexed from zero).
 			/// </summary>
 			public int bell_number { get; private set; }
@@ -30,6 +35,7 @@ namespace Bob {
 			/// True if this hunt bell follows a plain hunting path (in any rotation).
 			/// </summary>
 			public bool is_plain_hunting { get; private set; }
+
 			/// <summary>
 			/// True if this hunt bell follows a treble bobbing path (in any rotation).
 			/// </summary>
@@ -39,6 +45,7 @@ namespace Bob {
 			/// True if this hunt bell path is symmetrical.
 			/// </summary>
 			public bool is_symmetrical { get; private set; }
+
 			/// <summary>
 			/// True if this hunt bell spends an equal number of blows in every place it visits.
 			/// </summary>
@@ -60,43 +67,68 @@ namespace Bob {
 			private void GenerateRotatedPath () {
 				rotated_path = null;
 
+				List<int> place_indices = new List<int> ();
+
 				// Find the index of two consecutive leads
-				int index = -1;
-				for (int i = 0; i < path.Length - 1; i++) {
-					if (path [i] == 0 && path [i + 1] == 0) {
-						index = i;
-						break;
+				for (int i = 0; i < path.Length; i++) {
+					int i_plus_one = i + 1;
+					while (i_plus_one >= path.Length) {
+						i_plus_one -= path.Length;
+					}
+
+					if (path [i] == path [i_plus_one]) {
+						place_indices.Add (i);
 					}
 				}
 
-				if (index == -1) {
+				if (place_indices.Count == 0) {
 					return;
 				}
 
-				// Rotate path so that the consecutive leads are split (this path will start and finish in 0)
-				rotated_path = new int [path.Length];
-				for (int i = 0; i <= index; i++) {
-					rotated_path [i + path.Length - index - 1] = path [i];
-				}
+				// Rotate path so that it is split over the lowest place symmetry point (this path will start and finish at the same place)
+				int lowest_place = int.MaxValue;
 
-				for (int i = index + 1; i < path.Length; i++) {
-					rotated_path [i - index - 1] = path [i];
+				foreach (int index in place_indices) {
+					int[] rotated_path = new int [path.Length];
+
+					for (int i = 0; i <= index; i++) {
+						rotated_path [i + path.Length - index - 1] = path [i];
+					}
+
+					for (int i = index + 1; i < path.Length; i++) {
+						rotated_path [i - index - 1] = path [i];
+					}
+
+					bool is_symm = IsSymmetrical (rotated_path);
+					bool is_lower = path [index] < lowest_place;
+
+					if (is_symm && is_lower) {
+						this.rotated_path = rotated_path;
+
+						lowest_place = path [index];
+					}
 				}
 			}
+
 
 			/// <summary>
 			/// Function to determine whether this hunt bell is plain hunting.
 			/// </summary>
 			/// <returns>True if the hunt bell is plain hunting.</returns>
 			private bool IsPlainHunting () {
+				if (rotated_path is null) {
+					return false;
+				}
+
 				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
 				if (path.Length % 2 != 0) {
 					return false;
 				}
 
 				// Check that path is equal to {0, 1, 2, 3, ... n, n, ... 3, 2, 1, 0}
+				int lowest_place = path.Min ();
 				for (int i = 0; i < path.Length / 2; i++) {
-					if (rotated_path [i] != i || rotated_path [path.Length - i - 1] != i) {
+					if (rotated_path [i] != i + lowest_place || rotated_path [path.Length - i - 1] != i + lowest_place) {
 						return false;
 					}
 				}
@@ -109,40 +141,57 @@ namespace Bob {
 			/// </summary>
 			/// <returns>True if the hunt bell is treble dodging.</returns>
 			private bool IsTrebleDodging () {
+				if (rotated_path is null) {
+					return false;
+				}
+
+				int min = path.Min ();
+				int max = path.Max ();
+				int range = max - min + 1;
+
 				// Check whether path is compatible
 				if (path.Length % 2 != 0) {
 					return false;
 				}
 
-				if ((int)stage % 2 == 1) {
+				if (range % 2 != 0) {
 					return false;
 				}
 
-				int number_of_dodges = path.Length / ((int)stage * 4);
+				float number_of_dodges_f = (float)path.Length / range / 2 - 1;
+
+				if (number_of_dodges_f % 1f != 0f) {
+					return false;
+				}
+
+				int number_of_dodges = (int)number_of_dodges_f;
 
 				// Check that path is equal to {0, 1, 0, 1, 2, 3, 2, 3, ... n, n, ... 3, 2, 3, 2, 1, 0, 1, 0}
-				for (int j = 0; j < path.Length / 4; j += 2) {
-					int i = j * 2;
+				for (int j = 0; j < range; j += 2) {
+					int i = j * (number_of_dodges + 1);
 
 					for (int d = 0; d < number_of_dodges + 1; d++) {
-						if (rotated_path [i + d * 2 + 0] != j) { return false; }
-						if (rotated_path [i + d * 2 + 1] != j + 1) { return false; }
+						if (rotated_path [i + d * 2 + 0] != min + j) { return false; }
+						if (rotated_path [i + d * 2 + 1] != min + j + 1) { return false; }
 						
 						int l = path.Length - 1;
-						if (rotated_path [l - (i + d * 2 + 0)] != j) { return false; }
-						if (rotated_path [l - (i + d * 2 + 1)] != j + 1) { return false; }
+						if (rotated_path [l - (i + d * 2 + 0)] != min + j) { return false; }
+						if (rotated_path [l - (i + d * 2 + 1)] != min + j + 1) { return false; }
 					}
 				}
 
 				return true;
 			}
 
-
 			/// <summary>
 			/// Function to determine whether this hunt bell path is symmetrical.
 			/// </summary>
 			/// <returns>True if the hunt bell path is symmetrical.</returns>
-			private bool IsSymmetrical () {
+			private bool IsSymmetrical (int [] path = null) {
+				if (path is null) {
+					return rotated_path != null;
+				}
+
 				// Cannot plain hunt if leads are an odd number of changes long.  Will also cause a crash if not returned
 				if (path.Length % 2 != 0) {
 					return false;
@@ -150,14 +199,13 @@ namespace Bob {
 
 				// Check that path is equal to {0, 1, 2, 3, ... n, n, ... 3, 2, 1, 0}
 				for (int i = 0; i < path.Length / 2; i++) {
-					if (rotated_path [i] != rotated_path [path.Length - i - 1]) {
+					if (path [i] != path [path.Length - i - 1]) {
 						return false;
 					}
 				}
 
 				return true;
 			}
-
 
 			/// <summary>
 			/// Function to determine whether this hunt bell spends the same number of blows in every place it visits.
@@ -172,7 +220,7 @@ namespace Bob {
 
 				// This code could do with some re-writing.  It works, but is basically unreadable.
 				int value = 0;
-				for (int i = 0; i < path.Max (); i++) {
+				for (int i = 0; i <= path.Max (); i++) {
 					if (number_of_blows_in_each_place [i] != 0) {
 						if (value == 0) {
 							value = number_of_blows_in_each_place [i];
@@ -186,6 +234,7 @@ namespace Bob {
 
 				return true;
 			}
+
 
 			/// <summary>
 			/// Creates a hunt bell object, and lets BobC# set all the boolean values.
@@ -424,7 +473,7 @@ namespace Bob {
 						int [] path = new int [lead_length];
 
 						for (int j = 0; j < lead_length; j++) {
-							path [j] = plain_lead_changes [j].IndexOf (i);
+							path [j] = plain_lead_changes [j].IndexOf (hunt_bell_numbers [i]);
 						}
 
 						m_hunt_bells [i] = new HuntBell (hunt_bell_numbers [i], path, stage);
@@ -469,9 +518,38 @@ namespace Bob {
 			get {
 				if (!has_computed_is_place_method) {
 					m_is_place_method = IsPlaceMethod ();
+
+					return m_is_place_method;
 				}
 
 				return m_is_place_method;
+			}
+		}
+
+		private HuntBell m_main_hunt_bell = null;
+		private HuntBell GetMainHuntBell () {
+			if (hunt_bells.Length == 0) {
+				return null;
+			} else if (hunt_bells.Length == 1) {
+				return hunt_bells [0];
+			} else {
+				foreach (HuntBell h in hunt_bells) {
+					if (h.is_symmetrical) {
+						return h;
+					}
+				}
+
+				return hunt_bells [0];
+			}
+		}
+		/// <summary>
+		/// The 'main' hunt bell of this method.  This is the lowest symmetrical hunt bell, or the lowest hunt bell if no symmetrical hunt bells exists.
+		/// </summary>
+		public HuntBell main_hunt_bell {
+			get {
+				m_main_hunt_bell = m_main_hunt_bell ?? GetMainHuntBell ();
+
+				return m_main_hunt_bell;
 			}
 		}
 
@@ -479,10 +557,6 @@ namespace Bob {
 		/// Generates a <see cref="Touch"/> object representing the plain course of this method.
 		/// </summary>
 		public Touch plain_course => new Touch (this);
-		/// <summary>
-		/// The lowest numbered hunt bell of this method.  Will always be the Treble if the Treble is hunting.
-		/// </summary>
-		public HuntBell main_hunt_bell => hunt_bells.Length > 0 ? hunt_bells [0] : null;
 		/// <summary>
 		/// True if the Treble is plain hunting.
 		/// </summary>
@@ -519,10 +593,7 @@ namespace Bob {
 
 					classification = Classification.Differential;
 				}
-			}
-
-			// Now keep going with the classification
-			if (is_treble_hunting) {
+			} else {
 				is_little = main_hunt_bell.is_little;
 
 				if (main_hunt_bell.is_plain_hunting) {
@@ -533,10 +604,21 @@ namespace Bob {
 							classification = Classification.Bob;
 						}
 					} else {
-						if (hunt_bells [1].bell_number == 1 && lead_end_notation.is_12) {
+						bool is_two_hunt_bell_and_symmetrical = false;
+						foreach (HuntBell h in hunt_bells) {
+							if (h.bell_number == 1 && h.is_symmetrical) {
+								is_two_hunt_bell_and_symmetrical = true;
+							}
+						}
+
+						if (is_two_hunt_bell_and_symmetrical && lead_end_notation.places_made.Contains (1)) {
 							classification = Classification.SlowCourse;
 						} else {
-							classification = Classification.Bob;
+							if (is_place_method) {
+								classification = Classification.Place;
+							} else {
+								classification = Classification.Bob;
+							}
 						}
 					}
 				} else if (main_hunt_bell.is_treble_dodging) {
@@ -767,10 +849,6 @@ namespace Bob {
 		/// <returns>False if any working bell makes any dodges (or snaps, points, etc.).</returns>
 		private bool IsPlaceMethod () {
 			foreach (int[] set in rotating_sets) {
-				if (set.Length == 1) {
-					continue;
-				}
-
 				int [] path = GetPathOfBell (set [0]);
 
 				/* To classify a dodge, we say it must return to a place 
@@ -790,11 +868,10 @@ namespace Bob {
 					int next_index = (i + 1) > path.Length - 1 ? (i + 1 - path.Length) : (i + 1);
 
 					// Check if this next_index is a dodge
-					if (
-						path [last_index] == path [next_index] && 
-						Math.Abs (path [next_index] - path [current_index]) == 1
-					) {
-						return false;
+					if (path [last_index] == path [next_index]) {
+						if (Math.Abs (path [next_index] - path [current_index]) == 1) {
+							return false;
+						}
 					}
 				}
 			}

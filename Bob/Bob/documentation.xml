@@ -755,6 +755,11 @@
             A class which represents a hunt bell in a method.  HuntBell objects can't be changed once created.
             </summary>
         </member>
+        <member name="T:Bob.Method.HuntBell.GetMeOutOfHereException">
+            <summary>
+            Exception to allow jumping out of two for loops.
+            </summary>
+        </member>
         <member name="P:Bob.Method.HuntBell.bell_number">
             <summary>
             The number of this bell (indexed from zero).
@@ -817,7 +822,7 @@
             </summary>
             <returns>True if the hunt bell is treble dodging.</returns>
         </member>
-        <member name="M:Bob.Method.HuntBell.IsSymmetrical">
+        <member name="M:Bob.Method.HuntBell.IsSymmetrical(System.Int32[])">
             <summary>
             Function to determine whether this hunt bell path is symmetrical.
             </summary>
@@ -983,14 +988,14 @@
             True if all the working bells never dodge (or make points, snap leads, etc).
             </summary>
         </member>
+        <member name="P:Bob.Method.main_hunt_bell">
+            <summary>
+            The 'main' hunt bell of this method.  This is the lowest symmetrical hunt bell, or the lowest hunt bell if no symmetrical hunt bells exists.
+            </summary>
+        </member>
         <member name="P:Bob.Method.plain_course">
             <summary>
             Generates a <see cref="T:Bob.Touch"/> object representing the plain course of this method.
-            </summary>
-        </member>
-        <member name="P:Bob.Method.main_hunt_bell">
-            <summary>
-            The lowest numbered hunt bell of this method.  Will always be the Treble if the Treble is hunting.
             </summary>
         </member>
         <member name="P:Bob.Method.is_treble_hunting">
@@ -1150,6 +1155,11 @@
             The name of the method.
             </summary>
         </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.title">
+            <summary>
+            The title of the method.
+            </summary>
+        </member>
         <member name="F:Bob.MethodLibrary.StoredMethod.stage">
             <summary>
             The stage of the method.
@@ -1169,7 +1179,7 @@
             <summary>
             Creates a <see cref="T:Bob.MethodLibrary.StoredMethod"/> object.s
             </summary>
-            <param name="name">The name of the method.</param>
+            <param name="title">The title of the method.</param>
             <param name="stage">The stage of the method.</param>
             <param name="place_notation">The place notation of the method.</param>
         </member>
@@ -1788,12 +1798,34 @@
             <param name="stage">The <see cref="T:Bob.Stage"/> who's string representation is needed.</param>
             <returns>A string representing the given stage.</returns>
         </member>
+        <member name="M:Bob.Utils.StringToStage(System.String)">
+            <summary>
+            Converts a string to its respective <see cref="T:Bob.Stage"/>.
+            </summary>
+            <param name="name">The name of the stage as a string.</param>
+            <returns>The <see cref="T:Bob.Stage"/> who's name is `name`.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the stage can't be found.</exception>
+        </member>
         <member name="M:Bob.Utils.ClassificationToString(Bob.Classification)">
             <summary>
             Converts a <see cref="T:Bob.Classification"/> to a string.
             </summary>
             <param name="classification">The <see cref="T:Bob.Classification"/> who's string representation is needed.</param>
             <returns>A string representing the given Classification</returns>
+        </member>
+        <member name="M:Bob.Utils.StringToClassification(System.String)">
+            <summary>
+            Converts a string to its respective <see cref="T:Bob.Classification"/>.
+            </summary>
+            <param name="name">The name of the classification as a string.</param>
+            <returns>The <see cref="T:Bob.Classification"/> who's name is `name`.</returns>
+        </member>
+        <member name="M:Bob.Utils.GetStageOfMethodFromMethodTitle(System.String)">
+            <summary>
+            Gets the stage of a method, given its title as a string.
+            </summary>
+            <param name="title">The title of the method whos name you want.</param>
+            <returns>The stage of the method, or throws an <see cref="T:System.ArgumentException"/> exception.</returns>
         </member>
         <member name="M:Bob.Utils.Factorial(System.Int32)">
             <summary>

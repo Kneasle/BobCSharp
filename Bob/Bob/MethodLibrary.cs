@@ -20,6 +20,10 @@ namespace Bob {
 			/// </summary>
 			public string name;
 			/// <summary>
+			/// The title of the method.
+			/// </summary>
+			public string title;
+			/// <summary>
 			/// The stage of the method.
 			/// </summary>
 			public Stage stage;
@@ -31,16 +35,16 @@ namespace Bob {
 			/// <summary>
 			/// Generates a proper method object for this method class.
 			/// </summary>
-			public Method method => new Method (place_notation, name, stage);
+			public Method method => new Method (place_notation, title, stage);
 
 			/// <summary>
 			/// Creates a <see cref="StoredMethod"/> object.s
 			/// </summary>
-			/// <param name="name">The name of the method.</param>
+			/// <param name="title">The title of the method.</param>
 			/// <param name="stage">The stage of the method.</param>
 			/// <param name="place_notation">The place notation of the method.</param>
-			public StoredMethod (string name, Stage stage, string place_notation) {
-				this.name = name;
+			public StoredMethod (string title, Stage stage, string place_notation) {
+				this.title = title;
 				this.stage = stage;
 				this.place_notation = place_notation;
 			}
@@ -83,7 +87,7 @@ namespace Bob {
 		/// <returns>The method with the given title (null if no such method exists in the CCCBR library).</returns>
 		public static Method GetMethodByTitle (string title) {
 			foreach (StoredMethod stored_method in library.stored_methods) {
-				if (stored_method.name == title) {
+				if (stored_method.title == title) {
 					return stored_method.method;
 				}
 			}
