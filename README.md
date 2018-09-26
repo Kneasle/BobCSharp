@@ -48,9 +48,13 @@ So from the outside, everything works as expected.
 ### Finished Features:
 - Touches with any calls are fully supported:
   - Fast touch computing engine, including customisable call logic (e.g. calling by bells leading before the treble, etc.).
-  - Touch proving, including checking if a touch is an extent, a multiple extent (e.g. 240 of Doubles), or a legitimate quarter peal.
-  - Shortcuts to generate touches of a single method and from a list of methods rung every lead.
-  - Shortcuts to generate touches by calling positions and from a list of calls.
+  - Touch proving, including checking if a touch is:
+    - true (i.e. no change repeated more than once).
+    - an extent (i.e. every possible change repeated exactly once).
+    - a multiple extent (e.g. 240 of Doubles)
+    - a legitimate quarter peal (i.e. with some changes repeated no more than once more than any other).
+  - Shortcuts to generate touches of a single method by calling positions and from a list of calls.
+  - Shortcuts to generate spliced touches from a list of methods rung at each successive lead end.
   - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
 
 - Splicing is fully supported:
@@ -75,7 +79,12 @@ So from the outside, everything works as expected.
     - Place called up
     - Bell called up
     - Bell called down
-  - Shorthand `*` operator for transpositions of a change by anything inheriting from `ITransposable` (other changes, place notation, called changes, or user-made classes).
+  - Shorthand `*` operator for transpositions of anything implement `ITransposable`.
+  - `Change * PlaceNotation[]` transposes the given change by every PlaceNotation in turn.
+  - Objects which implement `ITransposable` include:
+    - `Change`
+    - `PlaceNotation`
+    - `CalledChange`
 
 - General features:
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
