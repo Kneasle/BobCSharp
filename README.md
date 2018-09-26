@@ -21,7 +21,29 @@ So from the outside, everything works as expected.
 
 
 ## Features List
-Hi!
+Finished Features:
+- Touches of any calls are fully supported:
+  - Fast touch computing engine, including customisable call logic (e.g. calling by bells leading before the treble, etc.).
+  - Truth proving, including checking if a touch is an extent, a multiple extent (e.g. 240 of doubles), or a legitimate quarter peal.
+  - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
+
+- Splicing is fully supported:
+  - Splices don't have to happen on a lead end (e.g. splicing to Plain Hunt in half a course of Cambridge).
+  - New methods don't have to start at a lead end (it supports half-lead splices, etc.).
+  - Touches can splice between methods of different stages, e.g. spliced Triples and Major, or even Doubles and Major.
+
+- Methods:
+  - Standard calls are by default automatically generated, along with the calling positions.
+  - Automatic method classification and title generation (including `Little` and `Differential` tags).
+
+- General Features:
+  - Very high performance (properties are not calculated until they are needed, and then only calculated once).
+  - Shorthand `*` operator for transpositions of a change by anything inheriting from `ITransposable` (other changes, place notation, called changes, or user-made classes).
+
+Features in development:
+- Methods can be loaded from the CCCBR Method Library by either title or place notation.
+- Smart system for detecting touches which will never come round.
+- A function to generate extents of a given method.
 
 ## Quickstart
 First things first, import the library to your code: 
