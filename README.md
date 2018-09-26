@@ -15,6 +15,14 @@ And so bell **#0** (the Treble) comes out as `"1"`, bell **#1** (the two) comes 
 
 So from the outside, everything works as expected.
 
+## Table Of Contents
+- [Features List](#features-list)
+- [Quickstart](#quickstart)
+
+
+## Features List
+Hi!
+
 ## Quickstart
 First things first, import the library to your code: 
 ```C#
