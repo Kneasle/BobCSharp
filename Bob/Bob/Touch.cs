@@ -8,7 +8,7 @@ namespace Bob {
 	/// <summary>
 	/// A class to store a representation of any touch.
 	/// </summary>
-	public class Touch {
+	public class Touch : TouchBase {
 		#region Sub-classes and Exceptions
 		/// <summary>
 		/// A class to store a pairing of a Call and the point at which it is called.
@@ -271,124 +271,10 @@ namespace Bob {
 			}
 		}
 
-		private Change m_target_change = null;
-		/// <summary>
-		/// The change at which the touch will stop.  Defaults to rounds.
-		/// </summary>
-		public Change target_change {
-			get {
-				return m_target_change ?? Change.Rounds (stage);
-			}
-
-			set {
-				if (value != m_target_change) {
-					m_changes = null;
-				}
-
-				m_target_change = value;
-			}
-		}
-
-		private Change [] m_changes = null;
-		/// <summary>
-		/// An array of all the changes in the touch.  Calls <see cref="ComputeChanges"/> once when accessed.
-		/// </summary>
-		public Change [] changes {
-			get {
-				if (m_changes is null) {
-					ComputeChanges ();
-				}
-
-				return m_changes;
-			}
-		}
-
-		/// <summary>
-		/// A dictionary to store where the calls are placed in the touch.
-		/// </summary>
-		public Dictionary<int, Call> calls { get; private set; }
-		/// <summary>
-		/// A dictionary to store where the method splices are placed in the touch.
-		/// </summary>
-		public Dictionary<int, Method> splices { get; private set; }
-		/// <summary>
-		/// A list of the indices of each lead end in this touch.  Used in <see cref="ToString"/>.
-		/// </summary>
-		public List<int> lead_ends { get; private set; }
-
-		private Dictionary<int, int> m_change_repeat_frequencies = null;
-		/// <summary>
-		/// A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).
-		/// </summary>
-		public Dictionary<int, int> change_repeat_frequencies {
-			get {
-				if (m_change_repeat_frequencies is null) {
-					ComputeChangeRepeatFrequencies ();
-				}
-
-				return m_change_repeat_frequencies;
-			}
-		}
-
-		/// <summary>
-		/// True if every possible change is rung once and once only.
-		/// </summary>
-		public bool is_extent {
-			get {
-				if (change_repeat_frequencies.Keys.Count != 1) {
-					return false;
-				}
-
-				if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
-					return false;
-				}
-
-				return change_repeat_frequencies [1] == Utils.Factorial ((int)stage);
-			}
-		}
-		/// <summary>
-		/// True if every possible change is rung an equal number of times. 
-		/// </summary>
-		public bool is_multiple_extent {
-			get {
-				if (change_repeat_frequencies.Keys.Count != 1) {
-					return false;
-				}
-
-				if (change_repeat_frequencies.Keys.ToArray () [0] != 1) {
-					return false;
-				}
-
-				return change_repeat_frequencies [1] % Utils.Factorial ((int)stage) == 0;
-			}
-		}
-		/// <summary>
-		/// True if no change is repeated more than once.
-		/// </summary>
-		public bool is_true => change_repeat_frequencies.Keys.Count == 1 && change_repeat_frequencies.Keys.ToArray () [0] == 1;
-		/// <summary>
-		/// True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
-		/// </summary>
-		public bool is_quarter_peal_true {
-			get {
-				int [] keys = change_repeat_frequencies.Keys.ToArray ();
-
-				if (keys.Length > 2 || keys.Length == 0) {
-					return false;
-				}
-
-				if (keys.Length == 1) {
-					return true;
-				}
-
-				return Math.Abs (keys [1] - keys [0]) == 1;
-			}
-		}
-
 		/// <summary>
 		/// The stage of the touch (the largest stage of all the methods spliced, allowing different staged methods to be spliced).
 		/// </summary>
-		public Stage stage {
+		public override Stage stage {
 			get {
 				int max_stage = (int)start_method.stage;
 
@@ -401,76 +287,20 @@ namespace Bob {
 				return (Stage)max_stage;
 			}
 		}
-
-		/// <summary>
-		/// The number of changes in this touch.
-		/// </summary>
-		public int Length {
-			get {
-				if (changes == null) {
-					return -1;
-				}
-
-				return changes.Length;
-			}
-		}
 		#endregion
 
 		// Functions
 		/// <summary>
-		/// Gets the change at a given index in the touch.
+		/// Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="TouchBase.changes"/> is accessed.
 		/// </summary>
-		/// <param name="i">The index of the requested change.</param>
-		/// <returns>The change at index `i`.</returns>
-		public Change this [int i] {
-			get {
-				return changes [i];
-			}
-		}
-
-		/// <summary>
-		/// Generates the dictionary of change repeats (could be computationally intensive for long touches).
-		/// </summary>
-		private void ComputeChangeRepeatFrequencies () {
-			if (changes == null) {
-				return;
-			}
-
-			// Run duplication / falseness
-			Dictionary<string, int> change_repeats = new Dictionary<string, int> ();
-
-			foreach (Change change in changes) {
-				string c = change.ToString ();
-
-				try {
-					change_repeats [c] += 1;
-				} catch (KeyNotFoundException) {
-					change_repeats [c] = 1;
-				}
-			}
-
-			m_change_repeat_frequencies = new Dictionary<int, int> ();
-
-			foreach (string k in change_repeats.Keys) {
-				int v = change_repeats [k];
-
-				try {
-					m_change_repeat_frequencies [v] += 1;
-				} catch (KeyNotFoundException) {
-					m_change_repeat_frequencies [v] = 1;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="changes"/> is accessed.
-		/// </summary>
-		private void ComputeChanges () {
+		public override Change[] ComputeChanges () {
 			List<Change> changes = new List<Change> ();
 			
-			calls = new Dictionary<int, Call> ();
-			splices = new Dictionary<int, Method> ();
-			lead_ends = new List<int> ();
+			margin_calls = new Dictionary<int, char> ();
+			right_hand_calls = new Dictionary<int, string> ();
+			lead_ends_line_indices = new List<int> ();
+
+			right_hand_calls.Add (-1, "Go " + start_method.title);
 
 			int lead_index = 0;
 			int sub_lead_index = 0;
@@ -506,7 +336,9 @@ namespace Bob {
 
 								attempted_calls_since_last_call = 0;
 
-								calls.Add (absolute_change_index, call);
+								if (!call.is_plain) {
+									margin_calls.Add (absolute_change_index, call.preferred_notation);
+								}
 							} else {
 								attempted_calls_since_last_call += 1;
 							}
@@ -573,7 +405,7 @@ namespace Bob {
 
 							attempted_splices_since_last_splice = 0;
 
-							splices.Add (absolute_change_index, current_method);
+							right_hand_calls.Add (absolute_change_index, current_method.title);
 
 							if (method_call_index >= method_calls.Length) {
 								method_call_index = 0;
@@ -589,7 +421,7 @@ namespace Bob {
 				if (current_change == target_change) {
 					// Add a final lead end.
 					if (sub_lead_index == current_method.lead_length - 1) {
-						lead_ends.Add (absolute_change_index);
+						lead_ends_line_indices.Add (absolute_change_index);
 					}
 
 					break;
@@ -601,7 +433,7 @@ namespace Bob {
 					sub_lead_index += 1;
 
 					if (sub_lead_index >= current_method.place_notations.Length) {
-						lead_ends.Add (absolute_change_index);
+						lead_ends_line_indices.Add (absolute_change_index);
 
 						sub_lead_index = 0;
 						sub_splice_lead_index += 1;
@@ -621,50 +453,7 @@ namespace Bob {
 				#endregion
 			}
 
-			m_changes = changes.ToArray ();
-
-			ComputeChangeRepeatFrequencies ();
-		}
-
-		/// <summary>
-		/// Returns a string representing this touch (could be very large for long touches).
-		/// </summary>
-		/// <returns>A string representation of this touch.</returns>
-		public override string ToString () {
-			if (changes == null) {
-				return "<Touch: changes not computed yet>";
-			}
-
-			if (changes.Length == 0) {
-				return "<Touch: changes not computed yet>";
-			}
-
-			string output = "   " + Change.Rounds (stage) + " Go " + start_method.title + "\n";
-
-			for (int i = 0; i < changes.Length; i++) {
-				Change c = changes [i];
-
-				char call_symbol = ' ';
-				if (calls.Keys.Contains (i + 2) && !calls [i + 2].is_plain) {
-					call_symbol = calls [i + 2].preferred_notation;
-				}
-
-				if (lead_ends.Contains (i)) {
-					output += "   ";
-
-					for (int p = 0; p < (int)stage; p++) {
-						output += "-";
-					}
-
-					output += "\n";
-				}
-
-				output += " " + call_symbol + " " + c.ToString () + (splices.Keys.Contains (i) ? " " + splices [i].title : "") + "\n";
-			}
-
-			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
-
-			return output;
+			return changes.ToArray ();
 		}
 
 		/// <summary>
@@ -767,19 +556,6 @@ namespace Bob {
 		/// How far through the lead of the next method the splice starts (should be positive).
 		/// </summary>
 		public int splice_end_index = 0;
-
-		/// <summary>
-		/// Creates a blank <see cref="MethodCall"/> (should only be used for debug purposes).
-		/// </summary>
-		public MethodCall () { }
-
-		/// <summary>
-		/// Creates a <see cref="MethodCall"/> with just a <see cref="Method"/>.  This is the 'go x' call at the start of a <see cref="Touch"/>.
-		/// </summary>
-		/// <param name="method">The <see cref="Method"/> being spliced to.</param>
-		public MethodCall (Method method) {
-			this.method = method;
-		}
 
 		/// <summary>
 		/// Creates a fully-defined <see cref="MethodCall"/> for a lead-end to lead-end splice.

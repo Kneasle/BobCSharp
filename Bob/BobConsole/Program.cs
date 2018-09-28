@@ -17,6 +17,7 @@ namespace BobConsole {
 			Console.WriteLine ("\n\n\n\n\n");
 			*/
 			
+			/*
 			Console.WriteLine (new Touch (
 				Method.cambridge_major,
 				new MethodCall [] {new MethodCall (
@@ -25,12 +26,11 @@ namespace BobConsole {
 					-2
 				)}
 			));
+			*/
 			
-			/*
 			Console.WriteLine (new Touch (
 				new Method [] { Method.plain_bob_doubles, Method.plain_bob_minor }
 			));
-			*/
 
 			Console.ReadLine ();
 		}

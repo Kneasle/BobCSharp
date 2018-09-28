@@ -23,6 +23,35 @@ namespace Bob {
 		/// </summary>
 		public int [] places_made { get; private set; }
 
+		/// <summary>
+		/// Gets the compacted notation (i.e. with implicit places removed).
+		/// </summary>
+		public string compact_notation {
+			get {
+				if (places_made.Length <= 1) {
+					return notation;
+				}
+
+				if (places_made.Length == 2 && places_made [0] == 0 && places_made [1] == (int)stage - 1) {
+					return Constants.bell_names [0].ToString ();
+				}
+
+				string output = "";
+
+				List<int> places = places_made.ToList ();
+
+				places.Sort ();
+
+				foreach (int place in places) {
+					if (place != 0 && place != (int)stage - 1) {
+						output += Constants.bell_names [place];
+					}
+				}
+
+				return output;
+			}
+		}
+
 		// Properties
 		/// <summary>
 		/// Gets the stage of this place notation.
@@ -70,6 +99,11 @@ namespace Bob {
 				return m_is_1n;
 			}
 		}
+
+		/// <summary>
+		/// True if this place notation is an "X" type notation.
+		/// </summary>
+		public bool is_x => places_made.Length == 0;
 
 		private bool m_has_internal_places;
 		private bool has_set_has_internal_places = false;
@@ -380,6 +414,72 @@ namespace Bob {
 			}
 
 			return changes;
+		}
+
+		/// <summary>
+		/// Removes implicit places from a given place notation, as well as adding symmetry.
+		/// </summary>
+		/// <param name="input">The input place notation.</param>
+		/// <param name="stage">The stage on which this place notation is being rung.</param>
+		/// <returns>The place notation compressed as much as possible.</returns>
+		public static string CompressPlaceNotation (string input, Stage stage) {
+			Method method = new Method (input, "", stage, null, false);
+
+			string output = "";
+
+			switch (method.symmetry_type) {
+				case Method.SymmetryType.Asymmetric:
+					for (int i = 0; i < method.lead_length; i++) {
+						PlaceNotation current_notation = method.place_notations [i];
+						PlaceNotation next_notation = i == method.lead_length - 1 ? null : method.place_notations [i + 1];
+
+						if (current_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else if (next_notation == null || next_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else {
+							output += current_notation.compact_notation + basic_delimiters [0];
+						}
+					}
+
+					break;
+				case Method.SymmetryType.PlainBobLike:
+					for (int i = 0; i < method.lead_length / 2; i++) {
+						PlaceNotation current_notation = method.place_notations [i];
+						PlaceNotation next_notation = i == method.lead_length / 2 - 1 ? null : method.place_notations [i + 1];
+
+						if (current_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else if (next_notation == null || next_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else {
+							output += current_notation.compact_notation + basic_delimiters [0];
+						}
+					}
+
+					output += leadend_delimiters [0] + method.place_notations [method.lead_length - 1].compact_notation;
+
+					break;
+				case Method.SymmetryType.GrandsireLike:
+					output += method.place_notations [0].compact_notation + leadend_delimiters [0];
+
+					for (int i = 1; i < method.lead_length / 2 + 1; i++) {
+						PlaceNotation current_notation = method.place_notations [i];
+						PlaceNotation next_notation = i == method.lead_length / 2 ? null : method.place_notations [i + 1];
+
+						if (current_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else if (next_notation == null || next_notation.is_x) {
+							output += current_notation.compact_notation;
+						} else {
+							output += current_notation.compact_notation + basic_delimiters [0];
+						}
+					}
+
+					break;
+			}
+
+			return output;
 		}
 
 		// Constants

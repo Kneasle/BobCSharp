@@ -58,6 +58,8 @@ namespace BobMethodLibraryGenerator {
 						if (reader.Name == "method") {
 							Stage stage = Utils.GetStageOfMethodFromMethodTitle (method_title);
 
+							method_place_notation = PlaceNotation.CompressPlaceNotation (method_place_notation, stage);
+
 							Method method = new Method (method_place_notation, method_name, stage, null, false);
 
 							if (method.title == method_title) {

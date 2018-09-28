@@ -166,6 +166,10 @@ namespace Bob {
 
 				int number_of_dodges = (int)number_of_dodges_f;
 
+				if (number_of_dodges == 0) {
+					return false;
+				}
+
 				// Check that path is equal to {0, 1, 0, 1, 2, 3, 2, 3, ... n, n, ... 3, 2, 3, 2, 1, 0, 1, 0}
 				for (int j = 0; j < range; j += 2) {
 					int i = j * (number_of_dodges + 1);

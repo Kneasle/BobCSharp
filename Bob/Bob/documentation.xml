@@ -1231,6 +1231,11 @@
             An array of places (indexed from 0) made in this place notation.
             </summary>
         </member>
+        <member name="P:Bob.PlaceNotation.compact_notation">
+            <summary>
+            Gets the compacted notation (i.e. with implicit places removed).
+            </summary>
+        </member>
         <member name="P:Bob.PlaceNotation.stage">
             <summary>
             Gets the stage of this place notation.
@@ -1244,6 +1249,11 @@
         <member name="P:Bob.PlaceNotation.is_1n">
             <summary>
             True if this place notation is "1n".  For all odd-staged notations, this returns false.
+            </summary>
+        </member>
+        <member name="P:Bob.PlaceNotation.is_x">
+            <summary>
+            True if this place notation is an "X" type notation.
             </summary>
         </member>
         <member name="P:Bob.PlaceNotation.has_internal_places">
@@ -1306,6 +1316,14 @@
             <param name="start_change">Set the start change to something other than rounds.</param>
             <returns></returns>
         </member>
+        <member name="M:Bob.PlaceNotation.CompressPlaceNotation(System.String,Bob.Stage)">
+            <summary>
+            Removes implicit places from a given place notation, as well as adding symmetry.
+            </summary>
+            <param name="input">The input place notation.</param>
+            <param name="stage">The stage on which this place notation is being rung.</param>
+            <returns>The place notation compressed as much as possible.</returns>
+        </member>
         <member name="F:Bob.PlaceNotation.x_notations">
             <summary>
             A customisable array of possible notations for a 'cross' place notations.
@@ -1359,6 +1377,27 @@
             </summary>
             <param name="message">The message display.</param>
             <param name="inner">The other exception.</param>
+        </member>
+        <member name="T:Bob.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Bob.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Bob.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Bob.Properties.Resources.methods">
+            <summary>
+              Looks up a localized string similar to .
+            </summary>
         </member>
         <member name="T:Bob.Touch">
             <summary>
@@ -1599,88 +1638,15 @@
             The bell from which the touch is called.  If set to <see cref="F:Bob.Constants.tenor"/> (-1), then this is set to the heaviest bell.
             </summary>
         </member>
-        <member name="P:Bob.Touch.target_change">
-            <summary>
-            The change at which the touch will stop.  Defaults to rounds.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.changes">
-            <summary>
-            An array of all the changes in the touch.  Calls <see cref="M:Bob.Touch.ComputeChanges"/> once when accessed.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.calls">
-            <summary>
-            A dictionary to store where the calls are placed in the touch.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.splices">
-            <summary>
-            A dictionary to store where the method splices are placed in the touch.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.lead_ends">
-            <summary>
-            A list of the indices of each lead end in this touch.  Used in <see cref="M:Bob.Touch.ToString"/>.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.change_repeat_frequencies">
-            <summary>
-            A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.is_extent">
-            <summary>
-            True if every possible change is rung once and once only.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.is_multiple_extent">
-            <summary>
-            True if every possible change is rung an equal number of times. 
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.is_true">
-            <summary>
-            True if no change is repeated more than once.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.is_quarter_peal_true">
-            <summary>
-            True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
-            </summary>
-        </member>
         <member name="P:Bob.Touch.stage">
             <summary>
             The stage of the touch (the largest stage of all the methods spliced, allowing different staged methods to be spliced).
             </summary>
         </member>
-        <member name="P:Bob.Touch.Length">
-            <summary>
-            The number of changes in this touch.
-            </summary>
-        </member>
-        <member name="P:Bob.Touch.Item(System.Int32)">
-            <summary>
-            Gets the change at a given index in the touch.
-            </summary>
-            <param name="i">The index of the requested change.</param>
-            <returns>The change at index `i`.</returns>
-        </member>
-        <member name="M:Bob.Touch.ComputeChangeRepeatFrequencies">
-            <summary>
-            Generates the dictionary of change repeats (could be computationally intensive for long touches).
-            </summary>
-        </member>
         <member name="M:Bob.Touch.ComputeChanges">
             <summary>
-            Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="P:Bob.Touch.changes"/> is accessed.
+            Generates all the changes in the touch (could be computationally intensive).  Called once when <see cref="P:Bob.TouchBase.changes"/> is accessed.
             </summary>
-        </member>
-        <member name="M:Bob.Touch.ToString">
-            <summary>
-            Returns a string representing this touch (could be very large for long touches).
-            </summary>
-            <returns>A string representation of this touch.</returns>
         </member>
         <member name="M:Bob.Touch.#ctor(Bob.Method,Bob.BasicCall[],System.Int32)">
             <summary>
@@ -1759,17 +1725,6 @@
             How far through the lead of the next method the splice starts (should be positive).
             </summary>
         </member>
-        <member name="M:Bob.MethodCall.#ctor">
-            <summary>
-            Creates a blank <see cref="T:Bob.MethodCall"/> (should only be used for debug purposes).
-            </summary>
-        </member>
-        <member name="M:Bob.MethodCall.#ctor(Bob.Method)">
-            <summary>
-            Creates a <see cref="T:Bob.MethodCall"/> with just a <see cref="T:Bob.Method"/>.  This is the 'go x' call at the start of a <see cref="T:Bob.Touch"/>.
-            </summary>
-            <param name="method">The <see cref="T:Bob.Method"/> being spliced to.</param>
-        </member>
         <member name="M:Bob.MethodCall.#ctor(Bob.Method,Bob.Touch.ICallLocation)">
             <summary>
             Creates a fully-defined <see cref="T:Bob.MethodCall"/> for a lead-end to lead-end splice.
@@ -1785,6 +1740,100 @@
             <param name="location">The location of the splice.</param>
             <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="F:Bob.MethodCall.splice_start_index"/>.</param>
             <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="F:Bob.MethodCall.splice_end_index"/>.</param>
+        </member>
+        <member name="T:Bob.TouchBase">
+            <summary>
+            A base class from which other touch objects inherit.  Contains common functionality between method touches and called change touches.
+            </summary>
+        </member>
+        <member name="F:Bob.TouchBase.margin_calls">
+            <summary>
+            A dictionary to store where margin calls (placed to the left of the changes) are to be placed (for use in <see cref="M:Bob.TouchBase.ToString"/>).
+            </summary>
+        </member>
+        <member name="F:Bob.TouchBase.right_hand_calls">
+            <summary>
+            A dictionary to store calls placed to the right of the changes
+            </summary>
+        </member>
+        <member name="F:Bob.TouchBase.lead_ends_line_indices">
+            <summary>
+            A list of the indices of each lead end in this touch.  Used in <see cref="M:Bob.TouchBase.ToString"/>.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.target_change">
+            <summary>
+            The change at which the touch will stop.  Defaults to rounds.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.changes">
+            <summary>
+            An array of all the changes in the touch.  Calls <see cref="M:Bob.TouchBase.ComputeChanges"/> once when accessed.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.Length">
+            <summary>
+            The number of changes in this touch.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.Item(System.Int32)">
+            <summary>
+            Gets the change at a given index in the touch.
+            </summary>
+            <param name="i">The index of the requested change.</param>
+            <returns>The change at index `i`.</returns>
+        </member>
+        <member name="P:Bob.TouchBase.change_repeat_frequencies">
+            <summary>
+            A dictionary of (key: the number of times each change repeats, value: the number of changes which repeat this many times).
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.is_extent">
+            <summary>
+            True if every possible change is rung once and once only.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.is_multiple_extent">
+            <summary>
+            True if every possible change is rung an equal number of times. 
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.is_true">
+            <summary>
+            True if no change is repeated more than once.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.is_quarter_peal_true">
+            <summary>
+            True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
+            </summary>
+        </member>
+        <member name="M:Bob.TouchBase.ComputeChangeRepeatFrequencies">
+            <summary>
+            Generates the dictionary of change repeats (could be computationally intensive for long touches).
+            </summary>
+        </member>
+        <member name="M:Bob.TouchBase.ComputeAll">
+            <summary>
+            Computes changes and the change repeat frequencies needed to determine falseness.
+            </summary>
+        </member>
+        <member name="M:Bob.TouchBase.ToString">
+            <summary>
+            Returns a string representing this touch (could be very large for long touches).
+            </summary>
+            <returns>A string representation of this touch.</returns>
+        </member>
+        <member name="M:Bob.TouchBase.ComputeChanges">
+            <summary>
+            A function to populate the changes array.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Bob.TouchBase.stage">
+            <summary>
+            The stage of this touch.
+            </summary>
         </member>
         <member name="T:Bob.Utils">
             <summary>

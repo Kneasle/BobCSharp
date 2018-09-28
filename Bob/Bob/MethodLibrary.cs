@@ -59,11 +59,10 @@ namespace Bob {
 		/// <summary>
 		/// Creates a method library from a compressed text file.
 		/// </summary>
-		/// <param name="override_path">Set this to override the default path (<see cref="library_path"/>).</param>
-		public MethodLibrary (string override_path = null) {
-			string path = override_path ?? library_path;
-
-			string [] lines = System.IO.File.ReadAllLines (path);
+		/// <param name="method_data">Set this to override the default method data.</param>
+		public MethodLibrary (string method_data = null) {
+			string data = method_data ?? Properties.Resources.methods;
+			string [] lines = data.Split ('\n');
 
 			stored_methods = new StoredMethod [lines.Length];
 
@@ -78,7 +77,7 @@ namespace Bob {
 		/// <summary>
 		/// The default path to the compressed version of the CCCBR method library.
 		/// </summary>
-		public static string library_path = "../../../../Bob/compressed_method_library.txt";
+		public static string library_path = "../../../../Bob/methods.txt";
 
 		/// <summary>
 		/// Finds a method with a given title in the CCCBR method library.
