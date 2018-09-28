@@ -362,29 +362,7 @@ namespace Bob {
 		/// <summary>
 		/// The title of the method.  If `override_title` is null, this will generate the title automagically.
 		/// </summary>
-		public string title {
-			get {
-				if (override_title != null) {
-					return override_title;
-				}
-
-				bool called_differential = is_differential && classification != Classification.Differential;
-
-				string output;
-
-				if (classification == Classification.Principle) {
-					output = name + " " + Utils.StageToString (stage);
-				} else {
-					output = name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.ClassificationToString (classification) + " " + Utils.StageToString (stage);
-				}
-
-				if (name == "") {
-					return output.Substring (1);
-				} else {
-					return output;
-				}
-			}
-		}
+		public string title => override_title ?? GenerateTitle (name, stage, classification, is_little, is_differential);
 
 		private PlaceNotation [] m_place_notations = null;
 		/// <summary>
@@ -1014,11 +992,38 @@ namespace Bob {
 
 		// Static stuff
 		/// <summary>
-		/// Gets a method from the CCCBR method library (null if no method of that title exists).
+		/// Gets a method with a given title from the CCCBR method library (null if no method of that title exists).
 		/// </summary>
 		/// <param name="title">The title of the method you want to find.</param>
 		/// <returns>The <see cref="Method"/> object with that title (or null).</returns>
 		public static Method GetMethod (string title) => MethodLibrary.GetMethodByTitle (title);
+
+		/// <summary>
+		/// Generates a method's title given a load of attributes
+		/// </summary>
+		/// <param name="name">The name of the method.</param>
+		/// <param name="stage">The stage of the method.</param>
+		/// <param name="classification">The classification of the method.</param>
+		/// <param name="is_little">True if the tag "Little" should be included in the title.</param>
+		/// <param name="is_differential">True if the tag "Differential" should be included in the title.</param>
+		/// <returns></returns>
+		public static string GenerateTitle (string name, Stage stage, Classification classification, bool is_little, bool is_differential) {
+			bool called_differential = is_differential && classification != Classification.Differential;
+
+			string output;
+
+			if (classification == Classification.Principle) {
+				output = name + " " + Utils.StageToString (stage);
+			} else {
+				output = name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.ClassificationToString (classification) + " " + Utils.StageToString (stage);
+			}
+
+			if (name == "") {
+				return output.Substring (1);
+			} else {
+				return output;
+			}
+		}
 
 		/// <summary>
 		/// Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).

@@ -28,6 +28,11 @@ namespace Bob {
 		public const string ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		/// <summary>
+		/// The string used to compress small integers into a 1 char storage value.
+		/// </summary>
+		public const string int_value_lookup = @"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%^&*()-=_+[]{};'#:@~,./<>?\|`¬";
+
+		/// <summary>
 		/// Gets the bell name representing bell `n` where the treble is bell #0.
 		/// </summary>
 		/// <param name="n">The requested bell's index.</param>

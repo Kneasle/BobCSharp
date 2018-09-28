@@ -521,6 +521,11 @@
             A string of every uppercase character.
             </summary>
         </member>
+        <member name="F:Bob.Constants.int_value_lookup">
+            <summary>
+            The string used to compress small integers into a 1 char storage value.
+            </summary>
+        </member>
         <member name="M:Bob.Constants.GetBellNameIndexingFromZero(System.Int32)">
             <summary>
             Gets the bell name representing bell `n` where the treble is bell #0.
@@ -1105,10 +1110,21 @@
         </member>
         <member name="M:Bob.Method.GetMethod(System.String)">
             <summary>
-            Gets a method from the CCCBR method library (null if no method of that title exists).
+            Gets a method with a given title from the CCCBR method library (null if no method of that title exists).
             </summary>
             <param name="title">The title of the method you want to find.</param>
             <returns>The <see cref="T:Bob.Method"/> object with that title (or null).</returns>
+        </member>
+        <member name="M:Bob.Method.GenerateTitle(System.String,Bob.Stage,Bob.Classification,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a method's title given a load of attributes
+            </summary>
+            <param name="name">The name of the method.</param>
+            <param name="stage">The stage of the method.</param>
+            <param name="classification">The classification of the method.</param>
+            <param name="is_little">True if the tag "Little" should be included in the title.</param>
+            <param name="is_differential">True if the tag "Differential" should be included in the title.</param>
+            <returns></returns>
         </member>
         <member name="P:Bob.Method.plain_bob_doubles">
             <summary>
@@ -1155,7 +1171,7 @@
             The name of the method.
             </summary>
         </member>
-        <member name="F:Bob.MethodLibrary.StoredMethod.title">
+        <member name="F:Bob.MethodLibrary.StoredMethod.override_title">
             <summary>
             The title of the method.
             </summary>
@@ -1170,18 +1186,42 @@
             The place notation of the method.
             </summary>
         </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.classification">
+            <summary>
+            The classification of the method (to speed up loading methods).
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.is_little">
+            <summary>
+            True if the tag "Little" should be included in the method title.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.is_differential">
+            <summary>
+            True if the tag "Differential" should be included in the method title.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.title">
+            <summary>
+            The title of the method.
+            </summary>
+        </member>
         <member name="P:Bob.MethodLibrary.StoredMethod.method">
             <summary>
             Generates a proper method object for this method class.
             </summary>
         </member>
-        <member name="M:Bob.MethodLibrary.StoredMethod.#ctor(System.String,Bob.Stage,System.String)">
+        <member name="M:Bob.MethodLibrary.StoredMethod.#ctor(System.String,Bob.Stage,System.String,Bob.Classification,System.Boolean,System.Boolean,System.String)">
             <summary>
-            Creates a <see cref="T:Bob.MethodLibrary.StoredMethod"/> object.s
+            Creates a new <see cref="T:Bob.MethodLibrary.StoredMethod"/> object.
             </summary>
-            <param name="title">The title of the method.</param>
+            <param name="name">The name of the method.</param>
             <param name="stage">The stage of the method.</param>
             <param name="place_notation">The place notation of the method.</param>
+            <param name="classification">The classification of the method.</param>
+            <param name="is_little">True if the tag "Little" should be included in the method title.</param>
+            <param name="is_differential">True if the tag "Differential" should be included in the method title.</param>
+            <param name="override_title">Set this from null to override the title of the method.</param>
         </member>
         <member name="F:Bob.MethodLibrary.stored_methods">
             <summary>
@@ -1190,7 +1230,7 @@
         </member>
         <member name="M:Bob.MethodLibrary.#ctor(System.String)">
             <summary>
-            Creates a method library from a compressed text file.
+            Creates a method library from a compressed text file (`methods.txt`).
             </summary>
             <param name="method_data">Set this to override the default method data.</param>
         </member>
@@ -1204,11 +1244,6 @@
         <member name="P:Bob.MethodLibrary.library">
             <summary>
             Gets/creates a <see cref="T:Bob.MethodLibrary"/> object for the CCCBR method library.
-            </summary>
-        </member>
-        <member name="F:Bob.MethodLibrary.int_value_lookup">
-            <summary>
-            Gets the string used to compress small integers into a 1 char storage value.
             </summary>
         </member>
         <member name="T:Bob.PlaceNotation">
