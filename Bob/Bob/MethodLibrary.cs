@@ -64,20 +64,20 @@ namespace Bob {
 			string data = method_data ?? Properties.Resources.methods;
 			string [] lines = data.Split ('\n');
 
-			stored_methods = new StoredMethod [lines.Length];
+			List<StoredMethod> stored_methods = new List<StoredMethod> ();
 
 			for (int i = 0; i < lines.Length; i++) {
+				if (lines [i] == "") {
+					continue;
+				}
+
 				string [] parts = lines [i].Split ('|');
 
-				stored_methods [i] = new StoredMethod (parts [0], Stage.Doubles, parts [1]);
+				stored_methods.Add (new StoredMethod (parts [0], (Stage)int.Parse (parts [2]), parts [1]));
 			}
-		}
 
-		// Static stuff
-		/// <summary>
-		/// The default path to the compressed version of the CCCBR method library.
-		/// </summary>
-		public static string library_path = "../../../../Bob/methods.txt";
+			this.stored_methods = stored_methods.ToArray ();
+		}
 
 		/// <summary>
 		/// Finds a method with a given title in the CCCBR method library.
@@ -107,5 +107,10 @@ namespace Bob {
 				return m_library;
 			}
 		}
+
+		/// <summary>
+		/// Gets the string used to compress small integers into a 1 char storage value.
+		/// </summary>
+		public const string int_value_lookup = @"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%^&*()-=_+[]{};'#:@~,./<>?\|`¬";
 	}
 }

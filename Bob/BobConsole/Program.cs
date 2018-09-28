@@ -29,7 +29,7 @@ namespace BobConsole {
 			*/
 			
 			Console.WriteLine (new Touch (
-				new Method [] { Method.plain_bob_doubles, Method.plain_bob_minor }
+				new Method [] { Method.GetMethod ("Plain Bob Doubles"), Method.plain_bob_minor }
 			));
 
 			Console.ReadLine ();

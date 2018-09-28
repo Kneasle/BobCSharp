@@ -370,10 +370,18 @@ namespace Bob {
 
 				bool called_differential = is_differential && classification != Classification.Differential;
 
+				string output;
+
 				if (classification == Classification.Principle) {
-					return name + " " + Utils.StageToString (stage);
+					output = name + " " + Utils.StageToString (stage);
 				} else {
-					return name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.ClassificationToString (classification) + " " + Utils.StageToString (stage);
+					output = name + (called_differential ? " Differential" : "") + (is_little ? " Little" : "") + " " + Utils.ClassificationToString (classification) + " " + Utils.StageToString (stage);
+				}
+
+				if (name == "") {
+					return output.Substring (1);
+				} else {
+					return output;
 				}
 			}
 		}

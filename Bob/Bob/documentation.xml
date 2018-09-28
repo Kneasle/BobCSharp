@@ -1192,12 +1192,7 @@
             <summary>
             Creates a method library from a compressed text file.
             </summary>
-            <param name="override_path">Set this to override the default path (<see cref="F:Bob.MethodLibrary.library_path"/>).</param>
-        </member>
-        <member name="F:Bob.MethodLibrary.library_path">
-            <summary>
-            The default path to the compressed version of the CCCBR method library.
-            </summary>
+            <param name="method_data">Set this to override the default method data.</param>
         </member>
         <member name="M:Bob.MethodLibrary.GetMethodByTitle(System.String)">
             <summary>
@@ -1209,6 +1204,11 @@
         <member name="P:Bob.MethodLibrary.library">
             <summary>
             Gets/creates a <see cref="T:Bob.MethodLibrary"/> object for the CCCBR method library.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.int_value_lookup">
+            <summary>
+            Gets the string used to compress small integers into a 1 char storage value.
             </summary>
         </member>
         <member name="T:Bob.PlaceNotation">
