@@ -1788,6 +1788,51 @@
             A base class from which other touch objects inherit.  Contains common functionality between method touches and called change touches.
             </summary>
         </member>
+        <member name="T:Bob.TouchBase.ChangeState">
+            <summary>
+            A class which stores the state of a change, to check whether or not touches will ever come round.
+            </summary>
+            <remarks>
+            Basically, in a touch which comes round, no change states should ever be repeated.
+            Thus, if a new change state has already occured in a stored list, then the touch will never come round.
+            </remarks>
+        </member>
+        <member name="P:Bob.TouchBase.ChangeState.change">
+            <summary>
+            The change reached within the touch.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.ChangeState.method_call_index">
+            <summary>
+            The index within the method calls in the touch.
+            </summary>
+        </member>
+        <member name="P:Bob.TouchBase.ChangeState.basic_call_index">
+            <summary>
+            THe index within the calls in the touch.
+            </summary>
+        </member>
+        <member name="M:Bob.TouchBase.ChangeState.Equals(System.Object)">
+            <summary>
+            Determines whether this object equals another object.
+            </summary>
+            <param name="obj">The other object.</param>
+            <returns>True if this object is equal to the other object.</returns>
+        </member>
+        <member name="M:Bob.TouchBase.ChangeState.GetHashCode">
+            <summary>
+            Gets the hash code of the object.
+            </summary>
+            <returns>The hash code of this object.</returns>
+        </member>
+        <member name="M:Bob.TouchBase.ChangeState.#ctor(Bob.Change,System.Int32,System.Int32)">
+            <summary>
+            Creates a ChangeState object
+            </summary>
+            <param name="change">The current change reached in the touch.</param>
+            <param name="method_call_index">The index within the splices of the touch.</param>
+            <param name="basic_call_index">The index within the calls of the touch.</param>
+        </member>
         <member name="F:Bob.TouchBase.margin_calls">
             <summary>
             A dictionary to store where margin calls (placed to the left of the changes) are to be placed (for use in <see cref="M:Bob.TouchBase.ToString"/>).
@@ -1848,6 +1893,11 @@
         <member name="P:Bob.TouchBase.is_quarter_peal_true">
             <summary>
             True if this touch could be rung for a quarter peal (i.e. no change is rung more than one more time than any other).
+            </summary>
+        </member>
+        <member name="F:Bob.TouchBase.comes_round">
+            <summary>
+            Set to true if the touch comes round, otherwise false.
             </summary>
         </member>
         <member name="M:Bob.TouchBase.ComputeChangeRepeatFrequencies">

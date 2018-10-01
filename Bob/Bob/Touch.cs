@@ -295,6 +295,7 @@ namespace Bob {
 		/// </summary>
 		public override Change[] ComputeChanges () {
 			List<Change> changes = new List<Change> ();
+			List<ChangeState> change_states = new List<ChangeState> ();
 			
 			margin_calls = new Dictionary<int, char> ();
 			right_hand_calls = new Dictionary<int, string> ();
@@ -348,7 +349,10 @@ namespace Bob {
 					// In a call, so could be stopping a call
 					if (absolute_change_index > current_callpoint.end_index) {
 						sub_lead_index += current_callpoint.call.cover;
+
 						if (sub_lead_index >= current_method.place_notations.Length) {
+							lead_ends_line_indices.Add (absolute_change_index - 1);
+
 							sub_lead_index = 0;
 							lead_index += 1;
 						}
@@ -424,6 +428,8 @@ namespace Bob {
 						lead_ends_line_indices.Add (absolute_change_index);
 					}
 
+					comes_round = true;
+
 					break;
 				}
 				#endregion
@@ -446,9 +452,18 @@ namespace Bob {
 				sub_splice_change_index += 1;
 				#endregion
 
-				#region Stop if touch goes on forever.  At the moment, that's just after 100,000 changes.
-				if (absolute_change_index > 1e5) {
-					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 100,000 changes without coming round.");
+				#region Stop if touch goes on forever.  If 1,000,000 changes are reached, then the code will stop.
+				ChangeState current_state = new ChangeState (current_change, method_call_index, call_index);
+
+				if (change_states.Contains (current_state)) {
+					comes_round = false;
+					break;
+				}
+
+				change_states.Add (current_state);
+
+				if (absolute_change_index > 1e6) {
+					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 1,000,000 changes without coming round.");
 				}
 				#endregion
 			}

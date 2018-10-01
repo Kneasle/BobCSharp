@@ -215,7 +215,7 @@ namespace Bob {
 				int max_place = places_made.Max ();
 
 				if (min_place > 0 && min_place % 2 != 0) {
-					places_made.Add (0);
+					places_made.Insert (0, 0);
 				}
 
 				if (max_place < (int)stage - 1 && ((int)stage - max_place) % 2 == 0) {

@@ -51,8 +51,12 @@ namespace BobConsole {
 			));
 		}
 
+		static void PrintATouchWhichDoesntComeRound () {
+			Console.WriteLine (Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("I"));
+		}
+
 		static void Main (string [] args) {
-			PrintACalledChangeTouch ();
+			PrintATouchWhichDoesntComeRound ();
 
 			Console.ReadLine ();
 		}

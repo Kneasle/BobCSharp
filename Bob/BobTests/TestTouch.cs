@@ -113,5 +113,12 @@ namespace BobTests {
 			Assert.AreEqual (false, touch.is_extent);
 			Assert.AreEqual (true, touch.is_true);
 		}
+
+		[TestMethod]
+		public void Touch_DoesntComeRound () {
+			Touch touch = Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("I");
+
+			Assert.AreEqual (false, touch.comes_round);
+		}
 	}
 }
