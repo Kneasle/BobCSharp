@@ -57,6 +57,7 @@ So from the outside, everything works as expected.
   - Shortcuts to generate spliced touches from a list of methods rung at each successive lead end.
   - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
   - Touches of called changes can also be computed.
+  - BobC# will detect touches which never come round as soon as it is apparent, rather than blasting out millions of changes and running out of memory.
 
 - Splicing is fully supported:
   - Splices don't have to happen on a lead end (e.g. splicing to Plain Hunt in half a course of Cambridge).
@@ -92,12 +93,11 @@ So from the outside, everything works as expected.
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
 
 ### Features in Development:
-- Smart system for detecting touches which will never come round.
+- Touch proving done first by lead end transpositions, speeding up truth checks.
 
 ### Roadmapped Features:
 - Ability to search for methods with a given place notation.
 - A function to generate extents of a given method.
-- Touch proving done first by lead end transpositions, speeding up truth checks.
 
 
 
