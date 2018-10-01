@@ -103,7 +103,7 @@ namespace Bob {
 					continue;
 				}
 
-				string [] parts = lines [i].Split ('|');
+				string [] parts = lines [i].Substring (0, lines [i].Length - 1).Split ('|');
 
 				string name = parts [0];
 				string notation = parts [1];
@@ -113,6 +113,7 @@ namespace Bob {
 
 				bool is_little = false;
 				bool is_differential = false;
+
 				if (parts [2].Length == 3) {
 					char c = parts [2] [2];
 

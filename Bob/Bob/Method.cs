@@ -892,11 +892,10 @@ namespace Bob {
 		/// </summary>
 		/// <param name="overwrite_current">Determines whether to overwrite the current call array.</param>
 		private void GenerateStandardCalls (bool overwrite_current = true) {
-			if ((int)stage < 4) {
+			if ((int)stage < 5) {
 				return;
 			}
-
-			// Case 1: Plain-bob like method
+			
 			if (is_treble_hunting) {
 				if (symmetry_type == SymmetryType.PlainBobLike) {
 					if (lead_end_notation.is_12) {

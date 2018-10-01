@@ -216,7 +216,7 @@ namespace Bob {
 		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `bob` call that was created.</returns>
 		public static Call LeadEndBob (Method method, PlaceNotation [] place_notations, string [] calling_positions = null) {
-			if (calling_positions is null) {
+			if (calling_positions is null && standard_calling_positions_bob.ContainsKey (method.stage)) {
 				return LeadEndCall (method, bob_name, bob_notations, place_notations, standard_calling_positions_bob [method.stage]);
 			} else {
 				return LeadEndCall (method, bob_name, bob_notations, place_notations, calling_positions);
@@ -230,9 +230,7 @@ namespace Bob {
 		/// <param name="place_notation">The place notation of the call.</param>
 		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `bob` call that was created.</returns>
-		public static Call LeadEndBob (Method method, PlaceNotation place_notation, string [] calling_positions = null) {
-			return LeadEndBob (method, new PlaceNotation [] { place_notation }, calling_positions);
-		}
+		public static Call LeadEndBob (Method method, PlaceNotation place_notation, string [] calling_positions = null) => LeadEndBob (method, new PlaceNotation [] { place_notation }, calling_positions);
 
 		/// <summary>
 		/// Creates a `bob` call over the lead end of a given method.
@@ -241,9 +239,7 @@ namespace Bob {
 		/// <param name="notation">The full place notation of the call, e.g. "3.1" for Grandsire Bobs.</param>
 		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
 		/// <returns>The `bob` call that was created.</returns>
-		public static Call LeadEndBob (Method method, string notation, string [] calling_positions = null) {
-			return LeadEndBob (method, PlaceNotation.DecodeFullNotation (notation, method.stage), calling_positions);
-		}
+		public static Call LeadEndBob (Method method, string notation, string [] calling_positions = null) => LeadEndBob (method, PlaceNotation.DecodeFullNotation (notation, method.stage), calling_positions);
 
 
 		/// <summary>
@@ -254,7 +250,7 @@ namespace Bob {
 		/// <param name="add_standard_calling_positions">If true, BobC# will generate the standard calls automagically.</param>
 		/// <returns>The `single` call that was created.</returns>
 		public static Call LeadEndSingle (Method method, PlaceNotation [] place_notations, bool add_standard_calling_positions = true) {
-			if (add_standard_calling_positions) {
+			if (add_standard_calling_positions && standard_calling_positions_single.ContainsKey (method.stage)) {
 				return LeadEndCall (method, single_name, single_notations, place_notations, standard_calling_positions_single [method.stage]);
 			} else {
 				return LeadEndCall (method, single_name, single_notations, place_notations);
@@ -267,9 +263,7 @@ namespace Bob {
 		/// <param name="method">The method to which the call belongs.</param>
 		/// <param name="place_notation">The place notation of the call.</param>
 		/// <returns>The `single` call that was created.</returns>
-		public static Call LeadEndSingle (Method method, PlaceNotation place_notation) {
-			return LeadEndSingle (method, new PlaceNotation [] { place_notation });
-		}
+		public static Call LeadEndSingle (Method method, PlaceNotation place_notation) => LeadEndSingle (method, new PlaceNotation [] { place_notation });
 
 		/// <summary>
 		/// Creates a `single` call over the lead end of a given method.
@@ -277,9 +271,7 @@ namespace Bob {
 		/// <param name="method">The method to which the call belongs.</param>
 		/// <param name="notation">The full place notation of the call, e.g. "3.123" for Grandsire Singles.</param>
 		/// <returns>The `single` call that was created.</returns>
-		public static Call LeadEndSingle (Method method, string notation) {
-			return LeadEndSingle (method, PlaceNotation.DecodeFullNotation (notation, method.stage));
-		}
+		public static Call LeadEndSingle (Method method, string notation) => LeadEndSingle (method, PlaceNotation.DecodeFullNotation (notation, method.stage));
 
 		/// <summary>
 		/// Creates a `plain` call (a call which does nothing) over the lead end of a given method.

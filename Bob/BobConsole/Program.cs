@@ -16,7 +16,7 @@ namespace BobConsole {
 			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH"));
 			Console.WriteLine ("\n\n\n\n\n");
 			*/
-			
+
 			/*
 			Console.WriteLine (new Touch (
 				Method.cambridge_major,
@@ -27,10 +27,14 @@ namespace BobConsole {
 				)}
 			));
 			*/
+
 			
+			
+			/*
 			Console.WriteLine (new Touch (
 				new Method [] { Method.GetMethod ("Plain Bob Doubles"), Method.GetMethod ("Plain Bob Minor") }
 			));
+			*/
 
 			Console.ReadLine ();
 		}
