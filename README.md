@@ -92,9 +92,9 @@ So from the outside, everything works as expected.
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
 
 ### Features in Development:
+- Smart system for detecting touches which will never come round.
 
 ### Roadmapped Features:
-- Smart system for detecting touches which will never come round.
 - Ability to search for methods with a given place notation.
 - A function to generate extents of a given method.
 - Touch proving done first by lead end transpositions, speeding up truth checks.
