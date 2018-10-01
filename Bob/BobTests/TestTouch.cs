@@ -97,5 +97,21 @@ namespace BobTests {
 
 			Assert.AreEqual (128, half_course_of_cambridge.Length);
 		}
+
+		[TestMethod]
+		public void Touch_CalledChanges () {
+			CalledChangeTouch touch = new CalledChangeTouch (
+				Stage.Doubles,
+				new CalledChange [] {
+					CalledChange.ByPlaceCalledUp (1),
+					CalledChange.ByPlaceCalledUp (3),
+					CalledChange.ByPlaceCalledUp (2)
+				}
+			);
+
+			Assert.AreEqual (12, touch.Length);
+			Assert.AreEqual (false, touch.is_extent);
+			Assert.AreEqual (true, touch.is_true);
+		}
 	}
 }

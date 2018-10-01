@@ -457,6 +457,22 @@ namespace Bob {
 		}
 
 		/// <summary>
+		/// Creates a touch of a single method, and a list of calls in the order they should be called.
+		/// </summary>
+		/// <param name="method">The method of the touch.</param>
+		/// <param name="calls">The calls in the order they should be called.</param>
+		public Touch (Method method, Call [] calls) {
+			BasicCall [] basic_calls = new BasicCall [calls.Length];
+
+			for (int i = 0; i < calls.Length; i++) {
+				basic_calls [i] = new BasicCall (calls [i], new Touch.CallLocationList ());
+			}
+
+			this.basic_calls = basic_calls;
+			start_method = method;
+		}
+
+		/// <summary>
 		/// Creates a <see cref="Touch"/> object representing a single-method touch.
 		/// </summary>
 		/// <param name="method">The method of the touch.</param>

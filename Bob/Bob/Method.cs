@@ -737,15 +737,7 @@ namespace Bob {
 		/// </summary>
 		/// <param name="calls">An array of <see cref="Call"/> objects in the order that they're called.</param>
 		/// <returns>The requested <see cref="Touch"/> object.</returns>
-		public Touch TouchFromCallList (Call [] calls) {
-			BasicCall [] basic_calls = new BasicCall [calls.Length];
-
-			for (int i = 0; i < calls.Length; i++) {
-				basic_calls [i] = new BasicCall (calls [i], new Touch.CallLocationList ());
-			}
-
-			return new Touch (this, basic_calls);
-		}
+		public Touch TouchFromCallList (Call [] calls) => new Touch (this, calls);
 
 		/// <summary>
 		/// Generates a <see cref="Touch"/> object from a string of call notations, in upper- or lower-case.

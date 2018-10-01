@@ -84,8 +84,8 @@ namespace BobMethodLibraryGenerator {
 						library_file_lines.Add (
 							method_name + "|" +
 							method_place_notation + "|" +
-							MethodLibrary.int_value_lookup [(int)stage] +
-							MethodLibrary.int_value_lookup [(int)Utils.StringToClassification (method_classification)] +
+							Constants.int_value_lookup [(int)stage] +
+							Constants.int_value_lookup [(int)Utils.StringToClassification (method_classification)] +
 							tag_string +
 							(should_overwrite_title ? "|" + method_title : "")
 						);

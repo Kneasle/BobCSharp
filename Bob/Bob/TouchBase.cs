@@ -12,15 +12,15 @@ namespace Bob {
 		/// <summary>
 		/// A dictionary to store where margin calls (placed to the left of the changes) are to be placed (for use in <see cref="ToString ()"/>).
 		/// </summary>
-		public Dictionary<int, char> margin_calls;
+		public Dictionary<int, char> margin_calls = new Dictionary<int, char> ();
 		/// <summary>
 		/// A dictionary to store calls placed to the right of the changes
 		/// </summary>
-		public Dictionary<int, string> right_hand_calls;
+		public Dictionary<int, string> right_hand_calls = new Dictionary<int, string> ();
 		/// <summary>
 		/// A list of the indices of each lead end in this touch.  Used in <see cref="ToString"/>.
 		/// </summary>
-		public List<int> lead_ends_line_indices;
+		public List<int> lead_ends_line_indices = new List<int> ();
 
 		private Change m_target_change = null;
 		/// <summary>
