@@ -169,7 +169,7 @@ Classification classification = cambridge_surprise_minor.classification; // ==> 
 
 Standard bobs and singles and plain calls are created automagically.
 
-**(TODO)** You can get any method from the CCCBR's method library (also comes with the standard calls, even for awkward methods like Stedman and Erin):
+You can get any method from the CCCBR's method library (also comes with the standard calls for treble hunt methods).
 ```C#
 Method stedman_triples = Method.GetMethod ("Stedman Triples");
 ```
