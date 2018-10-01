@@ -56,6 +56,7 @@ So from the outside, everything works as expected.
   - Shortcuts to generate touches of a single method by calling positions and from a list of calls.
   - Shortcuts to generate spliced touches from a list of methods rung at each successive lead end.
   - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
+  - Touches of called changes can also be computed.
 
 - Splicing is fully supported:
   - Splices don't have to happen on a lead end (e.g. splicing to Plain Hunt in half a course of Cambridge).
@@ -91,7 +92,6 @@ So from the outside, everything works as expected.
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
 
 ### Features in Development:
-- Allow computation of touches of called changes, including falseness.
 
 ### Roadmapped Features:
 - Smart system for detecting touches which will never come round.
