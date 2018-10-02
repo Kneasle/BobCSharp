@@ -98,6 +98,7 @@ So from the outside, everything works as expected.
 ### Roadmapped Features:
 - Ability to search for methods with a given place notation.
 - A function to generate extents of a given method.
+- Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
 
 
 
@@ -157,12 +158,12 @@ Change transposed_change = plain * notation; // ==> 17532846
 ### Methods
 Let's create a new method from its place notation
 ```C#
-Method plain_bob_major = new Method ("Plain", Classification.Bob, Stage.Major, "x18x18x18x18,12");
+Method plain_bob_major = new Method ("x18x18x18x18,12", "Plain", Classification.Bob, Stage.Major);
 ```
 
 You don't even need to specify the classification, and BobC# will classify it for you
 ```C#
-Method cambridge_surprise_minor = new Method ("Cambridge", "x3x4x2x3x4x5,2", Stage.Minor);
+Method cambridge_surprise_minor = new Method ("x3x4x2x3x4x5,2", "Cambridge", Stage.Minor);
 
 Classification classification = cambridge_surprise_minor.classification; // ==> Classification.Surprise
 ```
@@ -171,7 +172,7 @@ Standard bobs and singles and plain calls are created automagically.
 
 You can get any method from the CCCBR's method library (also comes with the standard calls for treble hunt methods).
 ```C#
-Method stedman_triples = Method.GetMethod ("Stedman Triples");
+Method stedman_triples = Method.GetMethod ("Single Oxford Bob Triples");
 ```
 
 
