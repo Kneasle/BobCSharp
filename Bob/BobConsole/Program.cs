@@ -55,8 +55,16 @@ namespace BobConsole {
 			Console.WriteLine (Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("I"));
 		}
 
+		static void ComputeAnExtentOfPlainBobDoubles () {
+			string [] extents = Method.GetMethod ("Grandsire Doubles").GenerateExtents ("MBS", 6);
+
+			foreach (string s in extents) {
+				Console.WriteLine (s);
+			}
+		}
+
 		static void Main (string [] args) {
-			PrintATouchWhichDoesntComeRound ();
+			ComputeAnExtentOfPlainBobDoubles ();
 
 			Console.ReadLine ();
 		}

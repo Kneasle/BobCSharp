@@ -246,6 +246,14 @@ namespace Bob {
 			ComputeChanges ();
 			ComputeChangeRepeatFrequencies ();
 		}
+
+		/// <summary>
+		/// Gets a segment of this touch.
+		/// </summary>
+		/// <param name="start_index">The index of the start of the segment.</param>
+		/// <param name="length">The length of the requested segment.</param>
+		/// <returns>The <see cref="TouchSegment"/> of that region.</returns>
+		public TouchSegment GetSegment (int start_index, int length) => new TouchSegment (this, start_index, length);
 		
 		/// <summary>
 		/// Returns a string representing this touch (could be very large for long touches).
@@ -291,6 +299,7 @@ namespace Bob {
 
 			return output;
 		}
+
 
 		// Abstract stuff
 		/// <summary>

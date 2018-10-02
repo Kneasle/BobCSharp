@@ -760,11 +760,6 @@
             A class which represents a hunt bell in a method.  HuntBell objects can't be changed once created.
             </summary>
         </member>
-        <member name="T:Bob.Method.HuntBell.GetMeOutOfHereException">
-            <summary>
-            Exception to allow jumping out of two for loops.
-            </summary>
-        </member>
         <member name="P:Bob.Method.HuntBell.bell_number">
             <summary>
             The number of this bell (indexed from zero).
@@ -1055,6 +1050,26 @@
             <param name="notation">An array of <see cref="T:Bob.Call"/> objects in the order that they're called.</param>
             <param name="conductor_bell">The bell index (from 0) from which the touch is called.</param>
             <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
+        </member>
+        <member name="M:Bob.Method.GenerateExtents(System.Char[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
+            </summary>
+            <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
+            <param name="extent_length_limit">The longest extent notation that will be computed.</param>
+            <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
+            <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+            <returns>All possible extents of this method, as call lists.</returns>
+        </member>
+        <member name="M:Bob.Method.GenerateExtents(System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
+            </summary>
+            <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
+            <param name="extent_length_limit">The longest extent notation that will be computed.</param>
+            <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
+            <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+            <returns>All possible extents of this method, as call lists.</returns>
         </member>
         <member name="M:Bob.Method.HasPlainBobLikeSymmetry">
             <summary>
@@ -1910,6 +1925,14 @@
             Computes changes and the change repeat frequencies needed to determine falseness.
             </summary>
         </member>
+        <member name="M:Bob.TouchBase.GetSegment(System.Int32,System.Int32)">
+            <summary>
+            Gets a segment of this touch.
+            </summary>
+            <param name="start_index">The index of the start of the segment.</param>
+            <param name="length">The length of the requested segment.</param>
+            <returns>The <see cref="T:Bob.TouchSegment"/> of that region.</returns>
+        </member>
         <member name="M:Bob.TouchBase.ToString">
             <summary>
             Returns a string representing this touch (could be very large for long touches).
@@ -1955,9 +1978,45 @@
             <param name="stage">The stage of bells on which this touch should be rung.</param>
             <param name="called_changes">The called changes which make up the touch.</param>
         </member>
+        <member name="T:Bob.TouchSegment">
+            <summary>
+            A class to represent a segment of a larger touch (e.g. for proving falseness of sections).
+            </summary>
+        </member>
+        <member name="P:Bob.TouchSegment.stage">
+            <summary>
+            The stage of this touch segment.
+            </summary>
+        </member>
+        <member name="M:Bob.TouchSegment.ComputeChanges">
+            <summary>
+            Computes the changes in this touch (just returns the stored value).
+            </summary>
+            <returns>The changes of this touch.</returns>
+        </member>
+        <member name="M:Bob.TouchSegment.#ctor(Bob.TouchBase,System.Int32,System.Int32)">
+            <summary>
+            Creates a <see cref="T:Bob.TouchSegment"/> class from another <see cref="T:Bob.TouchBase"/> object.
+            </summary>
+            <param name="original_touch"></param>
+            <param name="start_index"></param>
+            <param name="length"></param>
+        </member>
+        <member name="M:Bob.TouchSegment.#ctor(Bob.Stage,Bob.Change[])">
+            <summary>
+            Explicitly creates a <see cref="T:Bob.TouchSegment"/> object.
+            </summary>
+            <param name="stage">The stage of the original touch.</param>
+            <param name="changes">The changes in this touch segment.</param>
+        </member>
         <member name="T:Bob.Utils">
             <summary>
             A class to store utility functions.
+            </summary>
+        </member>
+        <member name="T:Bob.Utils.GetMeOutOfHereException">
+            <summary>
+            Exception to allow jumping out of two for loops.
             </summary>
         </member>
         <member name="M:Bob.Utils.StageToString(Bob.Stage)">

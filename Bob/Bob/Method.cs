@@ -12,11 +12,6 @@ namespace Bob {
 		/// </summary>
 		public class HuntBell {
 			/// <summary>
-			/// Exception to allow jumping out of two for loops.
-			/// </summary>
-			private class GetMeOutOfHereException : Exception { }
-
-			/// <summary>
 			/// The number of this bell (indexed from zero).
 			/// </summary>
 			public int bell_number { get; private set; }
@@ -787,6 +782,144 @@ namespace Bob {
 
 			return new Touch (this, calls.ToArray (), conductor_bell);
 		}
+
+		/// <summary>
+		/// Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
+		/// </summary>
+		/// <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
+		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
+		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
+		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+		/// <returns>All possible extents of this method, as call lists.</returns>
+		public string[] GenerateExtents (char[] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) {
+			// Populate `possible_call_notations` if it's set to null.
+			if (possible_call_notations == null) {
+				possible_call_notations = new char [calls.Count];
+
+				for (int i = 0; i < calls.Count; i++) {
+					possible_call_notations [i] = calls [i].preferred_notation;
+				}
+			}
+
+			// Create some lists to store data
+			List<string> extents = new List<string> ();
+			List<string> false_notations = new List<string> ();
+			List<string> current_possible_touches = new List<string> ();
+
+			// Generate all the touches of 1 call (this is just all the possible notations)
+			foreach (char c in possible_call_notations) {
+				current_possible_touches.Add (c.ToString ());
+			}
+
+			// Setup some variables for later use
+			int every = calls [0].every;
+			float number_of_calls_in_an_extent_f = (float)Utils.Factorial ((int)stage) / every;
+
+			int number_of_calls_in_an_extent;
+
+			if (number_of_calls_in_an_extent_f % 1f == 0f) {
+				number_of_calls_in_an_extent = (int)number_of_calls_in_an_extent_f;
+			} else {
+				throw new NotImplementedException ("Extent finder doesn't work for methods whose extent is not a whole number of calls repeats long.");
+			}
+
+			int max_notation_length = extent_length_limit == -1 ? number_of_calls_in_an_extent : extent_length_limit;
+
+			// Now generate touches
+			for (int l = 0; l < max_notation_length; l++) {
+				int num_calls = l + 1;
+
+				Console.WriteLine ("Computing touches of length " + num_calls + ".");
+
+				// Turn the current touches into longer touches
+				if (l > 0) {
+					List<string> new_touches = new List<string> ();
+
+					foreach (string old_touch in current_possible_touches) {
+						foreach (char c in possible_call_notations) {
+							new_touches.Add (old_touch + c);
+						}
+					}
+
+					// Strip out touches which contain sequences of calls known to be false
+					for (int i = new_touches.Count - 1; i >= 0; i--) {
+						foreach (string s in false_notations) {
+							if (new_touches [i].Contains (s)) {
+								Console.WriteLine ("\t" + new_touches [i] + " rejected because it contains " + s + " which is false.");
+
+								new_touches.RemoveAt (i);
+
+								break;
+							}
+						}
+					}
+
+					// Overwrite the current touch array
+					current_possible_touches = new_touches;
+				}
+
+				Console.WriteLine ("\t" + current_possible_touches.Count + " current touches.");
+
+				if (current_possible_touches.Count == 0) {
+					Console.WriteLine ("\t\tStopping because of no touches.");
+					return extents.ToArray ();
+				}
+
+				// Run the truth checks on these touches
+				List<int> extent_indices = new List<int> ();
+
+				for (int i = 0; i < current_possible_touches.Count; i++) {
+					string touch_notation = current_possible_touches [i];
+
+					Touch touch = TouchFromCallList (touch_notation);
+
+					// Does the touch come round prematurely
+					if (touch.Length <= num_calls * every) {
+						false_notations.Add (touch_notation);
+
+						Console.WriteLine ("\t\t" + touch_notation + " is not long enough.");
+					} else if (!touch.GetSegment (0, num_calls * every).is_true) {
+						false_notations.Add (touch_notation);
+
+						Console.WriteLine ("\t\t" + touch_notation + " is false.");
+					} else if (touch.is_extent) {
+						extents.Add (touch_notation);
+
+						Console.WriteLine ("\t\t\t" + touch_notation + " is an extent!");
+
+						extent_indices.Add (i);
+
+						if (extents.Count == stop_after_extent_number) {
+							Console.WriteLine ("Stopping because extent number limit is reached.");
+
+							return extents.ToArray ();
+						}
+					}
+				}
+
+				// Remove the extents from the list of touches which get added to.
+				if (!add_to_extent_notations) {
+					extent_indices.Reverse ();
+
+					foreach (int i in extent_indices) {
+						current_possible_touches.RemoveAt (i);
+					}
+				}
+			}
+
+			// Return the extents which were found
+			return extents.ToArray ();
+		}
+
+		/// <summary>
+		/// Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
+		/// </summary>
+		/// <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
+		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
+		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
+		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+		/// <returns>All possible extents of this method, as call lists.</returns>
+		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) => GenerateExtents (possible_call_notations == null ? null : possible_call_notations.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations);
 
 		// Private functions
 		/// <summary>

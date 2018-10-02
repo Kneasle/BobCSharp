@@ -11,6 +11,11 @@ namespace Bob {
 	/// </summary>
 	public static class Utils {
 		/// <summary>
+		/// Exception to allow jumping out of two for loops.
+		/// </summary>
+		public class GetMeOutOfHereException : Exception { }
+
+		/// <summary>
 		/// Converts a <see cref="Stage"/> to a string.
 		/// </summary>
 		/// <param name="stage">The <see cref="Stage"/> who's string representation is needed.</param>

@@ -59,6 +59,7 @@
     <Compile Include="Touch.cs" />
     <Compile Include="TouchBase.cs" />
     <Compile Include="CalledChangeTouch.cs" />
+    <Compile Include="TouchSegment.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
