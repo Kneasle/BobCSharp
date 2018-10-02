@@ -93,12 +93,12 @@ So from the outside, everything works as expected.
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
 
 ### Features in Development:
-- Touch proving done first by lead end transpositions, speeding up truth checks.
+- A function to generate extents of a given method.
 
 ### Roadmapped Features:
-- Ability to search for methods with a given place notation.
-- A function to generate extents of a given method.
+- Touch proving done first by lead end transpositions, speeding up truth checks.
 - Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
+- Ability to search for methods with a given place notation.
 
 
 
