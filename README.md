@@ -99,6 +99,7 @@ So from the outside, everything works as expected.
 ### Roadmapped Features:
 - Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
 - Ability to search for methods with a given place notation.
+- A more efficient way to create peal compositions, using blocks of calls as variables.
 
 
 
