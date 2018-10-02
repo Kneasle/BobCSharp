@@ -53,6 +53,7 @@ So from the outside, everything works as expected.
     - an extent (i.e. every possible change repeated exactly once).
     - a multiple extent (e.g. 240 of Doubles)
     - a legitimate quarter peal (i.e. with some changes repeated no more than once more than any other).
+  - Extents of any method can be generated (although this is _very_ computationally expensive on larger numbers of bells, despite a large amount of optimisation.
   - Shortcuts to generate touches of a single method by calling positions and from a list of calls.
   - Shortcuts to generate spliced touches from a list of methods rung at each successive lead end.
   - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
@@ -93,10 +94,9 @@ So from the outside, everything works as expected.
   - Very high performance (properties are not calculated until they are needed, and then only calculated once).
 
 ### Features in Development:
-- A function to generate extents of a given method.
+- Touch proving done first by lead end transpositions, speeding up truth checks.
 
 ### Roadmapped Features:
-- Touch proving done first by lead end transpositions, speeding up truth checks.
 - Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
 - Ability to search for methods with a given place notation.
 
