@@ -300,6 +300,30 @@ namespace Bob {
 			return output;
 		}
 
+		/// <summary>
+		/// Gets a string representing this touch, but only by lead ends.
+		/// </summary>
+		/// <returns>The lead ends of the touch, along with calls.</returns>
+		public string LeadEndString () {
+			if (changes == null) {
+				throw new NotImplementedException ();
+			}
+
+			string output = "";
+
+			foreach (int i in lead_ends_line_indices) {
+				if (margin_calls.ContainsKey (i)) {
+					output += margin_calls [i];
+				} else {
+					output += " ";
+				}
+
+				output += " " + changes [i].ToString () + "\n";
+			}
+
+			return output;
+		}
+
 
 		// Abstract stuff
 		/// <summary>

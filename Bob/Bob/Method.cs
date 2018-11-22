@@ -894,6 +894,8 @@ namespace Bob {
 
 							return extents.ToArray ();
 						}
+					} else {
+						Console.Write (".");
 					}
 				}
 

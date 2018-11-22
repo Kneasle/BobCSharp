@@ -1939,6 +1939,12 @@
             </summary>
             <returns>A string representation of this touch.</returns>
         </member>
+        <member name="M:Bob.TouchBase.LeadEndString">
+            <summary>
+            Gets a string representing this touch, but only by lead ends.
+            </summary>
+            <returns>The lead ends of the touch, along with calls.</returns>
+        </member>
         <member name="M:Bob.TouchBase.ComputeChanges">
             <summary>
             A function to populate the changes array.

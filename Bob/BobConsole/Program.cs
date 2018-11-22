@@ -56,15 +56,21 @@ namespace BobConsole {
 		}
 
 		static void ComputeAnExtentOfPlainBobDoubles () {
-			string [] extents = Method.GetMethod ("Grandsire Doubles").GenerateExtents ("MBS", 6);
+			string [] extents = Method.GetMethod ("St Remigius Bob Doubles").GenerateExtents ("MB");
 
 			foreach (string s in extents) {
 				Console.WriteLine (s);
 			}
 		}
 
+		static void ComputeAnExtentOfLetsRingDelightMinor () {
+			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
+
+			Console.WriteLine (lets_ring.TouchFromCallList ("MMMMB MBMMB").ToString ());
+		}
+
 		static void Main (string [] args) {
-			ComputeAnExtentOfPlainBobDoubles ();
+			ComputeAnExtentOfLetsRingDelightMinor ();
 
 			Console.ReadLine ();
 		}
