@@ -978,6 +978,11 @@
             A list of <see cref="T:Bob.Method.HuntBell"/> object representing the hunt bells in this method. 
             </summary>
         </member>
+        <member name="P:Bob.Method.working_bells">
+            <summary>
+            A list of the indices (from 0) of the working bells (non-hunt bells) in increasing order.
+            </summary>
+        </member>
         <member name="P:Bob.Method.symmetry_type">
             <summary>
             The symmetry type of the method.
@@ -998,6 +1003,11 @@
             Generates a <see cref="T:Bob.Touch"/> object representing the plain course of this method.
             </summary>
         </member>
+        <member name="P:Bob.Method.plain_coursing_order">
+            <summary>
+            Gets the coursing order of the plain course of this method, according to leading order.
+            </summary>
+        </member>
         <member name="P:Bob.Method.is_treble_hunting">
             <summary>
             True if the Treble is plain hunting.
@@ -1014,6 +1024,24 @@
             </summary>
             <param name="bell_index">The index (from 0) of the bell.</param>
             <returns>A list of places (index from 0) which represent the bell's path.</returns>
+        </member>
+        <member name="M:Bob.Method.GetCoursingOrder(Bob.Change,System.Boolean)">
+            <summary>
+            Gets the coursing order of this method at a given lead end.
+            </summary>
+            <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+            <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
+            <returns>The coursing order of the method as an array indexed from 0.</returns>
+        </member>
+        <member name="M:Bob.Method.GetCoursingOrderString(Bob.Change,System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Gets the coursing order of this method at a given lead end, formatted as a string.
+            </summary>
+            <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+            <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
+            <param name="discard_heavy_bells_in_plain_coursing_order">This will remove all the heavy bells (tenors) which are in the same order as they appear in the plain course.</param>
+            <param name="heaviest_bell_to_always_keep">The largest bell which will always be shown in the coursing order (indexed from 0).</param>
+            <returns>The formatted coursing order.</returns>
         </member>
         <member name="M:Bob.Method.GetCallByName(System.String)">
             <summary>
@@ -1939,7 +1967,7 @@
             </summary>
             <returns>A string representation of this touch.</returns>
         </member>
-        <member name="M:Bob.TouchBase.LeadEndString">
+        <member name="M:Bob.TouchBase.LeadEndString(System.Boolean)">
             <summary>
             Gets a string representing this touch, but only by lead ends.
             </summary>

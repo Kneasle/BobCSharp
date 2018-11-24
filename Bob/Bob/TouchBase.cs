@@ -188,10 +188,12 @@ namespace Bob {
 			get {
 				int [] keys = change_repeat_frequencies.Keys.ToArray ();
 
+				// If there are more than 2 different change repeat numbers, then the touch is QP (Quarter Peal) false
 				if (keys.Length > 2 || keys.Length == 0) {
 					return false;
 				}
 
+				// If the touch is straight-up true, then it's also QP true
 				if (keys.Length == 1) {
 					return true;
 				}
@@ -216,16 +218,30 @@ namespace Bob {
 			// Run duplication / falseness
 			Dictionary<string, int> change_repeats = new Dictionary<string, int> ();
 
-			foreach (Change change in changes) {
-				string c = change.ToString ();
+			List<string> sorted_changes = changes.Select ((a) => a.ToString ()).ToList ();
 
-				try {
-					change_repeats [c] += 1;
-				} catch (KeyNotFoundException) {
-					change_repeats [c] = 1;
+			sorted_changes.Sort ((a, b) => a.ToString ().CompareTo (b.ToString ()));
+
+			int current_change_count = 1;
+			string current_change = sorted_changes [0];
+
+			for (int i = 1; i < sorted_changes.Count; i++) {
+				string change = sorted_changes [i];
+
+				if (change == current_change) {
+					current_change_count += 1;
+				} else {
+					change_repeats.Add (current_change, current_change_count);
+
+					current_change = change;
+					current_change_count = 1;
 				}
 			}
 
+			// Make sure that the last change is counted
+			change_repeats.Add (current_change, current_change_count);
+
+			// Convert this into a dictionary of repeat frequencies
 			m_change_repeat_frequencies = new Dictionary<int, int> ();
 
 			foreach (string k in change_repeats.Keys) {
@@ -234,7 +250,7 @@ namespace Bob {
 				try {
 					m_change_repeat_frequencies [v] += 1;
 				} catch (KeyNotFoundException) {
-					m_change_repeat_frequencies [v] = 1;
+					m_change_repeat_frequencies.Add (v, 1);
 				}
 			}
 		}
@@ -255,6 +271,18 @@ namespace Bob {
 		/// <returns>The <see cref="TouchSegment"/> of that region.</returns>
 		public TouchSegment GetSegment (int start_index, int length) => new TouchSegment (this, start_index, length);
 		
+		private string GetStringFooter () {
+			string output = "";
+
+			if (!comes_round) {
+				output += "<This touch will never come round.>\n";
+			}
+
+			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
+
+			return output;
+		}
+
 		/// <summary>
 		/// Returns a string representing this touch (could be very large for long touches).
 		/// </summary>
@@ -291,11 +319,7 @@ namespace Bob {
 				output += " " + call_symbol + " " + c.ToString () + (right_hand_calls.Keys.Contains (i) ? " " + right_hand_calls [i] : "") + "\n";
 			}
 
-			if (!comes_round) {
-				output += "<This touch will never come round.>\n";
-			}
-
-			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
+			output += GetStringFooter ();
 
 			return output;
 		}
@@ -304,14 +328,34 @@ namespace Bob {
 		/// Gets a string representing this touch, but only by lead ends.
 		/// </summary>
 		/// <returns>The lead ends of the touch, along with calls.</returns>
-		public string LeadEndString () {
+		public string LeadEndString (bool include_numbers = true) {
+			// Update the changes array if it hasn't already been generated
 			if (changes == null) {
 				throw new NotImplementedException ();
+			}
+
+			if (lead_ends_line_indices.Count == 0) {
+				include_numbers = false;
+			}
+
+			int max_number_length = 0;
+
+			if (include_numbers) {
+				int last_number = lead_ends_line_indices [lead_ends_line_indices.Count - 1] + 1;
+				max_number_length = last_number.ToString ().Length;
 			}
 
 			string output = "";
 
 			foreach (int i in lead_ends_line_indices) {
+				if (include_numbers) {
+					string index_string = (i + 1).ToString ();
+
+					output += new string (' ', max_number_length - index_string.Length);
+					output += index_string;
+					output += ": ";
+				}
+
 				if (margin_calls.ContainsKey (i)) {
 					output += margin_calls [i];
 				} else {
@@ -320,6 +364,8 @@ namespace Bob {
 
 				output += " " + changes [i].ToString () + "\n";
 			}
+
+			output += GetStringFooter ();
 
 			return output;
 		}

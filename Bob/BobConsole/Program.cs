@@ -64,9 +64,36 @@ namespace BobConsole {
 		}
 
 		static void ComputeAnExtentOfLetsRingDelightMinor () {
+			// Draws a breakdown of how long function calls take.
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
-			Console.WriteLine (lets_ring.TouchFromCallList ("MMMMB MBMMB").ToString ());
+			string [] extents = lets_ring.GenerateExtents ("MB", 10);
+
+			foreach (string s in extents) {
+				Console.WriteLine (s);
+			}
+		}
+
+		static void DemonstrateSpeedBreakdown () {
+			Console.WriteLine ("1");
+
+			Touch t = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
+
+			Console.WriteLine ("2");
+
+			Change[] c = t.changes;
+
+			Console.WriteLine ("3");
+
+			string s = t.ToString ();
+
+			Console.WriteLine ("4");
+
+			Console.WriteLine (s);
+		}
+
+		static void PrintTheCoursingOrderOfPB8 () {
+			Console.WriteLine (Method.GetMethod ("Plain Bob Major").GetCoursingOrderString ());
 		}
 
 		static void Main (string [] args) {

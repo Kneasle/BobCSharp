@@ -452,18 +452,19 @@ namespace Bob {
 				sub_splice_change_index += 1;
 				#endregion
 
-				#region Stop if touch goes on forever.  If 1,000,000 changes are reached, then the code will stop.
+				#region Stop if touch goes on forever.  If 100,000,000 changes are reached, then the code will stop.
 				ChangeState current_state = new ChangeState (current_change, method_call_index, call_index);
 
 				if (change_states.Contains (current_state)) {
 					comes_round = false;
+
 					break;
 				}
 
 				change_states.Add (current_state);
 
-				if (absolute_change_index > 1e6) {
-					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 1,000,000 changes without coming round.");
+				if (absolute_change_index > 1e8) {
+					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 100,000,000 changes without coming round.");
 				}
 				#endregion
 			}

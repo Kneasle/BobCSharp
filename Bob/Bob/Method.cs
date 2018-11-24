@@ -469,6 +469,30 @@ namespace Bob {
 			}
 		}
 
+		private int [] m_working_bells = null;
+		/// <summary>
+		/// A list of the indices (from 0) of the working bells (non-hunt bells) in increasing order.
+		/// </summary>
+		public int [] working_bells {
+			get {
+				if (m_working_bells == null) {
+					List<int> working_bells = new List<int> ();
+
+					for (int i = 0; i < (int)stage; i++) {
+						working_bells.Add (i);
+					}
+
+					foreach (HuntBell hunt_bell in hunt_bells) {
+						working_bells.Remove (hunt_bell.bell_number);
+					}
+
+					m_working_bells = working_bells.ToArray ();
+				}
+
+				return m_working_bells;
+			}
+		}
+
 		private SymmetryType m_symmetry_type;
 		private bool has_computed_symmetry_type = false;
 		/// <summary>
@@ -542,6 +566,21 @@ namespace Bob {
 		/// Generates a <see cref="Touch"/> object representing the plain course of this method.
 		/// </summary>
 		public Touch plain_course => new Touch (this);
+
+		private int [] m_plain_coursing_order = null;
+		/// <summary>
+		/// Gets the coursing order of the plain course of this method, according to leading order.
+		/// </summary>
+		public int [] plain_coursing_order {
+			get {
+				if (m_plain_coursing_order == null) {
+					m_plain_coursing_order = GetCoursingOrder ();
+				}
+
+				return m_plain_coursing_order;
+			}
+		}
+
 		/// <summary>
 		/// True if the Treble is plain hunting.
 		/// </summary>
@@ -680,7 +719,7 @@ namespace Bob {
 				return null;
 			}
 
-			// Generate the list of positions by iterating over the plaincourse changes
+			// Generate the list of positions by iterating over the plain course changes
 			int [] path = new int [lead_length * rotating_set.Length];
 
 			Change current_lead_end = Change.Rounds (stage);
@@ -693,6 +732,126 @@ namespace Bob {
 			}
 
 			return path;
+		}
+
+		/// <summary>
+		/// Gets the coursing order of this method at a given lead end.
+		/// </summary>
+		/// <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+		/// <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
+		/// <returns>The coursing order of the method as an array indexed from 0.</returns>
+		public int [] GetCoursingOrder (Change lead_end = null, bool assume_plain_bob_like = false) {
+			lead_end = lead_end ?? Change.Rounds (stage);
+
+			int [] order = null;
+
+			if (assume_plain_bob_like) {
+				// Read off the transposition from the lead end as though the method was Plain Bob
+				order = new int [working_bells.Length];
+
+				for (int i = 0; i < working_bells.Length; i++) {
+					int ind = i * 2;
+
+					if (ind >= working_bells.Length) {
+						ind = working_bells.Length * 2 - ind - 1;
+					}
+
+					order [i] = working_bells [ind];
+				}
+			} else {
+				// Actually look at the leading
+				List<int> coursing_order = new List<int> ();
+
+				Touch plain_course = this.plain_course;
+
+				foreach (Change change in plain_course.changes) {
+					// Calculate the bell which is currently leading
+					int leading_bell = lead_end [change [0]];
+
+					// If it's already been counted, discard it
+					if (coursing_order.Contains (leading_bell)) {
+						continue;
+					}
+
+					// If it's not a hunt bell, add it to the list
+					if (working_bells.Contains (leading_bell)) {
+						coursing_order.Add (leading_bell);
+					}
+
+					// Stop the loop if all the bells have been accounted for
+					if (coursing_order.Count == working_bells.Length) {
+						break;
+					}
+				}
+
+				order = coursing_order.ToArray ();
+			}
+
+			// Rotate the list so the heaviest bell is first
+			int max_value = order.Max ();
+			int index = order.ToList ().IndexOf (max_value);
+
+			int [] output = new int [order.Length];
+
+			for (int i = 0; i < order.Length; i++) {
+				int ind = i + index;
+
+				if (ind >= order.Length) {
+					ind -= order.Length;
+				}
+
+				output [i] = order [ind];
+			}
+
+			// Return the list
+
+			return output;
+		}
+
+		/// <summary>
+		/// Gets the coursing order of this method at a given lead end, formatted as a string.
+		/// </summary>
+		/// <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+		/// <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
+		/// <param name="discard_heavy_bells_in_plain_coursing_order">This will remove all the heavy bells (tenors) which are in the same order as they appear in the plain course.</param>
+		/// <param name="heaviest_bell_to_always_keep">The largest bell which will always be shown in the coursing order (indexed from 0).</param>
+		/// <returns>The formatted coursing order.</returns>
+		public string GetCoursingOrderString (Change lead_end = null, bool assume_plain_bob_like = false, bool discard_heavy_bells_in_plain_coursing_order = true, int heaviest_bell_to_always_keep = 5) {
+			// Get the coursing order
+			List <int> coursing_order = GetCoursingOrder (lead_end, assume_plain_bob_like).ToList ();
+			
+			// Potentially strip off the tenors
+			if (discard_heavy_bells_in_plain_coursing_order) {
+				// Decide which bells need to be removed from the string.
+				List<int> indices_to_remove = new List<int> ();
+
+				for (int i = (int)stage - 1; i > heaviest_bell_to_always_keep; i--) {
+					int index = coursing_order.IndexOf (i);
+
+					if (index == plain_coursing_order.ToList ().IndexOf (i)) {
+						indices_to_remove.Add (index);
+					} else {
+						break;
+					}
+				}
+
+				// Remove the elements from the back of the list, so that the indexes still apply
+				indices_to_remove.Sort ();
+				indices_to_remove.Reverse ();
+
+				foreach (int index in indices_to_remove) {
+					coursing_order.RemoveAt (index);
+				}
+			}
+
+			// Generate string
+			string output = "";
+
+			foreach (int i in coursing_order) {
+				output += Constants.GetBellNameIndexingFromZero (i);
+			}
+
+			return output;
 		}
 
 		/// <summary>
@@ -791,7 +950,7 @@ namespace Bob {
 		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
-		public string[] GenerateExtents (char[] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) {
+		public string [] GenerateExtents (char [] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) {
 			// Populate `possible_call_notations` if it's set to null.
 			if (possible_call_notations == null) {
 				possible_call_notations = new char [calls.Count];
@@ -894,8 +1053,6 @@ namespace Bob {
 
 							return extents.ToArray ();
 						}
-					} else {
-						Console.Write (".");
 					}
 				}
 
@@ -921,7 +1078,7 @@ namespace Bob {
 		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
-		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) => GenerateExtents (possible_call_notations == null ? null : possible_call_notations.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations);
+		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations);
 
 		// Private functions
 		/// <summary>
