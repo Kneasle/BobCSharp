@@ -93,14 +93,14 @@ So from the outside, everything works as expected.
 - Performance features:
   - BobC# uses lazy evaluation on all properties (so values are only calculated when they are requested).
   - Values are also stored so if a values is requested twice, the second call is basically instant.
+  - The touch prover runs in O(n log (n)) time, which is (I think) the best possible complexity for truth checking.  If anyone knows of a faster method, please tell me and I'll implement it.
 
 ### Features in Development:
-- Touch proving done first by lead end transpositions, speeding up truth checks.
+- A more efficient way to create peal compositions, using blocks of calls as variables.
 
 ### Roadmapped Features:
 - Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
 - Ability to search for methods with a given place notation.
-- A more efficient way to create peal compositions, using blocks of calls as variables.
 
 
 
