@@ -90,8 +90,9 @@ So from the outside, everything works as expected.
     - `PlaceNotation`
     - `CalledChange`
 
-- General features:
-  - Very high performance (properties are not calculated until they are needed, and then only calculated once).
+- Performance features:
+  - BobC# uses lazy evaluation on all properties (so values are only calculated when they are requested).
+  - Values are also stored so if a values is requested twice, the second call is basically instant.
 
 ### Features in Development:
 - Touch proving done first by lead end transpositions, speeding up truth checks.
@@ -173,7 +174,7 @@ Standard bobs and singles and plain calls are created automagically.
 
 You can get any method from the CCCBR's method library (also comes with the standard calls for treble hunt methods).
 ```C#
-Method stedman_triples = Method.GetMethod ("Single Oxford Bob Triples");
+Method single_oxford_bob_triples = Method.GetMethod ("Single Oxford Bob Triples");
 ```
 
 
