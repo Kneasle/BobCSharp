@@ -101,6 +101,7 @@ So from the outside, everything works as expected.
 ### Roadmapped Features:
 - Allow calls to be stored in the methods library, for awkward methods, like Stedman and Erin.
 - Ability to search for methods with a given place notation.
+- Multi-threaded extent generation
 
 
 
