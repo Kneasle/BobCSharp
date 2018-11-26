@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,7 +65,6 @@ namespace BobConsole {
 		}
 
 		static void ComputeAnExtentOfLetsRingDelightMinor () {
-			// Draws a breakdown of how long function calls take.
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
 			string [] extents = lets_ring.GenerateExtents ("MB", 10);
@@ -75,21 +75,48 @@ namespace BobConsole {
 		}
 
 		static void DemonstrateSpeedBreakdown () {
-			Console.WriteLine ("1");
+			Stopwatch stop_watch = Stopwatch.StartNew ();
 
-			Touch t = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
+			long total_object_creation_time = 0;
+			long total_change_computation_time = 0;
+			long total_truth_check_time = 0;
+			long total_string_conversion_time = 0;
 
-			Console.WriteLine ("2");
+			int n = 100;
 
-			Change[] c = t.changes;
+			for (int x = 0; x < n; x++) {
+				Touch t = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
 
-			Console.WriteLine ("3");
+				total_object_creation_time += stop_watch.ElapsedMilliseconds;
 
-			string s = t.ToString ();
+				stop_watch.Reset ();
+				stop_watch.Start ();
 
-			Console.WriteLine ("4");
+				Change [] c = t.changes;
 
-			Console.WriteLine (s);
+				total_change_computation_time += stop_watch.ElapsedMilliseconds;
+
+				stop_watch.Reset ();
+				stop_watch.Start ();
+
+				string s = t.ToString ();
+
+				total_truth_check_time += stop_watch.ElapsedMilliseconds;
+
+				stop_watch.Reset ();
+				stop_watch.Start ();
+			}
+
+			stop_watch.Stop ();
+
+			Console.WriteLine ("1. Creating Method and Touch objects:");
+			Console.WriteLine (" >> {0} ms", total_object_creation_time / n);
+			Console.WriteLine ("2. Computing changes in the touch:");
+			Console.WriteLine (" >> {0} ms", total_change_computation_time / n);
+			Console.WriteLine ("3. Running truth check and string conversion.");
+			Console.WriteLine (" >> {0} ms", total_truth_check_time / n);
+			Console.WriteLine ("4. Constructing string representation.");
+			Console.WriteLine (" >> {0} ms", total_string_conversion_time / n);
 		}
 
 		static void PrintTheCoursingOrderOfPB8 () {
@@ -97,7 +124,7 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			ComputeAnExtentOfLetsRingDelightMinor ();
+			DemonstrateSpeedBreakdown ();
 
 			Console.ReadLine ();
 		}

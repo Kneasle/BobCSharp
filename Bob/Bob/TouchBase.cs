@@ -283,11 +283,8 @@ namespace Bob {
 			return output;
 		}
 
-		/// <summary>
-		/// Returns a string representing this touch (could be very large for long touches).
-		/// </summary>
-		/// <returns>A string representation of this touch.</returns>
-		public override string ToString () {
+		private string m_to_string = null;
+		private string m_ToString () {
 			if (changes == null) {
 				return "<Touch: changes not computed yet>";
 			}
@@ -325,10 +322,20 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Gets a string representing this touch, but only by lead ends.
+		/// Returns a string representing this touch (could be very large for long touches).
 		/// </summary>
-		/// <returns>The lead ends of the touch, along with calls.</returns>
-		public string LeadEndString (bool include_numbers = true) {
+		/// <returns>A string representation of this touch.</returns>
+		public override string ToString () {
+			if (m_to_string == null) {
+				m_to_string = m_ToString ();
+			}
+
+			return m_to_string;
+		}
+
+		private string m_lead_end_string = null;
+		private string m_LeadEndString (bool include_numbers = true) {
+
 			// Update the changes array if it hasn't already been generated
 			if (changes == null) {
 				throw new NotImplementedException ();
@@ -368,6 +375,17 @@ namespace Bob {
 			output += GetStringFooter ();
 
 			return output;
+		}
+		/// <summary>
+		/// Gets a string representing this touch, but only by lead ends.
+		/// </summary>
+		/// <returns>The lead ends of the touch, along with calls.</returns>
+		public string LeadEndString (bool include_numbers = true) {
+			if (m_lead_end_string == null) {
+				m_lead_end_string = m_LeadEndString (include_numbers);
+			}
+
+			return m_lead_end_string;
 		}
 
 
