@@ -64,7 +64,7 @@ namespace BobConsole {
 			}
 		}
 
-		static void ComputeAnExtentOfLetsRingDelightMinor () {
+		static void GenerateAnExtentOfLetsRingDelightMinor () {
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
 			string [] extents = lets_ring.GenerateExtents ("MB", 10);
@@ -121,7 +121,7 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			DemonstrateSpeedBreakdown ();
+			GenerateAnExtentOfLetsRingDelightMinor ();
 
 			Console.ReadLine ();
 		}

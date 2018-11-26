@@ -1479,8 +1479,36 @@
         </member>
         <member name="T:Bob.SpeedProfiler">
             <summary>
-            A class to run profiling tests on C# functions.  Used for development purposes only
+            A class to run profiling tests on C# functions.  Used for development purposes only.
             </summary>
+        </member>
+        <member name="F:Bob.SpeedProfiler.length">
+            <summary>
+            The number of different functions to profile independantly.
+            </summary>
+        </member>
+        <member name="M:Bob.SpeedProfiler.Start">
+            <summary>
+            Starts the profiling session.
+            </summary>
+        </member>
+        <member name="M:Bob.SpeedProfiler.Profile">
+            <summary>
+            Records the time since Profile () or Start () were last called.
+            </summary>
+        </member>
+        <member name="M:Bob.SpeedProfiler.Print(System.String[],System.String)">
+            <summary>
+            Prints a string of the profile with optional formatting.
+            </summary>
+            <param name="names">A list of names of each function.</param>
+            <param name="delimiter">A delimiter which goes between each name and its average time.</param>
+        </member>
+        <member name="M:Bob.SpeedProfiler.#ctor(System.Int32)">
+            <summary>
+            Creates a new SpeedProfiler.
+            </summary>
+            <param name="length">The number of functions to profile.</param>
         </member>
         <member name="T:Bob.Touch">
             <summary>
