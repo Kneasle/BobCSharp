@@ -3,6 +3,10 @@ A high-level, high performance C# library for computing methods, touches, peals 
 
 
 
+## Interesting News:
+BobC# has just passed 5040 lines of C# code (including whitespace, comments and documentation).
+
+
 
 
 ## !! Important !!
