@@ -1477,6 +1477,11 @@
               Looks up a localized string similar to .
             </summary>
         </member>
+        <member name="T:Bob.SpeedProfiler">
+            <summary>
+            A class to run profiling tests on C# functions.  Used for development purposes only
+            </summary>
+        </member>
         <member name="T:Bob.Touch">
             <summary>
             A class to store a representation of any touch.

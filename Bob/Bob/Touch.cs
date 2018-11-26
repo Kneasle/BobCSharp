@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -295,9 +296,16 @@ namespace Bob {
 		/// </summary>
 		public override Change[] ComputeChanges () {
 			List<Change> changes = new List<Change> ();
-			List<ChangeState> change_states = new List<ChangeState> ();
-			
-			margin_calls = new Dictionary<int, char> ();
+
+			int method_call_length = method_calls == null ? 1 : method_calls.Length;
+
+			List<Change> [] change_states = new List<Change> [method_call_length * basic_calls.Length];
+
+			for (int i = 0; i < method_call_length * basic_calls.Length; i++) {
+				change_states [i] = new List<Change> ();
+			}
+
+		    margin_calls = new Dictionary<int, char> ();
 			right_hand_calls = new Dictionary<int, string> ();
 			lead_ends_line_indices = new List<int> ();
 
@@ -453,15 +461,15 @@ namespace Bob {
 				#endregion
 
 				#region Stop if touch goes on forever.  If 100,000,000 changes are reached, then the code will stop.
-				ChangeState current_state = new ChangeState (current_change, method_call_index, call_index);
+				List<Change> change_state_list = change_states [method_call_length * call_index + method_call_index];
 
-				if (change_states.Contains (current_state)) {
+				if (change_state_list.Contains (current_change)) {
 					comes_round = false;
 
 					break;
 				}
 
-				change_states.Add (current_state);
+				change_state_list.Add (current_change);
 
 				if (absolute_change_index > 1e8) {
 					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 100,000,000 changes without coming round.");

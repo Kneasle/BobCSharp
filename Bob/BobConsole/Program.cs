@@ -75,48 +75,45 @@ namespace BobConsole {
 		}
 
 		static void DemonstrateSpeedBreakdown () {
-			Stopwatch stop_watch = Stopwatch.StartNew ();
+			SpeedProfiler profiler = new SpeedProfiler (4);
 
-			long total_object_creation_time = 0;
-			long total_change_computation_time = 0;
-			long total_truth_check_time = 0;
-			long total_string_conversion_time = 0;
-
-			int n = 100;
+			int n = 20;
 
 			for (int x = 0; x < n; x++) {
-				Touch t = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
+				Touch t = Method.plain_bob_triples.TouchFromCallingPositions ("OHHH sWHHH WFHHH IH");
+				// new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
 
-				total_object_creation_time += stop_watch.ElapsedMilliseconds;
-
-				stop_watch.Reset ();
-				stop_watch.Start ();
+				profiler.Profile ();
 
 				Change [] c = t.changes;
 
-				total_change_computation_time += stop_watch.ElapsedMilliseconds;
+				profiler.Profile ();
 
-				stop_watch.Reset ();
-				stop_watch.Start ();
+				Dictionary <int, int> d = t.change_repeat_frequencies;
+
+				profiler.Profile ();
 
 				string s = t.ToString ();
 
-				total_truth_check_time += stop_watch.ElapsedMilliseconds;
+				profiler.Profile ();
 
-				stop_watch.Reset ();
-				stop_watch.Start ();
+				Console.Write (".");
+
+				if ((x + 1) % 20 == 0) {
+					Console.Write ("\n");
+
+					if ((x + 1) % 100 == 0) {
+						Console.Write ("\n");
+					}
+				}
 			}
-
-			stop_watch.Stop ();
-
-			Console.WriteLine ("1. Creating Method and Touch objects:");
-			Console.WriteLine (" >> {0} ms", total_object_creation_time / n);
-			Console.WriteLine ("2. Computing changes in the touch:");
-			Console.WriteLine (" >> {0} ms", total_change_computation_time / n);
-			Console.WriteLine ("3. Running truth check and string conversion.");
-			Console.WriteLine (" >> {0} ms", total_truth_check_time / n);
-			Console.WriteLine ("4. Constructing string representation.");
-			Console.WriteLine (" >> {0} ms", total_string_conversion_time / n);
+			
+			profiler.Print (new string [] {
+				"1. Creating Method and Touch objects",
+				"2. Computing changes in the touch",
+				"3. Running truth check",
+				"4. Constructing string representation"
+			}, ":\n >> ");
 		}
 
 		static void PrintTheCoursingOrderOfPB8 () {

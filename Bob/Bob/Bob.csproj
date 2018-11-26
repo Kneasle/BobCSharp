@@ -56,6 +56,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SpeedProfiler.cs" />
     <Compile Include="Touch.cs" />
     <Compile Include="TouchBase.cs" />
     <Compile Include="CalledChangeTouch.cs" />
