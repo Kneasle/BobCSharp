@@ -179,29 +179,31 @@
             <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).  If null, standard calling positions will be generated.</param>
             <returns>The `bob` call that was created.</returns>
         </member>
-        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation[],System.Boolean)">
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation[],System.String[])">
             <summary>
             Creates a `single` call over the lead end of a given method.
             </summary>
             <param name="method">The method to which the call belongs.</param>
             <param name="place_notations">A list of the place notations which make up the call.</param>
-            <param name="add_standard_calling_positions">If true, BobC# will generate the standard calls automagically.</param>
+            <param name="calling_positions">The array of calling positions by place at the lead end.</param>
             <returns>The `single` call that was created.</returns>
         </member>
-        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation)">
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,Bob.PlaceNotation,System.String[])">
             <summary>
             Creates a `single` call over the lead end of a given method.
             </summary>
             <param name="method">The method to which the call belongs.</param>
             <param name="place_notation">The place notation of the call.</param>
+            <param name="calling_positions">The array of calling positions by place at the lead end.</param>
             <returns>The `single` call that was created.</returns>
         </member>
-        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,System.String)">
+        <member name="M:Bob.Call.LeadEndSingle(Bob.Method,System.String,System.String[])">
             <summary>
             Creates a `single` call over the lead end of a given method.
             </summary>
             <param name="method">The method to which the call belongs.</param>
             <param name="notation">The full place notation of the call, e.g. "3.123" for Grandsire Singles.</param>
+            <param name="calling_positions">The array of calling positions by place at the lead end.</param>
             <returns>The `single` call that was created.</returns>
         </member>
         <member name="M:Bob.Call.LeadEndPlain(Bob.Method,System.Int32)">
@@ -1079,7 +1081,7 @@
             <param name="conductor_bell">The bell index (from 0) from which the touch is called.</param>
             <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
         </member>
-        <member name="M:Bob.Method.GenerateExtents(System.Char[],System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Bob.Method.GenerateExtents(System.Char[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
             </summary>
@@ -1087,9 +1089,10 @@
             <param name="extent_length_limit">The longest extent notation that will be computed.</param>
             <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
             <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+            <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
             <returns>All possible extents of this method, as call lists.</returns>
         </member>
-        <member name="M:Bob.Method.GenerateExtents(System.String,System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Bob.Method.GenerateExtents(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
             </summary>

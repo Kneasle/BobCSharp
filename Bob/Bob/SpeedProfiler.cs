@@ -15,7 +15,7 @@ namespace Bob {
 		/// </summary>
 		public int length;
 
-		private float [] time_totals;
+		private readonly float [] time_totals;
 
 		private int index = 0;
 		private int runs = 1;

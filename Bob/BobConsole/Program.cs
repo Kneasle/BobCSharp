@@ -67,7 +67,19 @@ namespace BobConsole {
 		static void GenerateAnExtentOfLetsRingDelightMinor () {
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
-			string [] extents = lets_ring.GenerateExtents ("MB", 10);
+			string [] extents = lets_ring.GenerateExtents ("MB", 10, print: false);
+
+			foreach (string s in extents) {
+				Console.WriteLine (s);
+			}
+		}
+
+		static void GenerateAnExtentOfSaturnDoubles () {
+			Method saturn = Method.GetMethod ("Saturn Doubles");
+
+			saturn.SetLeadEndCalls ("3", "123");
+
+			string [] extents = saturn.GenerateExtents ("MBS");
 
 			foreach (string s in extents) {
 				Console.WriteLine (s);
@@ -121,7 +133,7 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			GenerateAnExtentOfLetsRingDelightMinor ();
+			GenerateAnExtentOfSaturnDoubles ();
 
 			Console.ReadLine ();
 		}

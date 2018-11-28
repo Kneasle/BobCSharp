@@ -854,6 +854,34 @@ namespace Bob {
 			return output;
 		}
 
+		public void SetLeadEndCalls (string bob_notation = null, string single_notation = null, string [] bob_calling_positions = null, string [] single_calling_positions = null) {
+			if (GetCallByName (Call.plain_name)== null) {
+				calls.Add (Call.LeadEndPlain (this));
+			}
+
+			if (bob_notation != null) {
+				Call bob = GetCallByName (Call.bob_name);
+
+				if (bob == null) {
+					calls.Add (Call.LeadEndBob (this, bob_notation, bob_calling_positions));
+				} else {
+					bob.place_notations = PlaceNotation.DecodeFullNotation (bob_notation, stage);
+					bob.calling_positions = bob_calling_positions;
+				}
+			}
+
+			if (single_notation != null) {
+				Call single = GetCallByName (Call.single_name);
+
+				if (single == null) {
+					calls.Add (Call.LeadEndSingle (this, single_notation, single_calling_positions));
+				} else {
+					single.place_notations = PlaceNotation.DecodeFullNotation (bob_notation, stage);
+					single.calling_positions = bob_calling_positions;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Finds a <see cref="Call"/> object by it's full name (see <see cref="Call.name"/>).
 		/// </summary>
@@ -949,8 +977,9 @@ namespace Bob {
 		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
 		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+		/// <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
-		public string [] GenerateExtents (char [] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) {
+		public string [] GenerateExtents (char [] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) {
 			// Populate `possible_call_notations` if it's set to null.
 			if (possible_call_notations == null) {
 				possible_call_notations = new char [calls.Count];
@@ -988,7 +1017,9 @@ namespace Bob {
 			for (int l = 0; l < max_notation_length; l++) {
 				int num_calls = l + 1;
 
-				Console.WriteLine ("Computing touches of length " + num_calls + ".");
+				if (print) {
+					Console.WriteLine ("Computing touches of length " + num_calls + ".");
+				}
 
 				// Turn the current touches into longer touches
 				if (l > 0) {
@@ -1004,7 +1035,9 @@ namespace Bob {
 					for (int i = new_touches.Count - 1; i >= 0; i--) {
 						foreach (string s in false_notations) {
 							if (new_touches [i].Contains (s)) {
-								Console.WriteLine ("\t" + new_touches [i] + " rejected because it contains " + s + " which is false.");
+								if (print) {
+									Console.WriteLine ("\t" + new_touches [i] + " rejected because it contains " + s + " which is false.");
+								}
 
 								new_touches.RemoveAt (i);
 
@@ -1017,10 +1050,15 @@ namespace Bob {
 					current_possible_touches = new_touches;
 				}
 
-				Console.WriteLine ("\t" + current_possible_touches.Count + " current touches.");
+				if (print) {
+					Console.WriteLine ("\t" + current_possible_touches.Count + " current touches.");
+				}
 
 				if (current_possible_touches.Count == 0) {
-					Console.WriteLine ("\t\tStopping because of no touches.");
+					if (print) {
+						Console.WriteLine ("\t\tStopping because of no touches.");
+					}
+
 					return extents.ToArray ();
 				}
 
@@ -1036,20 +1074,28 @@ namespace Bob {
 					if (touch.Length <= num_calls * every) {
 						false_notations.Add (touch_notation);
 
-						Console.WriteLine ("\t\t" + touch_notation + " is not long enough.");
+						if (print) {
+							Console.WriteLine ("\t\t" + touch_notation + " is not long enough.");
+						}
 					} else if (!touch.GetSegment (0, num_calls * every).is_true) {
 						false_notations.Add (touch_notation);
 
-						Console.WriteLine ("\t\t" + touch_notation + " is false.");
+						if (print) {
+							Console.WriteLine ("\t\t" + touch_notation + " is false.");
+						}
 					} else if (touch.is_extent) {
 						extents.Add (touch_notation);
 
-						Console.WriteLine ("\t\t\t" + touch_notation + " is an extent!");
+						if (print) {
+							Console.WriteLine ("\t\t\t" + touch_notation + " is an extent!");
+						}
 
 						extent_indices.Add (i);
 
 						if (extents.Count == stop_after_extent_number) {
-							Console.WriteLine ("Stopping because extent number limit is reached.");
+							if (print) {
+								Console.WriteLine ("Stopping because extent number limit is reached.");
+							}
 
 							return extents.ToArray ();
 						}
@@ -1078,7 +1124,7 @@ namespace Bob {
 		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
-		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations);
+		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations, print);
 
 		// Private functions
 		/// <summary>
