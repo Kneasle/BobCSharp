@@ -854,6 +854,13 @@ namespace Bob {
 			return output;
 		}
 
+		/// <summary>
+		/// Sets the lead end calls in this method, overwriting them if necessary.
+		/// </summary>
+		/// <param name="bob_notation">The place notation of the bob.  Can be multiple changes long.</param>
+		/// <param name="single_notation">The place notation of the single.  Can be multiple changes long.</param>
+		/// <param name="bob_calling_positions">The calling positions of the bob.</param>
+		/// <param name="single_calling_positions">The calling positions of the single.</param>
 		public void SetLeadEndCalls (string bob_notation = null, string single_notation = null, string [] bob_calling_positions = null, string [] single_calling_positions = null) {
 			if (GetCallByName (Call.plain_name)== null) {
 				calls.Add (Call.LeadEndPlain (this));
@@ -1123,6 +1130,7 @@ namespace Bob {
 		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
 		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+		/// <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
 		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations, print);
 
@@ -1361,7 +1369,7 @@ namespace Bob {
 		/// <summary>
 		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor")</c> instead).
 		/// </summary>
-		public static Method plain_bob_minor => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
+		public static Method plain_bob_minor   => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
 		/// <summary>
 		/// Shortcut to generate Plain Bob Triples. (Only for testing; use <c>Method.GetMethod ("Plain Bob Triples")</c> instead).
 		/// </summary>
@@ -1379,6 +1387,6 @@ namespace Bob {
 		/// <summary>
 		/// Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
 		/// </summary>
-		public static Method cambridge_major => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Classification.Surprise, Stage.Major);
+		public static Method cambridge_major   => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Classification.Surprise, Stage.Major);
 	}
 }

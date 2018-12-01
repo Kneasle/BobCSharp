@@ -74,6 +74,7 @@ namespace BobConsole {
 			}
 		}
 
+		// Looks like this isn't possible
 		static void GenerateAnExtentOfSaturnDoubles () {
 			Method saturn = Method.GetMethod ("Saturn Doubles");
 
@@ -133,7 +134,11 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			GenerateAnExtentOfSaturnDoubles ();
+			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
+
+			Touch touch = lets_ring.TouchFromCallingPositions ("WHW");
+
+			Console.WriteLine (touch.LeadEndString ());
 
 			Console.ReadLine ();
 		}
