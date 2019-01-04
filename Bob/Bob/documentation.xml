@@ -1045,6 +1045,15 @@
             <param name="heaviest_bell_to_always_keep">The largest bell which will always be shown in the coursing order (indexed from 0).</param>
             <returns>The formatted coursing order.</returns>
         </member>
+        <member name="M:Bob.Method.SetLeadEndCalls(System.String,System.String,System.String[],System.String[])">
+            <summary>
+            Sets the lead end calls in this method, overwriting them if necessary.
+            </summary>
+            <param name="bob_notation">The place notation of the bob.  Can be multiple changes long.</param>
+            <param name="single_notation">The place notation of the single.  Can be multiple changes long.</param>
+            <param name="bob_calling_positions">The calling positions of the bob.</param>
+            <param name="single_calling_positions">The calling positions of the single.</param>
+        </member>
         <member name="M:Bob.Method.GetCallByName(System.String)">
             <summary>
             Finds a <see cref="T:Bob.Call"/> object by it's full name (see <see cref="F:Bob.Call.name"/>).
@@ -1081,7 +1090,7 @@
             <param name="conductor_bell">The bell index (from 0) from which the touch is called.</param>
             <returns>The requested <see cref="T:Bob.Touch"/> object.</returns>
         </member>
-        <member name="M:Bob.Method.GenerateExtents(System.Char[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+        <member name="M:Bob.Method.GenerateExtents(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
             </summary>
@@ -1092,7 +1101,7 @@
             <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
             <returns>All possible extents of this method, as call lists.</returns>
         </member>
-        <member name="M:Bob.Method.GenerateExtents(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+        <member name="M:Bob.Method.GenerateExtents(System.Char[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
             </summary>
@@ -1100,6 +1109,7 @@
             <param name="extent_length_limit">The longest extent notation that will be computed.</param>
             <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
             <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+            <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
             <returns>All possible extents of this method, as call lists.</returns>
         </member>
         <member name="M:Bob.Method.HasPlainBobLikeSymmetry">

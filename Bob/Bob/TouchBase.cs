@@ -271,17 +271,36 @@ namespace Bob {
 		/// <returns>The <see cref="TouchSegment"/> of that region.</returns>
 		public TouchSegment GetSegment (int start_index, int length) => new TouchSegment (this, start_index, length);
 		
-		private string GetStringFooter () {
-			string output = "";
+		private string truth_string {
+			get {
+				if (is_extent)
+					return "extent";
+				if (is_multiple_extent)
+					return change_repeat_frequencies.Keys.ToArray () [0] + "x extent";
+				if (is_true)
+					return "true";
+				if (is_quarter_peal_true)
+					return "QP true";
 
-			if (!comes_round) {
-				output += "<This touch will never come round.>\n";
+				return "false";
 			}
-
-			output += "(" + changes.Length.ToString () + " changes, " + (is_true ? "true" : "false") + ")";
-
-			return output;
 		}
+
+		private string footer_string {
+			get {
+				string output = "";
+
+				if (!comes_round) {
+					output += "<This touch will never come round.>\n";
+				} else {
+					output += "(" + changes.Length.ToString () + " changes, " + truth_string + ")";
+				}
+
+				return output;
+			}
+		}
+
+		private string GetRightHandCallText (int i) => right_hand_calls.ContainsKey (i) ? "   " + right_hand_calls [i] : "";
 
 		private string m_to_string = null;
 		private string m_ToString () {
@@ -293,30 +312,24 @@ namespace Bob {
 				return "<Touch: changes not computed yet>";
 			}
 
-			string output = "   " + Change.Rounds (stage) + (right_hand_calls.ContainsKey (-1) ? " " + right_hand_calls [-1] : "") + "\n";
+			string output = "   " + Change.Rounds (stage) + GetRightHandCallText (-1) + "\n";
 
 			for (int i = 0; i < changes.Length; i++) {
 				Change c = changes [i];
 
 				char call_symbol = ' ';
-				if (margin_calls.Keys.Contains (i)) {
-					call_symbol = margin_calls [i];
+				if (margin_calls.Keys.Contains (i + 1)) {
+					call_symbol = margin_calls [i + 1];
 				}
 
 				if (lead_ends_line_indices.Contains (i)) {
-					output += "   ";
-
-					for (int p = 0; p < (int)stage; p++) {
-						output += "-";
-					}
-
-					output += "\n";
+					output += "   " + new string ('-', (int)stage) + "\n";
 				}
 
-				output += " " + call_symbol + " " + c.ToString () + (right_hand_calls.Keys.Contains (i) ? " " + right_hand_calls [i] : "") + "\n";
+				output += " " + call_symbol + " " + c.ToString () + GetRightHandCallText (i) + "\n";
 			}
 
-			output += GetStringFooter ();
+			output += footer_string;
 
 			return output;
 		}
@@ -335,7 +348,6 @@ namespace Bob {
 
 		private string m_lead_end_string = null;
 		private string m_LeadEndString (bool include_numbers = true) {
-
 			// Update the changes array if it hasn't already been generated
 			if (changes == null) {
 				throw new NotImplementedException ();
@@ -354,6 +366,12 @@ namespace Bob {
 
 			string output = "";
 
+			output += new string (' ', max_number_length - 1);
+			output += "0:   ";
+			output += Change.Rounds (stage);
+			output += GetRightHandCallText (-1);
+			output += "\n";
+
 			foreach (int i in lead_ends_line_indices) {
 				if (include_numbers) {
 					string index_string = (i + 1).ToString ();
@@ -369,10 +387,10 @@ namespace Bob {
 					output += " ";
 				}
 
-				output += " " + changes [i].ToString () + "\n";
+				output += " " + changes [i].ToString () + GetRightHandCallText (i) + "\n";
 			}
 
-			output += GetStringFooter ();
+			output += footer_string;
 
 			return output;
 		}
@@ -387,7 +405,6 @@ namespace Bob {
 
 			return m_lead_end_string;
 		}
-
 
 		// Abstract stuff
 		/// <summary>

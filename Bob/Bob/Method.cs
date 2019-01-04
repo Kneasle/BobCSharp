@@ -920,7 +920,7 @@ namespace Bob {
 
 			return null;
 		}
-
+		
 		/// <summary>
 		/// Generates a <see cref="Touch"/> object from an array of calls in the order that they should be called.
 		/// </summary>
@@ -986,6 +986,17 @@ namespace Bob {
 		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
 		/// <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
 		/// <returns>All possible extents of this method, as call lists.</returns>
+		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations, print);
+
+		/// <summary>
+		/// Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
+		/// </summary>
+		/// <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
+		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
+		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
+		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
+		/// <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
+		/// <returns>All possible extents of this method, as call lists.</returns>
 		public string [] GenerateExtents (char [] possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) {
 			// Populate `possible_call_notations` if it's set to null.
 			if (possible_call_notations == null) {
@@ -1032,9 +1043,11 @@ namespace Bob {
 				if (l > 0) {
 					List<string> new_touches = new List<string> ();
 
+					string spacer = l % 5 == 0 ? " " : "";
+
 					foreach (string old_touch in current_possible_touches) {
 						foreach (char c in possible_call_notations) {
-							new_touches.Add (old_touch + c);
+							new_touches.Add (old_touch + spacer + c);
 						}
 					}
 
@@ -1122,17 +1135,6 @@ namespace Bob {
 			// Return the extents which were found
 			return extents.ToArray ();
 		}
-
-		/// <summary>
-		/// Finds the list of all possible extents, and returns their notations as call lists.  Warning: it's not a good idea to run this on stages higher than Major, because it will take a LONG time.
-		/// </summary>
-		/// <param name="possible_call_notations">The list of calls notations used to create the extents (includes plain leads).  If null, it will use all possible call notations.</param>
-		/// <param name="extent_length_limit">The longest extent notation that will be computed.</param>
-		/// <param name="stop_after_extent_number">The function will stop when this many exents are reached.</param>
-		/// <param name="add_to_extent_notations">If set to true, the function will continue computing touches which start with a legit extent, thus flagging up unneccessary repeats.</param>
-		/// <param name="print">If set to true, this function will print out what it's doing.  Useful for long computations.</param>
-		/// <returns>All possible extents of this method, as call lists.</returns>
-		public string [] GenerateExtents (string possible_call_notations = null, int extent_length_limit = -1, int stop_after_extent_number = -1, bool add_to_extent_notations = false, bool print = true) => GenerateExtents (possible_call_notations?.ToCharArray (), extent_length_limit, stop_after_extent_number, add_to_extent_notations, print);
 
 		// Private functions
 		/// <summary>
@@ -1365,28 +1367,34 @@ namespace Bob {
 		/// <summary>
 		/// Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Classification.Bob, Stage.Doubles);
 		/// <summary>
 		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method plain_bob_minor   => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
 		/// <summary>
 		/// Shortcut to generate Plain Bob Triples. (Only for testing; use <c>Method.GetMethod ("Plain Bob Triples")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method plain_bob_triples => new Method ("7.1.7.1.7.1.7,12", "Plain", Classification.Bob, Stage.Triples);
 
 		/// <summary>
 		/// Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method grandsire_doubles => new Method ("3,1.5.1.5.1", "Grandsire", Classification.Bob, Stage.Doubles, "Grandsire Doubles");
 		/// <summary>
 		/// Shortcut to generate Grandsire Triples. (Only for testing; use <c>Method.GetMethod ("Grandsire Triples")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method grandsire_triples => new Method ("3,1.7.1.7.1.7.1", "Grandsire", Classification.Bob, Stage.Triples, "Grandsire Triples");
 
 		/// <summary>
 		/// Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
 		/// </summary>
+		[Obsolete]
 		public static Method cambridge_major   => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Classification.Surprise, Stage.Major);
 	}
 }

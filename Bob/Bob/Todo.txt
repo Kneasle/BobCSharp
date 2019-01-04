@@ -1,0 +1,2 @@
+﻿ - Search method database by place notation
+ - Store awkward standard calls (e.g. for Stedman, Erin) in database

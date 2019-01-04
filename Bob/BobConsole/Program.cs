@@ -13,7 +13,7 @@ namespace BobConsole {
 		}
 
 		static void Print120OfPlainBobDoubles () {
-			Console.WriteLine (Method.plain_bob_doubles.TouchFromCallList ("PPPBPS"));
+			Console.WriteLine (Method.plain_bob_doubles.TouchFromCallList ("PPPB"));
 		}
 
 		static void PrintSpacer () {
@@ -133,14 +133,26 @@ namespace BobConsole {
 			Console.WriteLine (Method.GetMethod ("Plain Bob Major").GetCoursingOrderString ());
 		}
 
-		static void Main (string [] args) {
+		static void CheckForBobOnlyCompositionsOfBobMinor () {
+			Console.WriteLine (Method.plain_bob_minor.GenerateExtents ("PB", -1, 1));
+		}
+
+		static void LRDMTests () {
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
-			Touch touch = lets_ring.TouchFromCallingPositions ("WHW");
+			while (true) {
+				string input = Console.ReadLine ();
 
-			Console.WriteLine (touch.LeadEndString ());
+				Touch touch = lets_ring.TouchFromCallingPositions (input); // lets_ring.TouchFromCallList ("MMBMMBMBMM");
 
-			Console.ReadLine ();
+				Console.WriteLine (touch.LeadEndString ());
+			}
+		}
+
+		static void Main (string [] args) {
+			Print120OfPlainBobDoubles ();
+
+			Console.ReadKey ();
 		}
 	}
 }
