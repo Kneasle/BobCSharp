@@ -139,7 +139,11 @@ namespace Bob {
 					return true;
 				}
 
-				return Math.Abs (keys [1] - keys [0]) == 1;
+				if (Math.Abs (keys [1] - keys [0]) == 1) {
+					return keys [Math.Min (keys [0], keys [1])] == Utils.Factorial ((int)stage);
+				}
+
+				return false;
 			}
 		}
 
