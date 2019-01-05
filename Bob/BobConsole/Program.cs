@@ -150,7 +150,7 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			Print120OfPlainBobDoubles ();
+			Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS"));
 
 			Console.ReadKey ();
 		}

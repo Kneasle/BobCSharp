@@ -10,65 +10,6 @@ namespace Bob {
 	/// </summary>
 	public abstract class TouchBase {
 		/// <summary>
-		/// A class which stores the state of a change, to check whether or not touches will ever come round.
-		/// </summary>
-		/// <remarks>
-		/// Basically, in a touch which comes round, no change states should ever be repeated.
-		/// Thus, if a new change state has already occured in a stored list, then the touch will never come round.
-		/// </remarks>
-		public class ChangeState {
-			/// <summary>
-			/// The change reached within the touch.
-			/// </summary>
-			public Change change { get; private set; }
-			/// <summary>
-			/// The index within the method calls in the touch.
-			/// </summary>
-			public int method_call_index { get; private set; }
-			/// <summary>
-			/// THe index within the calls in the touch.
-			/// </summary>
-			public int basic_call_index { get; private set; }
-
-			/// <summary>
-			/// Determines whether this object equals another object.
-			/// </summary>
-			/// <param name="obj">The other object.</param>
-			/// <returns>True if this object is equal to the other object.</returns>
-			public override bool Equals (object obj) {
-				if (obj.GetType () != typeof (ChangeState)) {
-					return false;
-				}
-
-				ChangeState other_state = obj as ChangeState;
-
-				if (other_state.change != change) { return false; }
-				if (other_state.method_call_index != method_call_index) { return false; }
-				if (other_state.basic_call_index != basic_call_index) { return false; }
-
-				return true;
-			}
-
-			/// <summary>
-			/// Gets the hash code of the object.
-			/// </summary>
-			/// <returns>The hash code of this object.</returns>
-			public override int GetHashCode () => base.GetHashCode ();
-
-			/// <summary>
-			/// Creates a ChangeState object
-			/// </summary>
-			/// <param name="change">The current change reached in the touch.</param>
-			/// <param name="method_call_index">The index within the splices of the touch.</param>
-			/// <param name="basic_call_index">The index within the calls of the touch.</param>
-			public ChangeState (Change change, int method_call_index, int basic_call_index) {
-				this.change = change;
-				this.method_call_index = method_call_index;
-				this.basic_call_index = basic_call_index;
-			}
-		}
-
-		/// <summary>
 		/// A dictionary to store where margin calls (placed to the left of the changes) are to be placed (for use in <see cref="ToString ()"/>).
 		/// </summary>
 		public Dictionary<int, char> margin_calls = new Dictionary<int, char> ();

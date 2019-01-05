@@ -1,2 +1,10 @@
-﻿ - Search method database by place notation
- - Store awkward standard calls (e.g. for Stedman, Erin) in database
+﻿ Todo:
+ - Search method database by place notation
+ - Store awkward calls (e.g. for Stedman, Erin) in database
+ - Allow methods to have custom rule-offs
+ - Multithreading on extent generation
+ - QP true is not strict enough
+
+ Done:
+ - Fix touches being prematurely stopped for Stedman
+ - Improve efficiency on called change touches

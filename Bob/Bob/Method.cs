@@ -862,7 +862,7 @@ namespace Bob {
 		/// <param name="bob_calling_positions">The calling positions of the bob.</param>
 		/// <param name="single_calling_positions">The calling positions of the single.</param>
 		public void SetLeadEndCalls (string bob_notation = null, string single_notation = null, string [] bob_calling_positions = null, string [] single_calling_positions = null) {
-			if (GetCallByName (Call.plain_name)== null) {
+			if (GetCallByName (Call.plain_name) == null) {
 				calls.Add (Call.LeadEndPlain (this));
 			}
 
@@ -887,6 +887,21 @@ namespace Bob {
 					single.calling_positions = bob_calling_positions;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Generates and adds a new plain call to this method in the requested location.
+		/// </summary>
+		/// <param name="every">Every how many changes this call can be called.</param>
+		/// <param name="from">How many changes away from every `every` changes the call can be called.  E.g. for Stedman this will be -3, and `every` will be 6.  For lead-end calls this is set automagically.</param>
+		/// <param name="length">How many changes long the call is.</param>
+		public void AddPlainCall (int every, int from, int length) {
+			Call plain = GetCallByName (Call.plain_name);
+			if (plain != null) {
+				calls.Remove (plain);
+			}
+
+			calls.Add (new Call (this, Call.plain_name, Call.plain_notations, new PlaceNotation [length], every, from));
 		}
 
 		/// <summary>

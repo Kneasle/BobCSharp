@@ -36,7 +36,7 @@
         </member>
         <member name="F:Bob.Call.every">
             <summary>
-            Every how many changes the calling position can be called.  Must be a factor of the lead length of the method.  For lead end calls this is set automagically.
+            Every how many changes the call can be called.  Must be a factor of the lead length of the method.  For lead end calls this is set automagically.
             </summary>
         </member>
         <member name="F:Bob.Call.from">
@@ -1054,6 +1054,14 @@
             <param name="bob_calling_positions">The calling positions of the bob.</param>
             <param name="single_calling_positions">The calling positions of the single.</param>
         </member>
+        <member name="M:Bob.Method.AddPlainCall(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates and adds a new plain call to this method in the requested location.
+            </summary>
+            <param name="every">Every how many changes this call can be called.</param>
+            <param name="from">How many changes away from every `every` changes the call can be called.  E.g. for Stedman this will be -3, and `every` will be 6.  For lead-end calls this is set automagically.</param>
+            <param name="length">How many changes long the call is.</param>
+        </member>
         <member name="M:Bob.Method.GetCallByName(System.String)">
             <summary>
             Finds a <see cref="T:Bob.Call"/> object by it's full name (see <see cref="F:Bob.Call.name"/>).
@@ -1262,12 +1270,17 @@
             The title of the method.
             </summary>
         </member>
+        <member name="F:Bob.MethodLibrary.StoredMethod.calls">
+            <summary>
+            An array of calls.  If null, calls will automagically be generated.
+            </summary>
+        </member>
         <member name="P:Bob.MethodLibrary.StoredMethod.method">
             <summary>
             Generates a proper method object for this method class.
             </summary>
         </member>
-        <member name="M:Bob.MethodLibrary.StoredMethod.#ctor(System.String,Bob.Stage,System.String,Bob.Classification,System.Boolean,System.Boolean,System.String)">
+        <member name="M:Bob.MethodLibrary.StoredMethod.#ctor(System.String,Bob.Stage,System.String,Bob.Classification,System.Boolean,System.Boolean,Bob.MethodLibrary.StoredCall[],System.String)">
             <summary>
             Creates a new <see cref="T:Bob.MethodLibrary.StoredMethod"/> object.
             </summary>
@@ -1277,7 +1290,60 @@
             <param name="classification">The classification of the method.</param>
             <param name="is_little">True if the tag "Little" should be included in the method title.</param>
             <param name="is_differential">True if the tag "Differential" should be included in the method title.</param>
+            <param name="calls">An array of calls.  If null, calls will automagically be generated.</param>
             <param name="override_title">Set this from null to override the title of the method.</param>
+        </member>
+        <member name="T:Bob.MethodLibrary.StoredCall">
+            <summary>
+            A performant representation of call, for use with <see cref="T:Bob.MethodLibrary.StoredMethod"/> objects.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.name">
+            <summary>
+            The (full) name of the call.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.notations">
+            <summary>
+            The array of possible notations, with the preferred notation first.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.place_notation">
+            <summary>
+            The place notation of the call.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.every">
+            <summary>
+            Every how often the call can be called.  If null, defaults to the method's lead end.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.from">
+            <summary>
+            The index of the first change of the place notations relative to each repeat of <see cref="F:Bob.MethodLibrary.StoredCall.every"/>.  If null, defaults to 0.
+            </summary>
+        </member>
+        <member name="F:Bob.MethodLibrary.StoredCall.cover">
+            <summary>
+            How many changes of the original method are taken over by the call.  If null, defaults to the length of the call.
+            </summary>
+        </member>
+        <member name="M:Bob.MethodLibrary.StoredCall.#ctor(System.String)">
+            <summary>
+            Generates a <see cref="T:Bob.MethodLibrary.StoredCall"/> from the compact string representation.
+            </summary>
+            <param name="representation"></param>
+        </member>
+        <member name="M:Bob.MethodLibrary.StoredCall.#ctor(System.String,System.Char[],System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Creates a <see cref="T:Bob.MethodLibrary.StoredCall"/> object.
+            </summary>
+            <param name="name">The (full) name of the call.</param>
+            <param name="notations">The array of possible notations, with the preferred notation first.</param>
+            <param name="place_notation">The place notation of the call.</param>
+            <param name="every">Every how often the call can be called.  If null, defaults to the method's lead end.</param>
+            <param name="from">The index of the last change of the place notations relative to each repeat of <see cref="F:Bob.MethodLibrary.StoredCall.every"/>.  If null, defaults to 0.</param>
+            <param name="cover">How many changes of the original method are taken over by the call.  If null, defaults to the length of the call.</param>
         </member>
         <member name="F:Bob.MethodLibrary.stored_methods">
             <summary>
@@ -1876,51 +1942,6 @@
             <summary>
             A base class from which other touch objects inherit.  Contains common functionality between method touches and called change touches.
             </summary>
-        </member>
-        <member name="T:Bob.TouchBase.ChangeState">
-            <summary>
-            A class which stores the state of a change, to check whether or not touches will ever come round.
-            </summary>
-            <remarks>
-            Basically, in a touch which comes round, no change states should ever be repeated.
-            Thus, if a new change state has already occured in a stored list, then the touch will never come round.
-            </remarks>
-        </member>
-        <member name="P:Bob.TouchBase.ChangeState.change">
-            <summary>
-            The change reached within the touch.
-            </summary>
-        </member>
-        <member name="P:Bob.TouchBase.ChangeState.method_call_index">
-            <summary>
-            The index within the method calls in the touch.
-            </summary>
-        </member>
-        <member name="P:Bob.TouchBase.ChangeState.basic_call_index">
-            <summary>
-            THe index within the calls in the touch.
-            </summary>
-        </member>
-        <member name="M:Bob.TouchBase.ChangeState.Equals(System.Object)">
-            <summary>
-            Determines whether this object equals another object.
-            </summary>
-            <param name="obj">The other object.</param>
-            <returns>True if this object is equal to the other object.</returns>
-        </member>
-        <member name="M:Bob.TouchBase.ChangeState.GetHashCode">
-            <summary>
-            Gets the hash code of the object.
-            </summary>
-            <returns>The hash code of this object.</returns>
-        </member>
-        <member name="M:Bob.TouchBase.ChangeState.#ctor(Bob.Change,System.Int32,System.Int32)">
-            <summary>
-            Creates a ChangeState object
-            </summary>
-            <param name="change">The current change reached in the touch.</param>
-            <param name="method_call_index">The index within the splices of the touch.</param>
-            <param name="basic_call_index">The index within the calls of the touch.</param>
         </member>
         <member name="F:Bob.TouchBase.margin_calls">
             <summary>

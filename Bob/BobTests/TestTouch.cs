@@ -118,7 +118,7 @@ namespace BobTests {
 		public void Touch_DoesntComeRound () {
 			Touch touch = Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("I");
 
-			Assert.AreEqual (true, touch.ToString ().EndsWith ("<This touch will never come round.>\n(72 changes, false)"));
+			Assert.AreEqual (true, touch.ToString ().Contains ("<This touch will never come round.>"));
 		}
 	}
 }

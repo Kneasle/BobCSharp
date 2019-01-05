@@ -33,7 +33,7 @@ namespace Bob {
 		public string [] calling_positions = new string [0];
 
 		/// <summary>
-		/// Every how many changes the calling position can be called.  Must be a factor of the lead length of the method.  For lead end calls this is set automagically.
+		/// Every how many changes the call can be called.  Must be a factor of the lead length of the method.  For lead end calls this is set automagically.
 		/// </summary>
 		public int every;
 		/// <summary>
@@ -191,7 +191,7 @@ namespace Bob {
 		/// <param name="place_notations">A list of the place notations which make up the call.</param>
 		/// <returns>A call over the lead end of the given method.</returns>
 		public static Call LeadEndCall (Method method, string name, char [] notations, PlaceNotation [] place_notations) {
-			return new Call (method, name, notations, place_notations, method.lead_length, - place_notations.Length);
+			return new Call (method, name, notations, place_notations, method.lead_length, 1 - place_notations.Length);
 		}
 
 		/// <summary>
@@ -204,7 +204,7 @@ namespace Bob {
 		/// <param name="calling_positions">A list of strings containing (per place) every possible notations (should be upper case).</param>
 		/// <returns>A call over the lead end of the given method.</returns>
 		public static Call LeadEndCall (Method method, string name, char [] notations, PlaceNotation [] place_notations, string [] calling_positions) {
-			return new Call (method, name, notations, place_notations, calling_positions, method.lead_length, -place_notations.Length);
+			return new Call (method, name, notations, place_notations, calling_positions, method.lead_length, 1 - place_notations.Length);
 		}
 
 

@@ -26,7 +26,11 @@ namespace Bob {
 		/// <returns>A change array caused by calling these called changes.</returns>
 		public override Change [] ComputeChanges () {
 			List<Change> changes = new List<Change> ();
-			List<ChangeState> change_states = new List<ChangeState> ();
+			List<Change> [] change_states = new List<Change> [called_changes.Length];
+
+			for (int i = 0; i < called_changes.Length; i++) {
+				change_states [i] = new List<Change> ();
+			}
 
 			int call_index = 0;
 			Change current_change = Change.Rounds (stage);
@@ -47,15 +51,13 @@ namespace Bob {
 				}
 
 				// Break if touches don't come round
-				ChangeState current_state = new ChangeState (current_change, 0, call_index);
-
-				if (change_states.Contains (current_state)) {
+				if (change_states [call_index].Contains (current_change)) {
 					comes_round = false;
 
 					break;
 				}
 
-				change_states.Add (current_state);
+				change_states [call_index].Add (current_change);
 
 				if (changes.Count > 1e5) {
 					throw new Touch.YourPealRingersDiedOfExhaustionException ("Touch of called changes lasted 100,000 changes without coming round.");

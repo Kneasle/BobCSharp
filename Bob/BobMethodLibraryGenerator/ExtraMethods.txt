@@ -1,0 +1,8 @@
+﻿Plain Hunt|5.1|5
+Plain Hunt|x16|6
+Plain Hunt|7.1|7
+Plain Hunt|x18|8
+Plain Hunt|9.1|9
+Plain Hunt|x10|10
+Plain Hunt|E.1|11
+Plain Hunt|x1T|12

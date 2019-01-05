@@ -155,7 +155,7 @@ Breaston|3,1.5.1.2.3|50
 Grandsire|3,1.5.1.5.1|50|Grandsire Doubles
 Double Grandsire|3,1.5.1.5.3|50|Double Grandsire Doubles
 Double Antelope|3,4.5.1.2.3|51
-Antelope|3,4.5.1.5.1|51
+Antelope|3,4.5.1.5.1|51\{Bob:145.3.1||-1}{Single:145.3.123||-1}
 Spondon|3,4.5.1.5.3|50
 Reverse Antelope|5,1.5.1.2.3|51
 Reverse Grandsire|5,1.5.1.5.3|50|Reverse Grandsire Doubles
@@ -3757,7 +3757,7 @@ Single Norwich Court|9,1.5.1.7.1.9.1.9.1|90
 Dublin Court|9,1.5.1.7.3.4.3.6.3|90
 Leamington|9,1.5.1.7.3.4.5.4.7|90
 Cambridge Court|9,1.5.1.7.3.9.1.9.3|90
-Double Norwich Court|9,1.5.1.7.3.9.5.9.1|90
+Double Norwich Court|9,1.5.1.7.3.9.5.9.1|90\{Bob:3||4}{Single:123||4}
 Pershore|9,1.5.1.7.3.9.5.9.7|90
 Shipway Court|9,1.5.1.9.3.9.1.9.1|90
 Highbury|9,1.5.1.9.3.9.1.9.7|90
@@ -4070,7 +4070,7 @@ Brecon|3,4.9.6.9.8.9.45.36.7.36.7|b0
 Alton Priors|3,6.9.1.78.3.9.1.E.45.78.5|b0
 Queen Camel|3,8.5.69.E.3.4.3.6.5.4.5|b0
 Cambridgeshire Court|E,1.5.1.7.3.9.1.E.3.E.1|b0
-Double Norwich Court|E,1.5.1.E.3.9.1.E.7.E.1|b0
+Double Norwich Court|E,1.5.1.E.3.9.1.E.7.E.1|b0\{Bob:3||4}{Single:123||4}
 Single Surfleet Court|E,1.E.1.7.1.E.1.E.1.E.1|b0
 Double Surfleet Court|E,1.E.1.7.1.E.5.E.1.E.1|b0
 New London Court|E,1.E.1.E.1.9.1.E.1.E.5|b0
@@ -19559,7 +19559,7 @@ Reverse Erin|-,2.1.2|43
 Erin|-,3.1.3|43
 Reverse Stanton|2-2.1.3.1|43
 Stanton|3-3.1.2.1|43
-Original|5,1|53
+Original|5,1|53\{Bob:3||-1}{Single:345||-1}
 Tendring|23.1,5|53
 What you Please|2.3,1|53
 Reverse Paradox|2.5,1|53
@@ -19573,11 +19573,11 @@ Reverse Erin|1,3.5.3|53
 Ocean Finance|3.5.23.1.3.23|53
 Cucumber|5.1.2.4.5.1|53
 Vegetarian Sausage|5.1.34.23.5.1|53
-Erin|5,3.1.3|53
+Erin|5,3.1.3|53\{Single:345|6|-3}
 Earin|5.34.1.3.4.3|53
-Banana|3.2.3.2.3.4.3.4|53
+Banana|3.2.3.2.3.4.3.4|53\{Lead-End Bob|-|125}{Half-Lead Bob|h|145||-4}
 Clappers Orchard|1.4.3.4.1.4.3.4.1.2.3.2|53
-Stedman|3.1.5.3.1.3,1|53
+Stedman|3.1.5.3.1.3,1|53\{Single:45|6}
 Reverse Carter|3.1.5.3.1.3,5|53
 Wiggle|3,2.3.4.3.4.3|53
 Lulys Ope|3.4.1.4.3.2.1.4.3.4.1.2|53
@@ -19695,7 +19695,7 @@ Elvaston|5.4.3.4.34.1.3.4.3.4.34.1.5.34.1.34.4.3.1.34.1.34.4.3|53
 Draycott|5.4.3.4.34.1.3.4.3.4.34.1.5.34.1.34.4.3.5.34.1.34.4.3|53
 Alvaston|5.4.34.1.34.1.3.4.34.1.34.1.5.34.4.3.4.3.1.34.4.3.4.3|53
 Borrowash|5.4.34.1.34.1.3.4.34.1.34.1.5.34.4.3.4.3.5.34.4.3.4.3|53
-Original|-,1|63
+Original|-,1|63\{Bob:14}{Single:1456}
 Forward|34-,1|63
 Canis|-1-,2|63
 Ursa|34.1-,2|63
@@ -19724,24 +19724,24 @@ Benets over Mendip|5-3.4-2-1-45-25|63
 Benets over S1|5-3.4-2-3-25-45|63
 Benets over Cambridge|5-3.4-2-3-45-345|63
 St Maurice|5.2.3-4-,4|63
-Shipway|-3.4-4-4-4.3-4-4-4|63
+Shipway|-3.4-4-4-4.3-4-4-4|63\{Bob:34|8|2}{Single:3456|8|2}
 Pitman|-4-3.4-4.3.4-,1|63
 Striking|-3-4-3.4-4.3.4-4.3.4-4.3-4|63
 Eureka|34.1.34.1-1.34.1.34.1-3,-|63
 St Francis|-2-4-3.4-34-1-1.34.2.3.2.34.2-,1|63
 Newick|-2-3-34-4.3-34-3.2.34.2.3.2.34-,1|63
 Worth|-2-3-34-1.34.2.3-34-3.2.34.2.3-,1|63
-Original|7,1|73
-Titanic|7.1,3|73
-Erin|7,3.1.3|73
-Stedman|3.1.7.3.1.3,1|73
+Original|7,1|73\{Bob:5||-1}{Single:567||-1}
+Titanic|7.1,3|73\{Bob:5|2|-1}{Single:567|2|-1}
+Erin|7,3.1.3|73\{Bob:5|6|1}{Single:567|6|1}
+Stedman|3.1.7.3.1.3,1|73\{Bob:5|6|3}{Single:567|6|3}
 Birmingham Carter|3.1.7.3.1.3,7|73
 Reverse Stedman|5.7.1.5.7.5,7|73
 Carter|7.3.1.3.7.1.3.5.3.5.3.1|73
-Scientific|3.1.7.1.5.1.7.1.7.5.1.7.1.7.1.7.1.7.1.5.1.5.1.7.1.7.1.7.1.7|73
+Scientific|3.1.7.1.5.1.7.1.7.5.1.7.1.7.1.7.1.7.1.5.1.5.1.7.1.7.1.7.1.7|73\{Red|R|3.7.3|30|7}{Blue|B|3.7.3|30|15}{Green|G|3.7.3|30|23}
 Martin's|5.3.1.7.1.7.3.1.7.3.7.1.3.1.7.1.7.3.1.3.1.3.7.1.7.3.1.3.7.1|73
 Artistic|7.1.7.1.7.3.7.3.7.1.3.1.7.3.7.3.1.3.1.3.7.3.1.3.1.3.7.1.7.1|73
-Original|-,1|83
+Original|-,1|83\{Bob:16}{Single:1678}
 Forward|34-,1|83
 Duffield|-36-,1|83
 Peak District|36.2-,1|83
@@ -19754,39 +19754,39 @@ Handsworth|56.2.56-,1|83
 Aston|56.34.56-,1|83
 Mercury|-3-6-,6|83
 Caversham|36.1.34-34.56-34-1-34.56-|83
-Shipway|-3.4-4-4-4.3-4-4-4|83
+Shipway|-3.4-4-4-4.3-4-4-4|83\{Bob:36|8|2}{Single:3678|8|2}
 St Columb|56.34.1-1.56.34-,1|83
 Easton Neston|34.6-36.1-34.1.34-,1|83
 Isis|-6.3-6.3.6-6-6.3-3.6.3-6-6.3.6.3.6-6-3-6-6-6.3-6.3-6-6|83
-Original|9,1|93
-Erin|9,3.1.3|93
+Original|9,1|93\{Bob:7||-1}{Single:789||-1}
+Erin|9,3.1.3|93\{Bob:7|6|1}{Single:789|6|1}
 Collatz|9,5.1.5.1.5|93
 Brunel|1.3.9.1.3.1,9|93
-Stedman|3.1.9.3.1.3,1|93
+Stedman|3.1.9.3.1.3,1|93\{Bob:7|6|3}{Single:789|6|3}
 Birmingham Carter|3.1.9.3.1.3,9|93
 Carter|9.3.1.3.9.1.3.5.3.5.3.1|93
 Groton|9,5.3.5.3.5.1|93
 Flada|3.1.3.1.3.56.1.56.1.5.9.45.9.45.7.9.7.9.7|93
 Anniversary|5.1.9.5.1.5.1.5.9.1.5.1,3|93
-Original|-,1|a3
+Original|-,1|a3\{Bob:18}{Single:1890}
 Forward|34-,1|a3
 Clewer|-4-,1|a3
 Duffield|-36-,1|a3
 Handsworth|56.2.56-,1|a3
 Aston|56.34.56-,1|a3
 Linkenholt|56.4.78.36-58.2.7.38.1|a3
-Shipway|-3.4-4-4-4.3-4-4-4|a3
-Original|E,1|b3
-Titanic|E.1,3|b3
-Erin|E,3.1.3|b3
+Shipway|-3.4-4-4-4.3-4-4-4|a3\{Bob:38|8|2}{Single:3890|8|2}
+Original|E,1|b3\{Bob:9||-1}{Single:90E||-1}
+Titanic|E.1,3|b3\{Bob:9|2|-1}{Single:90E|2|-1}
+Erin|E,3.1.3|b3\{Bob:9|6|1}{Single:90E|6|1}
 Nirerin|9.E.9.E.9.3.1.3.1.3|b3
 Brunel|1.3.E.1.3.1,E|b3
 Cabot|3.1.E.1.3.E,1|b3
-Stedman|3.1.E.3.1.3,1|b3
+Stedman|3.1.E.3.1.3,1|b3\{Bob:9|6|3}{Single:90E|6|3}
 Birmingham Carter|3.1.E.3.1.3,E|b3
 Tyler's|5.1.5.1.5.1.5.E.1.3.1.E|b3
 Carter|E.3.1.3.E.1.3.5.3.5.3.1|b3
-Original|-,1|c3
+Original|-,1|c3\{Bob:10}{Single:10ET}
 Forward|34-,1|c3
 Duffield|-36-,1|c3
 Aston|56.34.56-,1|c3
@@ -19795,11 +19795,11 @@ Thursday|-,30-58-49-3670-1|c3
 Baryon|3-50-78-9.8.7.0.7,-|c3
 Quasar|1-4.50.3.4-8.30.9-6.5.470-4.36.50.9-8.7-36|c3
 Orion|36-7.8-9.50.36.4-470.5.6-9.30.8-4.3.50.4-1|c3
-Erin|A,3.1.3|d3
-Stedman|3.1.A.3.1.3,1|d3
-Erin|C,3.1.3|f3
-Stedman|3.1.C.3.1.3,1|f3
-Erin|F,3.1.3|h3
+Erin|A,3.1.3|d3\{Bob:E|6|1}{Single:ETA|6|1}
+Stedman|3.1.A.3.1.3,1|d3\{Bob:E|6|3}{Single:ETA|6|3}
+Erin|C,3.1.3|f3\{Bob:A|6|1}{Single:ABC|6|1}
+Stedman|3.1.C.3.1.3,1|f3\{Bob:A|6|3}{Single:ABC|6|3}
+Erin|F,3.1.3|h3\{Bob:C|6|1}{Single:CDF|6|1}
 Cross|-|43
 Llanarthne|2,3|43
 St Alphege|-,1.3-|43

@@ -1,0 +1,32 @@
+﻿Antelope Place Doubles|{Bob:145.3.1||-1}{Single:145.3.123||-1}
+Banana Doubles|{Lead-End Bob|-|125}{Half-Lead Bob|h|145||-4}
+Double Norwich Court Bob Caters|{Bob:3||4}{Single:123||4}
+Double Norwich Court Bob Cinques|{Bob:3||4}{Single:123||4}
+Erin Doubles|{Single:345|6|-3}
+Erin Triples|{Bob:5|6|1}{Single:567|6|1}
+Erin Caters|{Bob:7|6|1}{Single:789|6|1}
+Erin Cinques|{Bob:9|6|1}{Single:90E|6|1}
+Erin Sextuples|{Bob:E|6|1}{Single:ETA|6|1}
+Erin Septuples|{Bob:A|6|1}{Single:ABC|6|1}
+Erin Octuples|{Bob:C|6|1}{Single:CDF|6|1}
+Original Doubles|{Bob:3||-1}{Single:345||-1}
+Original Minor|{Bob:14}{Single:1456}
+Original Triples|{Bob:5||-1}{Single:567||-1}
+Original Major|{Bob:16}{Single:1678}
+Original Caters|{Bob:7||-1}{Single:789||-1}
+Original Royal|{Bob:18}{Single:1890}
+Original Cinques|{Bob:9||-1}{Single:90E||-1}
+Original Maximus|{Bob:10}{Single:10ET}
+Scientific Triples|{Red|R|3.7.3|30|7}{Blue|B|3.7.3|30|15}{Green|G|3.7.3|30|23}
+Shipway Minor|{Bob:34|8|2}{Single:3456|8|2}
+Shipway Major|{Bob:36|8|2}{Single:3678|8|2}
+Shipway Royal|{Bob:38|8|2}{Single:3890|8|2}
+Stedman Doubles|{Single:45|6}
+Stedman Triples|{Bob:5|6|3}{Single:567|6|3}
+Stedman Caters|{Bob:7|6|3}{Single:789|6|3}
+Stedman Cinques|{Bob:9|6|3}{Single:90E|6|3}
+Stedman Sextuples|{Bob:E|6|3}{Single:ETA|6|3}
+Stedman Septuples|{Bob:A|6|3}{Single:ABC|6|3}
+Titanic Triples|{Bob:5|2|-1}{Single:567|2|-1}
+Titanic Caters|{Bob:7|2|-1}{Single:789|2|-1}
+Titanic Cinques|{Bob:9|2|-1}{Single:90E|2|-1}

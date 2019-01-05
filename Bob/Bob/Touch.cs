@@ -243,6 +243,42 @@ namespace Bob {
 			/// <param name="message">The message to show.</param>
 			public YourPealRingersDiedOfExhaustionException (string message) : base (message) { }
 		}
+
+		private class ChangeState {
+			int changes_since_last_call;
+			int changes_since_last_splice;
+			Change change;
+
+			public ChangeState (int changes_since_last_call, int changes_since_last_splice, Change change) {
+				this.changes_since_last_call = changes_since_last_call;
+				this.changes_since_last_splice = changes_since_last_splice;
+				this.change = change;
+			}
+
+			public override bool Equals (object obj) {
+				var location = obj as ChangeState;
+				return location != null &&
+					   changes_since_last_call == location.changes_since_last_call &&
+					   changes_since_last_splice == location.changes_since_last_splice &&
+					   EqualityComparer<Change>.Default.Equals (change, location.change);
+			}
+
+			public override int GetHashCode () {
+				var hashCode = 218628531;
+				hashCode = hashCode * -1521134295 + changes_since_last_call.GetHashCode ();
+				hashCode = hashCode * -1521134295 + changes_since_last_splice.GetHashCode ();
+				hashCode = hashCode * -1521134295 + EqualityComparer<Change>.Default.GetHashCode (change);
+				return hashCode;
+			}
+
+			public static bool operator == (ChangeState location1, ChangeState location2) {
+				return EqualityComparer<ChangeState>.Default.Equals (location1, location2);
+			}
+
+			public static bool operator != (ChangeState location1, ChangeState location2) {
+				return !(location1 == location2);
+			}
+		}
 		#endregion
 
 		#region Fields and Properties
@@ -298,10 +334,15 @@ namespace Bob {
 			List<Change> changes = new List<Change> ();
 
 			int method_call_length = method_calls == null ? 1 : method_calls.Length;
+			int basic_call_length = basic_calls == null ? 1 : basic_calls.Length;
 
-			List<Change> [] change_states = new List<Change> [method_call_length * basic_calls.Length];
+			int max_lead_length = method_calls == null ? 
+				start_method.lead_length : 
+				Math.Max (start_method.lead_length, method_calls.Select (x => x.method.lead_length).Max ());
 
-			for (int i = 0; i < method_call_length * basic_calls.Length; i++) {
+			List<Change> [] change_states = new List<Change> [method_call_length * basic_call_length * max_lead_length];
+
+			for (int i = 0; i < change_states.Length; i++) {
 				change_states [i] = new List<Change> ();
 			}
 
@@ -337,7 +378,7 @@ namespace Bob {
 						BasicCall basic_call = basic_calls [call_index];
 						Call call = basic_call.call;
 
-						if ((sub_lead_index - call.from) % call.every == 0) {
+						if ((sub_lead_index - call.from + 1) % call.every == 0) {
 							CallLocationParameters call_location_parameters = new CallLocationParameters (current_method, current_change, absolute_change_index, sub_lead_index, lead_index, attempted_calls_since_last_call, attempted_splices_since_last_splice, this);
 
 							if (basic_call.call_location.EvaluateBasicCall (call, call_location_parameters)) {
@@ -346,7 +387,7 @@ namespace Bob {
 								attempted_calls_since_last_call = 0;
 
 								if (!call.is_plain) {
-									margin_calls.Add (absolute_change_index, call.preferred_notation);
+									margin_calls.Add (absolute_change_index - 1, call.preferred_notation);
 								}
 							} else {
 								attempted_calls_since_last_call += 1;
@@ -432,7 +473,12 @@ namespace Bob {
 				#region Stop if it comes to rounds (to whatever is the target change is)
 				if (current_change == target_change) {
 					// Add a final lead end.
-					if (sub_lead_index == current_method.lead_length - 1) {
+					int lead_index_to_check = sub_lead_index + 1;
+					if (current_callpoint != null && absolute_change_index == current_callpoint.end_index) {
+						lead_index_to_check = sub_lead_index + current_callpoint.call.cover;
+					}
+
+					if (lead_index_to_check == current_method.lead_length) {
 						lead_ends_line_indices.Add (absolute_change_index);
 					}
 
@@ -461,7 +507,7 @@ namespace Bob {
 				#endregion
 
 				#region Stop if touch goes on forever.  If 100,000,000 changes are reached, then the code will stop.
-				List<Change> change_state_list = change_states [method_call_length * call_index + method_call_index];
+				List<Change> change_state_list = change_states [call_index + basic_call_length * (method_call_index + method_call_length * sub_lead_index)];
 
 				if (change_state_list.Contains (current_change)) {
 					comes_round = false;
@@ -471,7 +517,8 @@ namespace Bob {
 
 				change_state_list.Add (current_change);
 
-				if (absolute_change_index > 1e8) {
+				// It should never get this far
+				if (absolute_change_index > 1e4) {
 					throw new YourPealRingersDiedOfExhaustionException ("Broke the laws of human endurance and got to 100,000,000 changes without coming round.");
 				}
 				#endregion
