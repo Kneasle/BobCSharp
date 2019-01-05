@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bob {
 	/// <summary>
@@ -301,6 +302,9 @@ namespace Bob {
 			/// </summary>
 			GrandsireLike
 		}
+
+		// Used in `GenerateExtents`
+		private enum TouchTruth { False, True, Extent }
 
 		// Fields
 		/// <summary>
@@ -1100,25 +1104,60 @@ namespace Bob {
 				// Run the truth checks on these touches
 				List<int> extent_indices = new List<int> ();
 
-				for (int i = 0; i < current_possible_touches.Count; i++) {
-					string touch_notation = current_possible_touches [i];
-
+				// Put the truth check in a function to allow parallelism
+				TouchTruth ComputeTouch (string touch_notation) {
 					Touch touch = TouchFromCallList (touch_notation);
 
 					// Does the touch come round prematurely
 					if (touch.Length <= num_calls * every) {
-						false_notations.Add (touch_notation);
-
-						if (print) {
+						if (print)
 							Console.WriteLine ("\t\t" + touch_notation + " is not long enough.");
-						}
-					} else if (!touch.GetSegment (0, num_calls * every).is_true) {
-						false_notations.Add (touch_notation);
 
-						if (print) {
+						return TouchTruth.False;
+					} else if (!touch.GetSegment (0, num_calls * every).is_true) {
+						if (print)
 							Console.WriteLine ("\t\t" + touch_notation + " is false.");
-						}
+
+						return TouchTruth.False;
 					} else if (touch.is_extent) {
+						return TouchTruth.Extent;
+					}
+
+					return TouchTruth.True;
+				}
+
+				#region WARNING! Highly optimised spaghetti code in here.
+				int processors = Environment.ProcessorCount;
+
+				List<string> [] notation_slices = new List<string> [processors];
+
+				for (int i = 0; i < notation_slices.Length; i++) {
+					notation_slices [i] = new List<string> ();
+				}
+
+				for (int i = 0; i < current_possible_touches.Count; i++) {
+					notation_slices [Utils.Mod (i, processors)].Add (current_possible_touches [i]);
+				}
+
+				TouchTruth [] [] truth_slices = notation_slices.Select (x => x.Select (y => ComputeTouch (y)).ToArray ()).ToArray ();
+
+				List<TouchTruth> truth_checks = new List<TouchTruth> ();
+				
+				for (int i = 0; i < truth_slices.Length; i++) {
+					for (int j = 0; j < truth_slices [i].Length; j++) {
+						truth_checks.Add (truth_slices [i] [j]);
+					}
+				}
+				#endregion
+
+				for (int i = 0; i < current_possible_touches.Count; i++) {
+					string touch_notation = current_possible_touches [i];
+
+					TouchTruth truth = truth_checks [i];
+
+					if (truth == TouchTruth.False) {
+						false_notations.Add (touch_notation);
+					} else if (truth == TouchTruth.Extent) {
 						extents.Add (touch_notation);
 
 						if (print) {

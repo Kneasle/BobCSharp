@@ -2163,5 +2163,13 @@
             <param name="n">The integer who's factorial is required.</param>
             <returns>The factoral of that integer.</returns>
         </member>
+        <member name="M:Bob.Utils.Mod(System.Int32,System.Int32)">
+            <summary>
+            Returns the true remainder after `x` is divided by `n`.
+            </summary>
+            <param name="x">The 'numerator'.</param>
+            <param name="n">The 'denominator'.</param>
+            <returns>What `x % n` should return but doesn't, because C# is wierd in this respect.</returns>
+        </member>
     </members>
 </doc>

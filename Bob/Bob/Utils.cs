@@ -103,5 +103,21 @@ namespace Bob {
 
 			return result;
 		}
+
+		/// <summary>
+		/// Returns the true remainder after `x` is divided by `n`.
+		/// </summary>
+		/// <param name="x">The 'numerator'.</param>
+		/// <param name="n">The 'denominator'.</param>
+		/// <returns>What `x % n` should return but doesn't, because C# is wierd in this respect.</returns>
+		public static int Mod (int x, int n) {
+			int o = x % n;
+
+			if (o < 0) {
+				o += n;
+			}
+
+			return o;
+		}
 	}
 }

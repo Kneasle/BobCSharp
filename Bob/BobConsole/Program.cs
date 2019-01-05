@@ -134,7 +134,11 @@ namespace BobConsole {
 		}
 
 		static void CheckForBobOnlyCompositionsOfBobMinor () {
-			Console.WriteLine (Method.plain_bob_minor.GenerateExtents ("PB", -1, 1));
+			Stopwatch stopwatch = Stopwatch.StartNew ();
+
+			Console.WriteLine (Method.GetMethod ("Cambridge Surprise Minor").GenerateExtents ("MB", -1, 1));
+
+			Console.WriteLine (stopwatch.Elapsed.TotalSeconds);
 		}
 
 		static void LRDMTests () {
@@ -150,7 +154,9 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS"));
+			CheckForBobOnlyCompositionsOfBobMinor ();
+
+			// Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS"));
 
 			Console.ReadKey ();
 		}
