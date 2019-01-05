@@ -57,7 +57,7 @@ So from the outside, everything works as expected.
     - an extent (i.e. every possible change repeated exactly once).
     - a multiple extent (e.g. 240 of Doubles)
     - a legitimate quarter peal (i.e. with some changes repeated no more than once more than any other).
-  - Extents of any method can be generated (although this is _very_ computationally expensive on larger numbers of bells, despite a large amount of optimisation.
+  - Highly optimised function to generate extents of any method (though giving this any method on triples and above will probably roast your computer).
   - Shortcuts to generate touches of a single method by calling positions and from a list of calls.
   - Shortcuts to generate spliced touches from a list of methods rung at each successive lead end.
   - Touch.ToString () generates a string of the entire touch, showing all calls, changes, lead ends, change count and falseness.
