@@ -21,7 +21,7 @@ namespace BobConsole {
 		}
 
 		static void Print720OfBobMinor () {
-			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH"));
+			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH").LeadEndString ());
 		}
 
 		static void PrintHalfACourseOfCambridgeMajor () {
@@ -56,7 +56,7 @@ namespace BobConsole {
 			Console.WriteLine (Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("I"));
 		}
 
-		static void ComputeAnExtentOfPlainBobDoubles () {
+		static void ComputeAnExtentOfStRemigiusBobDoubles () {
 			string [] extents = Method.GetMethod ("St Remigius Bob Doubles").GenerateExtents ("MB");
 
 			foreach (string s in extents) {
@@ -67,7 +67,7 @@ namespace BobConsole {
 		static void GenerateAnExtentOfLetsRingDelightMinor () {
 			Method lets_ring = new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor);
 
-			string [] extents = lets_ring.GenerateExtents ("MB", 10, print: false);
+			string [] extents = lets_ring.GenerateExtents ("MB", 10, print: true);
 
 			foreach (string s in extents) {
 				Console.WriteLine (s);
@@ -154,9 +154,36 @@ namespace BobConsole {
 		}
 
 		static void Main (string [] args) {
-			CheckForBobOnlyCompositionsOfBobMinor ();
+			Method d = Method.GetMethod ("Plain Bob Doubles");
+			Method m = Method.GetMethod ("Plain Bob Minor");
+			Method s = new Method ("x16x16x16,1234", "Plain", Stage.Minor);
 
-			// Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS"));
+			Touch touch = new Touch (
+				new Method [] {
+					d,m,m,m,m,
+					d,m,m,d,m,
+					d,d,m,
+					d,d,d,m,
+
+					d,m,m,m,m,
+					d,m,m,d,m,
+					d,d,m,
+					d,d,d,m,
+
+					d,m,m,m,m,
+					d,m,m,d,m,
+					d,d,m,
+					d,d,d,s,
+				}
+			);
+
+			touch.rounds_checks = RoundsCheckLocations.OnlyLeadEnds;
+
+			Console.WriteLine (touch.LeadEndString ());
+
+			// Print720OfBobMinor ();
+
+			// Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS").LeadEndString ());
 
 			Console.ReadKey ();
 		}

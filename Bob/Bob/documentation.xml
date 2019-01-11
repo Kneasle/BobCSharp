@@ -1823,6 +1823,11 @@
             An array of basic (e.g. Bob, Single, Plain) calls and their locations.
             </summary>
         </member>
+        <member name="F:Bob.Touch.rounds_checks">
+            <summary>
+            Set this to make the touch generator ignore rounds in certain places
+            </summary>
+        </member>
         <member name="P:Bob.Touch.conductor_bell">
             <summary>
             The bell from which the touch is called.  If set to <see cref="F:Bob.Constants.tenor"/> (-1), then this is set to the heaviest bell.
@@ -1937,6 +1942,26 @@
             <param name="location">The location of the splice.</param>
             <param name="splice_end_index">How far from the lead end of the last method the splice takes effect (should be negative).  See <see cref="F:Bob.MethodCall.splice_start_index"/>.</param>
             <param name="splice_start_index">How far through the lead of the next method the splice starts (should be positive).  See <see cref="F:Bob.MethodCall.splice_end_index"/>.</param>
+        </member>
+        <member name="T:Bob.RoundsCheckLocations">
+            <summary>
+            An enum to store when touches can be come round (used e.g. for minor QP compositions which come round in the middle).
+            </summary>
+        </member>
+        <member name="F:Bob.RoundsCheckLocations.Anywhere">
+            <summary>
+            The first time rounds comes, the touch will stop.
+            </summary>
+        </member>
+        <member name="F:Bob.RoundsCheckLocations.AnyBackstroke">
+            <summary>
+            Rounds at handstroke will be ignored
+            </summary>
+        </member>
+        <member name="F:Bob.RoundsCheckLocations.OnlyLeadEnds">
+            <summary>
+            Will only come round at a lead end.  Any other rounds are ignored.
+            </summary>
         </member>
         <member name="T:Bob.TouchBase">
             <summary>

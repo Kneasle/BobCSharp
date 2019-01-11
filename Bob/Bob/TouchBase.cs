@@ -238,7 +238,7 @@ namespace Bob {
 				if (!comes_round) {
 					output += "<This touch will never come round.>\n";
 				} else {
-					output += "(" + changes.Length.ToString () + " changes, " + truth_string + ")";
+					output += "(" + changes.Length.ToString () + " changes, " + truth_string + ", {" + string.Join (", ", change_repeat_frequencies.Select (x => x.Key + ": " + x.Value)) + "})";
 				}
 
 				return output;

@@ -294,6 +294,11 @@ namespace Bob {
 		/// An array of basic (e.g. Bob, Single, Plain) calls and their locations.
 		/// </summary>
 		public BasicCall [] basic_calls;
+
+		/// <summary>
+		/// Set this to make the touch generator ignore rounds in certain places
+		/// </summary>
+		public RoundsCheckLocations rounds_checks = RoundsCheckLocations.Anywhere;
 		
 		private int m_conductor_bell = Constants.tenor;
 		/// <summary>
@@ -387,7 +392,7 @@ namespace Bob {
 								attempted_calls_since_last_call = 0;
 
 								if (!call.is_plain) {
-									margin_calls.Add (absolute_change_index - 1, call.preferred_notation);
+									margin_calls.Add (absolute_change_index, call.preferred_notation);
 								}
 							} else {
 								attempted_calls_since_last_call += 1;
@@ -478,13 +483,22 @@ namespace Bob {
 						lead_index_to_check = sub_lead_index + current_callpoint.call.cover;
 					}
 
-					if (lead_index_to_check == current_method.lead_length) {
-						lead_ends_line_indices.Add (absolute_change_index);
+					// Quickly check whether or not this is valid
+					bool is_valid = true;
+					if (rounds_checks == RoundsCheckLocations.AnyBackstroke && Utils.Mod (changes.Count, 2) == 1)
+						is_valid = false;
+					if (rounds_checks == RoundsCheckLocations.OnlyLeadEnds && lead_index_to_check != current_method.lead_length)
+						is_valid = false;
+
+					if (is_valid) {
+						if (lead_index_to_check == current_method.lead_length) {
+							lead_ends_line_indices.Add (absolute_change_index);
+						}
+
+						comes_round = true;
+
+						break;
 					}
-
-					comes_round = true;
-
-					break;
 				}
 				#endregion
 
@@ -667,5 +681,23 @@ namespace Bob {
 			this.splice_start_index = splice_end_index;
 			this.splice_end_index = splice_start_index;
 		}
+	}
+
+	/// <summary>
+	/// An enum to store when touches can be come round (used e.g. for minor QP compositions which come round in the middle).
+	/// </summary>
+	public enum RoundsCheckLocations {
+		/// <summary>
+		/// The first time rounds comes, the touch will stop.
+		/// </summary>
+		Anywhere,
+		/// <summary>
+		/// Rounds at handstroke will be ignored
+		/// </summary>
+		AnyBackstroke,
+		/// <summary>
+		/// Will only come round at a lead end.  Any other rounds are ignored.
+		/// </summary>
+		OnlyLeadEnds
 	}
 }

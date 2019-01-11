@@ -1141,11 +1141,11 @@ namespace Bob {
 
 				TouchTruth [] [] truth_slices = notation_slices.Select (x => x.Select (y => ComputeTouch (y)).ToArray ()).ToArray ();
 
-				List<TouchTruth> truth_checks = new List<TouchTruth> ();
+				TouchTruth [] truth_checks = new TouchTruth [current_possible_touches.Count];
 				
 				for (int i = 0; i < truth_slices.Length; i++) {
 					for (int j = 0; j < truth_slices [i].Length; j++) {
-						truth_checks.Add (truth_slices [i] [j]);
+						truth_checks [j * processors + i] = truth_slices [i] [j];
 					}
 				}
 				#endregion
