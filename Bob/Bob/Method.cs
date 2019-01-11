@@ -387,22 +387,22 @@ namespace Bob {
 			}
 		}
 
-		private Change m_lead_end = null;
+		private Change m_lead_head = null;
 		/// <summary>
 		/// The lead end change of the method.
 		/// </summary>
-		public Change lead_end {
+		public Change lead_head {
 			get {
-				m_lead_end = m_lead_end ?? PlaceNotation.CombinePlaceNotations (place_notations);
+				m_lead_head = m_lead_head ?? PlaceNotation.CombinePlaceNotations (place_notations);
 
-				return m_lead_end;
+				return m_lead_head;
 			}
 		}
 
 		/// <summary>
 		/// The last place notation of the method (even if the treble is not a hunt bell).
 		/// </summary>
-		public PlaceNotation lead_end_notation => place_notations [place_notations.Length - 1];
+		public PlaceNotation lead_head_notation => place_notations [place_notations.Length - 1];
 		/// <summary>
 		/// The middle place notation of the method (and null if the lead length is odd).
 		/// </summary>
@@ -415,7 +415,7 @@ namespace Bob {
 		public int leads_in_plain_course {
 			get {
 				if (m_leads_in_plain_course == -1) {
-					m_leads_in_plain_course = lead_end.order;
+					m_leads_in_plain_course = lead_head.order;
 				}
 
 				return m_leads_in_plain_course;
@@ -437,7 +437,7 @@ namespace Bob {
 		/// </summary>
 		public int [] [] rotating_sets {
 			get {
-				m_rotating_sets = m_rotating_sets ?? lead_end.rotating_sets;
+				m_rotating_sets = m_rotating_sets ?? lead_head.rotating_sets;
 
 				return m_rotating_sets;
 			}
@@ -452,7 +452,7 @@ namespace Bob {
 				if (m_hunt_bells is null) {
 					List<int> hunt_bell_numbers = new List<int> ();
 					for (int i = 0; i < (int)stage; i++) {
-						if (lead_end.array [i] == i) {
+						if (lead_head.array [i] == i) {
 							hunt_bell_numbers.Add (i);
 						}
 					}
@@ -639,7 +639,7 @@ namespace Bob {
 							}
 						}
 
-						if (is_two_hunt_bell_and_symmetrical && lead_end_notation.places_made.Contains (1)) {
+						if (is_two_hunt_bell_and_symmetrical && lead_head_notation.places_made.Contains (1)) {
 							classification = Classification.SlowCourse;
 						} else {
 							if (is_place_method) {
@@ -732,20 +732,20 @@ namespace Bob {
 					path [i * lead_length + c] = (current_lead_end * plain_lead_changes [c]).IndexOf (bell_index);
 				}
 
-				current_lead_end *= lead_end;
+				current_lead_end *= lead_head;
 			}
 
 			return path;
 		}
 
 		/// <summary>
-		/// Gets the coursing order of this method at a given lead end.
+		/// Gets the coursing order of this method at a given lead head.
 		/// </summary>
-		/// <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+		/// <param name="lead_head">The lead head who's coursing order you want.  If null, will default to rounds.</param>
 		/// <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
 		/// <returns>The coursing order of the method as an array indexed from 0.</returns>
-		public int [] GetCoursingOrder (Change lead_end = null, bool assume_plain_bob_like = false) {
-			lead_end = lead_end ?? Change.Rounds (stage);
+		public int [] GetCoursingOrder (Change lead_head = null, bool assume_plain_bob_like = false) {
+			lead_head = lead_head ?? Change.Rounds (stage);
 
 			int [] order = null;
 
@@ -770,7 +770,7 @@ namespace Bob {
 
 				foreach (Change change in plain_course.changes) {
 					// Calculate the bell which is currently leading
-					int leading_bell = lead_end [change [0]];
+					int leading_bell = lead_head [change [0]];
 
 					// If it's already been counted, discard it
 					if (coursing_order.Contains (leading_bell)) {
@@ -813,16 +813,16 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Gets the coursing order of this method at a given lead end, formatted as a string.
+		/// Gets the coursing order of this method at a given lead head, formatted as a string.
 		/// </summary>
-		/// <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+		/// <param name="lead_head">The lead head who's coursing order you want.  If null, will default to rounds.</param>
 		/// <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
 		/// <param name="discard_heavy_bells_in_plain_coursing_order">This will remove all the heavy bells (tenors) which are in the same order as they appear in the plain course.</param>
 		/// <param name="heaviest_bell_to_always_keep">The largest bell which will always be shown in the coursing order (indexed from 0).</param>
 		/// <returns>The formatted coursing order.</returns>
-		public string GetCoursingOrderString (Change lead_end = null, bool assume_plain_bob_like = false, bool discard_heavy_bells_in_plain_coursing_order = true, int heaviest_bell_to_always_keep = 5) {
+		public string GetCoursingOrderString (Change lead_head = null, bool assume_plain_bob_like = false, bool discard_heavy_bells_in_plain_coursing_order = true, int heaviest_bell_to_always_keep = 5) {
 			// Get the coursing order
-			List <int> coursing_order = GetCoursingOrder (lead_end, assume_plain_bob_like).ToList ();
+			List <int> coursing_order = GetCoursingOrder (lead_head, assume_plain_bob_like).ToList ();
 			
 			// Potentially strip off the tenors
 			if (discard_heavy_bells_in_plain_coursing_order) {
@@ -1270,7 +1270,7 @@ namespace Bob {
 			m_place_notations = null;
 			m_plain_lead_changes = null;
 
-			m_lead_end = null;
+			m_lead_head = null;
 			m_leads_in_plain_course = -1;
 
 			m_rotating_sets = null;
@@ -1292,7 +1292,7 @@ namespace Bob {
 			
 			if (is_treble_hunting) {
 				if (symmetry_type == SymmetryType.PlainBobLike) {
-					if (lead_end_notation.is_12) {
+					if (lead_head_notation.is_12) {
 						if (overwrite_current) {
 							calls.Clear ();
 						}
@@ -1306,7 +1306,7 @@ namespace Bob {
 						}
 
 						calls.Add (Call.LeadEndPlain (this));
-					} else if (lead_end_notation.is_1n && stage > Stage.Doubles) {
+					} else if (lead_head_notation.is_1n && stage > Stage.Doubles) {
 						if (overwrite_current) {
 							calls.Clear ();
 						}

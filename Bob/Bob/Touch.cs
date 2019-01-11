@@ -353,7 +353,7 @@ namespace Bob {
 
 		    margin_calls = new Dictionary<int, char> ();
 			right_hand_calls = new Dictionary<int, string> ();
-			lead_ends_line_indices = new List<int> ();
+			lead_head_line_indices = new List<int> ();
 
 			right_hand_calls.Add (-1, "Go " + start_method.title);
 
@@ -405,7 +405,7 @@ namespace Bob {
 						sub_lead_index += current_callpoint.call.cover;
 
 						if (sub_lead_index >= current_method.place_notations.Length) {
-							lead_ends_line_indices.Add (absolute_change_index - 1);
+							lead_head_line_indices.Add (absolute_change_index - 1);
 
 							sub_lead_index = 0;
 							lead_index += 1;
@@ -421,7 +421,7 @@ namespace Bob {
 				}
 				#endregion
 
-				#region Update change
+				#region Update change (transposition)
 				PlaceNotation notation;
 				if (current_callpoint == null) {
 					notation = current_method.place_notations [sub_lead_index];
@@ -492,7 +492,7 @@ namespace Bob {
 
 					if (is_valid) {
 						if (lead_index_to_check == current_method.lead_length) {
-							lead_ends_line_indices.Add (absolute_change_index);
+							lead_head_line_indices.Add (absolute_change_index);
 						}
 
 						comes_round = true;
@@ -507,7 +507,7 @@ namespace Bob {
 					sub_lead_index += 1;
 
 					if (sub_lead_index >= current_method.place_notations.Length) {
-						lead_ends_line_indices.Add (absolute_change_index);
+						lead_head_line_indices.Add (absolute_change_index);
 
 						sub_lead_index = 0;
 						sub_splice_lead_index += 1;

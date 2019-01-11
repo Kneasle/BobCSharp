@@ -496,7 +496,7 @@ namespace Bob {
 		/// <summary>
 		/// A customisable array of delimiters to represent lead end symmetry.
 		/// </summary>
-		public static string [] leadend_delimiters = new string [] { ",", "LE" };
+		public static string [] leadend_delimiters = new string [] { ",", "LE", "LH" };
 
 		// Operators
 		/// <summary>

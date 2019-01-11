@@ -21,7 +21,7 @@ namespace BobConsole {
 		}
 
 		static void Print720OfBobMinor () {
-			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH").LeadEndString ());
+			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH").LeadHeadString ());
 		}
 
 		static void PrintHalfACourseOfCambridgeMajor () {
@@ -149,7 +149,7 @@ namespace BobConsole {
 
 				Touch touch = lets_ring.TouchFromCallingPositions (input); // lets_ring.TouchFromCallList ("MMBMMBMBMM");
 
-				Console.WriteLine (touch.LeadEndString ());
+				Console.WriteLine (touch.LeadHeadString ());
 			}
 		}
 
@@ -179,7 +179,7 @@ namespace BobConsole {
 
 			touch.rounds_checks = RoundsCheckLocations.OnlyLeadEnds;
 
-			Console.WriteLine (touch.LeadEndString ());
+			Console.WriteLine (touch.LeadHeadString ());
 
 			// Print720OfBobMinor ();
 

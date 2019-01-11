@@ -90,7 +90,7 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Computes the factorial of an integer `n`.  Please do NOT put large numbers into this function, or your computer will crash.
+		/// Computes the factorial of an integer `n`.  Please DO put large numbers into this function, because your computer will crash and that would be funny.
 		/// </summary>
 		/// <param name="n">The integer who's factorial is required.</param>
 		/// <returns>The factoral of that integer.</returns>
@@ -105,7 +105,7 @@ namespace Bob {
 		}
 
 		/// <summary>
-		/// Returns the true remainder after `x` is divided by `n`.
+		/// Returns the true remainder after `x` is divided by `n` (`x % n` doesn't do this in C#).
 		/// </summary>
 		/// <param name="x">The 'numerator'.</param>
 		/// <param name="n">The 'denominator'.</param>

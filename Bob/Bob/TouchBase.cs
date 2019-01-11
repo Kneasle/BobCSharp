@@ -18,9 +18,9 @@ namespace Bob {
 		/// </summary>
 		public Dictionary<int, string> right_hand_calls = new Dictionary<int, string> ();
 		/// <summary>
-		/// A list of the indices of each lead end in this touch.  Used in <see cref="ToString"/>.
+		/// A list of the indices of each lead head in this touch.  Used in <see cref="ToString"/> and <see cref="LeadHeadString(bool)"/>.
 		/// </summary>
-		public List<int> lead_ends_line_indices = new List<int> ();
+		public List<int> lead_head_line_indices = new List<int> ();
 
 		private Change m_target_change = null;
 		/// <summary>
@@ -267,7 +267,7 @@ namespace Bob {
 					call_symbol = margin_calls [i + 1];
 				}
 
-				if (lead_ends_line_indices.Contains (i)) {
+				if (lead_head_line_indices.Contains (i)) {
 					output += "   " + new string ('-', (int)stage) + "\n";
 				}
 
@@ -291,21 +291,21 @@ namespace Bob {
 			return m_to_string;
 		}
 
-		private string m_lead_end_string = null;
-		private string m_LeadEndString (bool include_numbers = true) {
+		private string m_lead_head_string = null;
+		private string m_LeadHeadString (bool include_numbers = true) {
 			// Update the changes array if it hasn't already been generated
 			if (changes == null) {
 				throw new NotImplementedException ();
 			}
 
-			if (lead_ends_line_indices.Count == 0) {
+			if (lead_head_line_indices.Count == 0) {
 				include_numbers = false;
 			}
 
 			int max_number_length = 0;
 
 			if (include_numbers) {
-				int last_number = lead_ends_line_indices [lead_ends_line_indices.Count - 1] + 1;
+				int last_number = lead_head_line_indices [lead_head_line_indices.Count - 1] + 1;
 				max_number_length = last_number.ToString ().Length;
 			}
 
@@ -317,7 +317,7 @@ namespace Bob {
 			output += GetRightHandCallText (-1);
 			output += "\n";
 
-			foreach (int i in lead_ends_line_indices) {
+			foreach (int i in lead_head_line_indices) {
 				if (include_numbers) {
 					string index_string = (i + 1).ToString ();
 
@@ -340,15 +340,15 @@ namespace Bob {
 			return output;
 		}
 		/// <summary>
-		/// Gets a string representing this touch, but only by lead ends.
+		/// Gets a string representing this touch, but only by lead head.
 		/// </summary>
-		/// <returns>The lead ends of the touch, along with calls.</returns>
-		public string LeadEndString (bool include_numbers = true) {
-			if (m_lead_end_string == null) {
-				m_lead_end_string = m_LeadEndString (include_numbers);
+		/// <returns>The lead heads of the touch, along with calls.</returns>
+		public string LeadHeadString (bool include_numbers = true) {
+			if (m_lead_head_string == null) {
+				m_lead_head_string = m_LeadHeadString (include_numbers);
 			}
 
-			return m_lead_end_string;
+			return m_lead_head_string;
 		}
 
 		// Abstract stuff
