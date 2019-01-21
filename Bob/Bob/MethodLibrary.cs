@@ -301,7 +301,22 @@ namespace Bob {
 				stored_methods.Add (new StoredMethod (name, stage, notation, classification, is_little, is_differential, calls?.ToArray (), override_title));
 			}
 
+			stored_methods.Sort ((a, b) => a.title.CompareTo (b.title));
+
 			this.stored_methods = stored_methods.ToArray ();
+		}
+
+		private IEnumerable<Method> m_all_methods = null;
+		/// <summary>
+		/// Generates <see cref="Method"/> objects for every method in the CCCBR method library.  Warning! This function creates a lot of memory, so is not to be used lightly.
+		/// </summary>
+		/// <returns>All the methods as an array.</returns>
+		public IEnumerable<Method> GetAllMethods () {
+			if (m_all_methods == null) {
+				m_all_methods = stored_methods.Select (x => x.method);
+			}
+
+			return m_all_methods;
 		}
 
 		/// <summary>
@@ -310,9 +325,21 @@ namespace Bob {
 		/// <param name="title">The title of the method.</param>
 		/// <returns>The method with the given title (null if no such method exists in the CCCBR library).</returns>
 		public static Method GetMethodByTitle (string title) {
-			foreach (StoredMethod stored_method in library.stored_methods) {
-				if (stored_method.title == title) {
-					return stored_method.method;
+			// Use binary search, since the methods are sorted by title
+			uint min_index = 0;
+			uint max_index = (uint)library.stored_methods.Length;
+
+			while (max_index - min_index > 1) {
+				uint mid_index = (min_index + max_index) >> 1; // >> 1 is the same as division and truncation by two
+
+				int comparison = library.stored_methods [mid_index].title.CompareTo (title);
+
+				if (comparison == 0) {
+					return library.stored_methods [mid_index].method;
+				} else if (comparison < 0) {
+					min_index = mid_index;
+				} else if (comparison > 0) {
+					max_index = mid_index;
 				}
 			}
 

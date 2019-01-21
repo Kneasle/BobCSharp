@@ -1356,6 +1356,12 @@
             </summary>
             <param name="method_data">Set this to override the default method data.</param>
         </member>
+        <member name="M:Bob.MethodLibrary.GetAllMethods">
+            <summary>
+            Generates <see cref="T:Bob.Method"/> objects for every method in the CCCBR method library.  Warning! This function creates a lot of memory, so is not to be used lightly.
+            </summary>
+            <returns>All the methods as an array.</returns>
+        </member>
         <member name="M:Bob.MethodLibrary.GetMethodByTitle(System.String)">
             <summary>
             Finds a method with a given title in the CCCBR method library.

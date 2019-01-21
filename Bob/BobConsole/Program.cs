@@ -153,7 +153,7 @@ namespace BobConsole {
 			}
 		}
 
-		static void Main (string [] args) {
+		static void PB5and6Spliced () {
 			Method d = Method.GetMethod ("Plain Bob Doubles");
 			Method b = new Method ("56.16.56.16.56,1456", "Bobbed", Stage.Minor);
 			Method m = Method.GetMethod ("Plain Bob Minor");
@@ -210,10 +210,14 @@ namespace BobConsole {
 			touch.rounds_checks = RoundsCheckLocations.OnlyLeadEnds;
 
 			Console.WriteLine (touch.LeadHeadString ());
+		}
 
-			// Print720OfBobMinor ();
+		static void PrintTouchOfStedman () {
+			Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS").LeadHeadString ());
+		}
 
-			// Console.WriteLine (Method.GetMethod ("Stedman Doubles").TouchFromCallList ("MMMMS").LeadEndString ());
+		static void Main (string [] args) {
+
 
 			Console.ReadKey ();
 		}
