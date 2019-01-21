@@ -9,11 +9,11 @@ using Bob;
 namespace BobConsole {
 	class Program {
 		static void PrintGrandsireTriplesPlainCourse () {
-			Console.WriteLine (Method.grandsire_triples.plain_course);
+			Console.WriteLine (Method.GetMethod ("Grandsire Triples").plain_course);
 		}
 
 		static void Print120OfPlainBobDoubles () {
-			Console.WriteLine (Method.plain_bob_doubles.TouchFromCallList ("PPPB"));
+			Console.WriteLine (Method.GetMethod ("Plain Bob Doubles").TouchFromCallList ("PPPB"));
 		}
 
 		static void PrintSpacer () {
@@ -21,12 +21,12 @@ namespace BobConsole {
 		}
 
 		static void Print720OfBobMinor () {
-			Console.WriteLine (Method.plain_bob_minor.TouchFromCallingPositions ("WsWWsWH").LeadHeadString ());
+			Console.WriteLine (Method.GetMethod ("Plain Bob Minor").TouchFromCallingPositions ("WsWWsWH").LeadHeadString ());
 		}
 
 		static void PrintHalfACourseOfCambridgeMajor () {
 			Console.WriteLine (new Touch (
-				Method.cambridge_major,
+				Method.GetMethod ("Cambridge Surprise Major"),
 				new MethodCall [] {new MethodCall (
 					new Method ("X18", "Original", Stage.Major),
 					new Touch.CallLocationCountDown (3),
@@ -93,7 +93,7 @@ namespace BobConsole {
 			int n = 20;
 
 			for (int x = 0; x < n; x++) {
-				Touch t = Method.plain_bob_triples.TouchFromCallingPositions ("OHHH sWHHH WFHHH IH");
+				Touch t = Method.GetMethod ("Plain Bob Triples").TouchFromCallingPositions ("OHHH sWHHH WFHHH IH");
 				// new Method ("56x56.14x56x16x12x16,12", "Let's Ring is a", Stage.Minor).TouchFromCallingPositions ("WHW");
 
 				profiler.Profile ();
@@ -205,9 +205,9 @@ namespace BobConsole {
 					d,d,d,d,m,B
 					*/
 				}
-			);
-
-			touch.rounds_checks = RoundsCheckLocations.OnlyLeadEnds;
+			) {
+				rounds_checks = RoundsCheckLocations.OnlyLeadEnds
+			};
 
 			Console.WriteLine (touch.LeadHeadString ());
 		}

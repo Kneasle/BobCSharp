@@ -1424,38 +1424,5 @@ namespace Bob {
 				return output;
 			}
 		}
-
-		/// <summary>
-		/// Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method plain_bob_doubles => new Method ("5.1.5.1.5,125", "Plain", Classification.Bob, Stage.Doubles);
-		/// <summary>
-		/// Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method plain_bob_minor   => new Method ("x16x16x16,12", "Plain", Classification.Bob, Stage.Minor);
-		/// <summary>
-		/// Shortcut to generate Plain Bob Triples. (Only for testing; use <c>Method.GetMethod ("Plain Bob Triples")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method plain_bob_triples => new Method ("7.1.7.1.7.1.7,12", "Plain", Classification.Bob, Stage.Triples);
-
-		/// <summary>
-		/// Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method grandsire_doubles => new Method ("3,1.5.1.5.1", "Grandsire", Classification.Bob, Stage.Doubles, "Grandsire Doubles");
-		/// <summary>
-		/// Shortcut to generate Grandsire Triples. (Only for testing; use <c>Method.GetMethod ("Grandsire Triples")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method grandsire_triples => new Method ("3,1.7.1.7.1.7.1", "Grandsire", Classification.Bob, Stage.Triples, "Grandsire Triples");
-
-		/// <summary>
-		/// Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
-		/// </summary>
-		[Obsolete]
-		public static Method cambridge_major   => new Method ("x38x14x1258x36x14x58x16x78,12", "Cambridge", Classification.Surprise, Stage.Major);
 	}
 }

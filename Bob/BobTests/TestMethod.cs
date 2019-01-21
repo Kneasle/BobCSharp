@@ -10,15 +10,15 @@ namespace BobTests {
 			Assert.AreEqual ("Cambridge Surprise Major", new Method ("X", "Cambridge", Classification.Surprise, Stage.Major).title);
 			Assert.AreEqual ("Stedman Triples", new Method ("3", "Stedman", Classification.Principle, Stage.Triples).title);
 			Assert.AreEqual ("Kent Treble Bob Twenty-two", new Method ("X", "Kent", Classification.TrebleBob, Stage.TwentyTwo).title);
-			Assert.AreEqual ("Grandsire Triples", Method.grandsire_triples.title);
+			Assert.AreEqual ("Grandsire Triples", Method.GetMethod ("Grandsire Triples").title);
 		}
 
 		[TestMethod]
 		public void Method_HuntBells () {
-			Method p5 = Method.plain_bob_doubles;
-			Method p6 = Method.plain_bob_minor;
-			Method c8 = Method.cambridge_major;
-			Method g5 = Method.grandsire_doubles;
+			Method p5 = Method.GetMethod ("Plain Bob Doubles");
+			Method p6 = Method.GetMethod ("Plain Bob Minor");
+			Method c8 = Method.GetMethod ("Cambridge Surprise Major");
+			Method g5 = Method.GetMethod ("Grandsire Doubles");
 
 			Assert.AreEqual (true, p5.is_treble_hunting);
 			Assert.AreEqual (1, p6.hunt_bells.Length);
@@ -48,8 +48,8 @@ namespace BobTests {
 
 		[TestMethod]
 		public void Method_Symmetry () {
-			Assert.AreEqual (Method.SymmetryType.PlainBobLike, Method.plain_bob_doubles.symmetry_type);
-			Assert.AreEqual (Method.SymmetryType.GrandsireLike, Method.grandsire_triples.symmetry_type);
+			Assert.AreEqual (Method.SymmetryType.PlainBobLike, Method.GetMethod ("Plain Bob Doubles").symmetry_type);
+			Assert.AreEqual (Method.SymmetryType.GrandsireLike, Method.GetMethod ("Grandsire Triples").symmetry_type);
 		}
 
 		[TestMethod]
@@ -61,12 +61,12 @@ namespace BobTests {
 					4, 3, 2, 1, 0, 0, 1, 2, 3, 2,
 					3, 4, 4, 3, 2, 1, 0, 0, 1, 1
 				},
-				Method.plain_bob_doubles.GetPathOfBell (1)
+				Method.GetMethod ("Plain Bob Doubles").GetPathOfBell (1)
 			);
 
 			CollectionAssert.AreEqual (
 				new int [] { 1, 2, 3, 4, 4, 3, 2, 1, 0, 0 },
-				Method.plain_bob_doubles.GetPathOfBell (0)
+				Method.GetMethod ("Plain Bob Doubles").GetPathOfBell (0)
 			);
 		}
 
@@ -94,12 +94,12 @@ namespace BobTests {
 
 		[TestMethod]
 		public void Method_CoursingOrder () {
-			CollectionAssert.AreEqual (new int [] { 6, 4, 2, 1, 3, 5 }, Method.plain_bob_triples.plain_coursing_order);
+			CollectionAssert.AreEqual (new int [] { 6, 4, 2, 1, 3, 5 }, Method.GetMethod ("Plain Bob Triples").plain_coursing_order);
 		}
 
 		[TestMethod]
 		public void Method_Misc () {
-			Assert.AreEqual (70, Method.grandsire_triples.plain_course_length);
+			Assert.AreEqual (70, Method.GetMethod ("Grandsire Triples").plain_course_length);
 		}
 	}
 }
