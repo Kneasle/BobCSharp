@@ -940,12 +940,12 @@
             A list of changes in the plain lead (starting from the change after rounds).
             </summary>
         </member>
-        <member name="P:Bob.Method.lead_end">
+        <member name="P:Bob.Method.lead_head">
             <summary>
             The lead end change of the method.
             </summary>
         </member>
-        <member name="P:Bob.Method.lead_end_notation">
+        <member name="P:Bob.Method.lead_head_notation">
             <summary>
             The last place notation of the method (even if the treble is not a hunt bell).
             </summary>
@@ -1029,17 +1029,17 @@
         </member>
         <member name="M:Bob.Method.GetCoursingOrder(Bob.Change,System.Boolean)">
             <summary>
-            Gets the coursing order of this method at a given lead end.
+            Gets the coursing order of this method at a given lead head.
             </summary>
-            <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+            <param name="lead_head">The lead head who's coursing order you want.  If null, will default to rounds.</param>
             <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
             <returns>The coursing order of the method as an array indexed from 0.</returns>
         </member>
         <member name="M:Bob.Method.GetCoursingOrderString(Bob.Change,System.Boolean,System.Boolean,System.Int32)">
             <summary>
-            Gets the coursing order of this method at a given lead end, formatted as a string.
+            Gets the coursing order of this method at a given lead head, formatted as a string.
             </summary>
-            <param name="lead_end">The lead end who's coursing order you want.  If null, will default to rounds.</param>
+            <param name="lead_head">The lead head who's coursing order you want.  If null, will default to rounds.</param>
             <param name="assume_plain_bob_like">Setting this to true will tell the function not to look at leading order (makes this more accurate for methods such as Cambridge).</param>
             <param name="discard_heavy_bells_in_plain_coursing_order">This will remove all the heavy bells (tenors) which are in the same order as they appear in the plain course.</param>
             <param name="heaviest_bell_to_always_keep">The largest bell which will always be shown in the coursing order (indexed from 0).</param>
@@ -1978,9 +1978,9 @@
             A dictionary to store calls placed to the right of the changes
             </summary>
         </member>
-        <member name="F:Bob.TouchBase.lead_ends_line_indices">
+        <member name="F:Bob.TouchBase.lead_head_line_indices">
             <summary>
-            A list of the indices of each lead end in this touch.  Used in <see cref="M:Bob.TouchBase.ToString"/>.
+            A list of the indices of each lead head in this touch.  Used in <see cref="M:Bob.TouchBase.ToString"/> and <see cref="M:Bob.TouchBase.LeadHeadString(System.Boolean)"/>.
             </summary>
         </member>
         <member name="P:Bob.TouchBase.target_change">
@@ -2059,11 +2059,11 @@
             </summary>
             <returns>A string representation of this touch.</returns>
         </member>
-        <member name="M:Bob.TouchBase.LeadEndString(System.Boolean)">
+        <member name="M:Bob.TouchBase.LeadHeadString(System.Boolean)">
             <summary>
-            Gets a string representing this touch, but only by lead ends.
+            Gets a string representing this touch, but only by lead head.
             </summary>
-            <returns>The lead ends of the touch, along with calls.</returns>
+            <returns>The lead heads of the touch, along with calls.</returns>
         </member>
         <member name="M:Bob.TouchBase.ComputeChanges">
             <summary>
@@ -2183,14 +2183,14 @@
         </member>
         <member name="M:Bob.Utils.Factorial(System.Int32)">
             <summary>
-            Computes the factorial of an integer `n`.  Please do NOT put large numbers into this function, or your computer will crash.
+            Computes the factorial of an integer `n`.  Please DO put large numbers into this function, because your computer will crash and that would be funny.
             </summary>
             <param name="n">The integer who's factorial is required.</param>
             <returns>The factoral of that integer.</returns>
         </member>
         <member name="M:Bob.Utils.Mod(System.Int32,System.Int32)">
             <summary>
-            Returns the true remainder after `x` is divided by `n`.
+            Returns the true remainder after `x` is divided by `n` (`x % n` doesn't do this in C#).
             </summary>
             <param name="x">The 'numerator'.</param>
             <param name="n">The 'denominator'.</param>

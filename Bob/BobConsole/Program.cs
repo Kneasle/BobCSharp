@@ -155,25 +155,55 @@ namespace BobConsole {
 
 		static void Main (string [] args) {
 			Method d = Method.GetMethod ("Plain Bob Doubles");
+			Method b = new Method ("56.16.56.16.56,1456", "Bobbed", Stage.Minor);
 			Method m = Method.GetMethod ("Plain Bob Minor");
-			Method s = new Method ("x16x16x16,1234", "Plain", Stage.Minor);
+			Method B = new Method ("x16x16x16,14", "Bobbed", Stage.Minor);
+			Method S = new Method ("x16x16x16,1234", "Singled", Stage.Minor);
 
 			Touch touch = new Touch (
 				new Method [] {
-					d,m,m,m,m,
-					d,m,m,d,m,
-					d,d,m,
-					d,d,d,m,
+					d,d,m,m,m,m,
+					d,m,b,
+					d,d,d,d,m,m,m,m,
+					b,m,
 
-					d,m,m,m,m,
-					d,m,m,d,m,
-					d,d,m,
-					d,d,d,m,
+					d,d,m,m,m,m,
+					d,m,b,
+					d,d,d,d,m,m,m,m,
+					b,B
 
-					d,m,m,m,m,
-					d,m,m,d,m,
-					d,d,m,
-					d,d,d,s,
+					/*
+					d,d,m,m,m,m,
+					d,m,b,
+					d,d,d,d,m,m,m,m,
+					b,S,
+
+					d,d,m,m,m,m,
+					d,m,b,
+					d,d,d,d,m,m,m,m,
+					b,S,
+
+					d,d,m,m,m,m,
+					d,m,b,
+					d,d,d,d,m,m,m,m,
+					b,m
+					*/
+					/*
+					b,m,
+					d,d,m,m,m,m,
+					d,m,b,m,m,
+					d,d,d,d,m,S,
+
+					b,m,
+					d,d,m,m,m,m,
+					d,m,b,m,m,
+					d,d,d,d,m,S,
+
+					b,m,
+					d,d,m,m,m,m,
+					d,m,b,m,m,
+					d,d,d,d,m,B
+					*/
 				}
 			);
 
