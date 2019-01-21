@@ -52,7 +52,7 @@ namespace Bob {
 		/// Gets the array caused by this transposition.  Implements <see cref="ITransposition"/>.
 		/// </summary>
 		/// <returns>The array representing the transposition caused by this called change.</returns>
-		public int [] GetArray (Change original) {
+		public int [] GetTranspositionArray (Change original) {
 			if (m_array is null) {
 				m_array = new int [(int)original.stage];
 

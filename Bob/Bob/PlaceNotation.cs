@@ -82,7 +82,7 @@ namespace Bob {
 		private bool m_is_1n;
 		private bool has_set_is_1n = false;
 		/// <summary>
-		/// True if this place notation is "1n".  For all odd-staged notations, this returns false.
+		/// True if this place notation is "1n".  For all odd-staged notations, this always returns false.
 		/// </summary>
 		public bool is_1n {
 			get {
@@ -135,7 +135,7 @@ namespace Bob {
 		/// Gets the array representing the transposition of this place notation.  Implements <see cref="ITransposition"/>.
 		/// </summary>
 		/// <returns>An array representing this transposition.</returns>
-		public int [] GetArray (Change original) => array;
+		public int [] GetTranspositionArray (Change original) => array;
 
 		/// <summary>
 		///	Checks equality between this object and another object.
@@ -513,9 +513,7 @@ namespace Bob {
 		/// <param name="notation1">The left hand notation.</param>
 		/// <param name="notation2">The right hand notation.</param>
 		/// <returns>True if `notation1` does not equals `notation2`.</returns>
-		public static bool operator != (PlaceNotation notation1, PlaceNotation notation2) {
-			return !(notation1 == notation2);
-		}
+		public static bool operator != (PlaceNotation notation1, PlaceNotation notation2) => !(notation1 == notation2);
 	}
 
 	/// <summary>

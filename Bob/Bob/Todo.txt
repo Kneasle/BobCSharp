@@ -1,5 +1,6 @@
 ﻿Todo:
  - Search method database by place notation
+ - Allow computation and storage of symmetries
  - Allow methods to have custom rule-offs
 
 Intentionally Not Done:

@@ -190,7 +190,7 @@ namespace Bob {
 		/// <returns>The transposed change.</returns>
 		public Change Transpose (ITransposition transposable) {
 			int [] in_array = array;
-			int [] transpose_array = transposable.GetArray (this);
+			int [] transpose_array = transposable.GetTranspositionArray (this);
 
 			int size = Math.Max (in_array.Length, transpose_array.Length);
 
@@ -233,7 +233,7 @@ namespace Bob {
 		/// Gets the array of the change.  Implements <see cref="ITransposition"/>.
 		/// </summary>
 		/// <returns>The array representing the transposition caused by this change.</returns>
-		public int [] GetArray (Change other) => array;
+		public int [] GetTranspositionArray (Change other) => array;
 
 		// Constructors
 		/// <summary>
