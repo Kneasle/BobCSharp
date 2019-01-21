@@ -94,7 +94,7 @@ namespace BobTests {
 
 		[TestMethod]
 		public void Method_CoursingOrder () {
-			CollectionAssert.AreEqual (new int [] { 6, 4, 2, 1, 3, 5 }, Method.GetMethod ("Plain Bob Triples").plain_coursing_order);
+			CollectionAssert.AreEqual (new int [] { 6, 4, 2, 1, 3, 5 }, Method.plain_bob_triples.plain_coursing_order);
 		}
 
 		[TestMethod]

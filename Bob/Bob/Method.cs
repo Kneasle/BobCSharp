@@ -766,6 +766,13 @@ namespace Bob {
 				// Actually look at the leading
 				List<int> coursing_order = new List<int> ();
 
+				bool [] are_in_coursing_order = new bool [(int)stage];
+				bool [] are_in_working_bells = new bool [(int)stage];
+
+				foreach (int b in working_bells) {
+					are_in_working_bells [b] = true;
+				}
+
 				Touch plain_course = this.plain_course;
 
 				foreach (Change change in plain_course.changes) {
@@ -773,13 +780,14 @@ namespace Bob {
 					int leading_bell = lead_head [change [0]];
 
 					// If it's already been counted, discard it
-					if (coursing_order.Contains (leading_bell)) {
+					if (are_in_coursing_order [leading_bell]) {
 						continue;
 					}
 
 					// If it's not a hunt bell, add it to the list
-					if (working_bells.Contains (leading_bell)) {
+					if (are_in_working_bells [leading_bell]) {
 						coursing_order.Add (leading_bell);
+						are_in_coursing_order [leading_bell] = true;
 					}
 
 					// Stop the loop if all the bells have been accounted for
@@ -808,7 +816,6 @@ namespace Bob {
 			}
 
 			// Return the list
-
 			return output;
 		}
 
