@@ -346,6 +346,31 @@ namespace Bob {
 			return null;
 		}
 
+		/// <summary>
+		/// Finds a method with a given place notation (uses slow linear search).  Returns null if none is found.
+		/// </summary>
+		/// <param name="full_notation">The place notation to check for.</param>
+		/// <returns>The method with that notation.</returns>
+		public static Method GetMethodByPlaceNotation (PlaceNotation [] full_notation) {
+			foreach (StoredMethod stored_method in library.stored_methods) {
+				if (stored_method.stage != full_notation [0].stage)
+					continue;
+
+				if (PlaceNotation.AreEquivalent (full_notation, stored_method.place_notation, stored_method.stage)) {
+					return stored_method.method;
+				}
+			}
+
+			return null;
+		}
+		/// <summary>
+		/// Finds a method with a given stage and place notation (uses slow linear search).  Returns null if none is found.
+		/// </summary>
+		/// <param name="notation">The notation to check for.</param>
+		/// <param name="stage">The stage of methods to check.</param>
+		/// <returns>The method with that notation and stage.</returns>
+		public static Method GetMethodByPlaceNotation (string notation, Stage stage) => GetMethodByPlaceNotation (PlaceNotation.DecodeFullNotation (notation, stage));
+
 		private static MethodLibrary m_library = null;
 		/// <summary>
 		/// Gets/creates a <see cref="MethodLibrary"/> object for the CCCBR method library.

@@ -299,7 +299,7 @@
             The place (indexed from zero) of the first bell to be swapped, e.g. `2` would represent "3 follow 4" from rounds.
             </summary>
         </member>
-        <member name="M:Bob.CalledChange.GetArray(Bob.Change)">
+        <member name="M:Bob.CalledChange.GetTranspositionArray(Bob.Change)">
             <summary>
             Gets the array caused by this transposition.  Implements <see cref="T:Bob.ITransposition"/>.
             </summary>
@@ -415,7 +415,7 @@
             <param name="bell">The bell you want to find the index of (indexing from 0).</param>
             <returns>The index (from 0) of the bell.  Returns -1 if the bell isn't in the change.</returns>
         </member>
-        <member name="M:Bob.Change.GetArray(Bob.Change)">
+        <member name="M:Bob.Change.GetTranspositionArray(Bob.Change)">
             <summary>
             Gets the array of the change.  Implements <see cref="T:Bob.ITransposition"/>.
             </summary>
@@ -746,7 +746,7 @@
             An interface for any transposable object, e.g. Change or PlaceNotation.
             </summary>
         </member>
-        <member name="M:Bob.ITransposition.GetArray(Bob.Change)">
+        <member name="M:Bob.ITransposition.GetTranspositionArray(Bob.Change)">
             <summary>
             A function to get an integer array representing the transposition of this object.
             </summary>
@@ -1179,6 +1179,21 @@
             <param name="title">The title of the method you want to find.</param>
             <returns>The <see cref="T:Bob.Method"/> object with that title (or null).</returns>
         </member>
+        <member name="M:Bob.Method.GetMethod(System.String,Bob.Stage)">
+            <summary>
+            Finds a method in the CCCBR method library with a given stage and place notation (uses slow linear search).  Returns null if none is found.
+            </summary>
+            <param name="notation">The notation to check for.</param>
+            <param name="stage">The stage of methods to check.</param>
+            <returns>The method with that notation and stage.</returns>
+        </member>
+        <member name="M:Bob.Method.GetMethod(Bob.PlaceNotation[])">
+            <summary>
+            Finds a method with a given place notation (uses slow linear search).  Returns null if none is found.
+            </summary>
+            <param name="full_notation">The place notation to check for.</param>
+            <returns>The method with that notation.</returns>
+        </member>
         <member name="M:Bob.Method.GenerateTitle(System.String,Bob.Stage,Bob.Classification,System.Boolean,System.Boolean)">
             <summary>
             Generates a method's title given a load of attributes
@@ -1189,36 +1204,6 @@
             <param name="is_little">True if the tag "Little" should be included in the title.</param>
             <param name="is_differential">True if the tag "Differential" should be included in the title.</param>
             <returns></returns>
-        </member>
-        <member name="P:Bob.Method.plain_bob_doubles">
-            <summary>
-            Shortcut to generate Plain Bob Doubles. (Only for testing; use <c>Method.GetMethod ("Plain Bob Doubles")</c> instead).
-            </summary>
-        </member>
-        <member name="P:Bob.Method.plain_bob_minor">
-            <summary>
-            Shortcut to generate Plain Bob Minor. (Only for testing; use <c>Method.GetMethod ("Plain Bob Minor")</c> instead).
-            </summary>
-        </member>
-        <member name="P:Bob.Method.plain_bob_triples">
-            <summary>
-            Shortcut to generate Plain Bob Triples. (Only for testing; use <c>Method.GetMethod ("Plain Bob Triples")</c> instead).
-            </summary>
-        </member>
-        <member name="P:Bob.Method.grandsire_doubles">
-            <summary>
-            Shortcut to generate Grandsire Doubles. (Only for testing; use <c>Method.GetMethod ("Grandsire Doubles")</c> instead).
-            </summary>
-        </member>
-        <member name="P:Bob.Method.grandsire_triples">
-            <summary>
-            Shortcut to generate Grandsire Triples. (Only for testing; use <c>Method.GetMethod ("Grandsire Triples")</c> instead).
-            </summary>
-        </member>
-        <member name="P:Bob.Method.cambridge_major">
-            <summary>
-            Shortcut to generate Cambridge Major. (Only for testing; use <c>Method.GetMethod ("Cambridge Surprise Major")</c> instead).
-            </summary>
         </member>
         <member name="T:Bob.MethodLibrary">
             <summary>
@@ -1369,6 +1354,21 @@
             <param name="title">The title of the method.</param>
             <returns>The method with the given title (null if no such method exists in the CCCBR library).</returns>
         </member>
+        <member name="M:Bob.MethodLibrary.GetMethodByPlaceNotation(Bob.PlaceNotation[])">
+            <summary>
+            Finds a method with a given place notation (uses slow linear search).  Returns null if none is found.
+            </summary>
+            <param name="full_notation">The place notation to check for.</param>
+            <returns>The method with that notation.</returns>
+        </member>
+        <member name="M:Bob.MethodLibrary.GetMethodByPlaceNotation(System.String,Bob.Stage)">
+            <summary>
+            Finds a method with a given stage and place notation (uses slow linear search).  Returns null if none is found.
+            </summary>
+            <param name="notation">The notation to check for.</param>
+            <param name="stage">The stage of methods to check.</param>
+            <returns>The method with that notation and stage.</returns>
+        </member>
         <member name="P:Bob.MethodLibrary.library">
             <summary>
             Gets/creates a <see cref="T:Bob.MethodLibrary"/> object for the CCCBR method library.
@@ -1411,7 +1411,7 @@
         </member>
         <member name="P:Bob.PlaceNotation.is_1n">
             <summary>
-            True if this place notation is "1n".  For all odd-staged notations, this returns false.
+            True if this place notation is "1n".  For all odd-staged notations, this always returns false.
             </summary>
         </member>
         <member name="P:Bob.PlaceNotation.is_x">
@@ -1424,7 +1424,7 @@
             True if this place notation contains internal places (places not at either end of the notation).
             </summary>
         </member>
-        <member name="M:Bob.PlaceNotation.GetArray(Bob.Change)">
+        <member name="M:Bob.PlaceNotation.GetTranspositionArray(Bob.Change)">
             <summary>
             Gets the array representing the transposition of this place notation.  Implements <see cref="T:Bob.ITransposition"/>.
             </summary>
@@ -1486,6 +1486,41 @@
             <param name="input">The input place notation.</param>
             <param name="stage">The stage on which this place notation is being rung.</param>
             <returns>The place notation compressed as much as possible.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.AreEquivalent(Bob.PlaceNotation[],Bob.PlaceNotation[])">
+            <summary>
+            Determines whether two arrays of place notation mean the same thing.
+            </summary>
+            <param name="notation1">The first notation.</param>
+            <param name="notation2">The second notation.</param>
+            <returns>True if both notations represent the same thing.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.AreEquivalent(System.String,Bob.PlaceNotation[],Bob.Stage)">
+            <summary>
+            Determines whether two arrays of place notation mean the same thing.
+            </summary>
+            <param name="notation1">The first notation.</param>
+            <param name="notation2">The second notation.</param>
+            <param name="stage">The stage of the notations.</param>
+            <returns>True if both notations represent the same thing.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.AreEquivalent(Bob.PlaceNotation[],System.String,Bob.Stage)">
+            <summary>
+            Determines whether two arrays of place notation mean the same thing.
+            </summary>
+            <param name="notation1">The first notation.</param>
+            <param name="notation2">The second notation.</param>
+            <param name="stage">The stage of the notations.</param>
+            <returns>True if both notations represent the same thing.</returns>
+        </member>
+        <member name="M:Bob.PlaceNotation.AreEquivalent(System.String,System.String,Bob.Stage)">
+            <summary>
+            Determines whether two arrays of place notation mean the same thing.
+            </summary>
+            <param name="notation1">The first notation.</param>
+            <param name="notation2">The second notation.</param>
+            <param name="stage">The stage of the notations.</param>
+            <returns>True if both notations represent the same thing.</returns>
         </member>
         <member name="F:Bob.PlaceNotation.x_notations">
             <summary>

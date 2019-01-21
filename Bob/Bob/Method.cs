@@ -1397,6 +1397,19 @@ namespace Bob {
 		/// <param name="title">The title of the method you want to find.</param>
 		/// <returns>The <see cref="Method"/> object with that title (or null).</returns>
 		public static Method GetMethod (string title) => MethodLibrary.GetMethodByTitle (title);
+		/// <summary>
+		/// Finds a method in the CCCBR method library with a given stage and place notation (uses slow linear search).  Returns null if none is found.
+		/// </summary>
+		/// <param name="notation">The notation to check for.</param>
+		/// <param name="stage">The stage of methods to check.</param>
+		/// <returns>The method with that notation and stage.</returns>
+		public static Method GetMethod (string notation, Stage stage) => MethodLibrary.GetMethodByPlaceNotation (notation, stage);
+		/// <summary>
+		/// Finds a method with a given place notation (uses slow linear search).  Returns null if none is found.
+		/// </summary>
+		/// <param name="full_notation">The place notation to check for.</param>
+		/// <returns>The method with that notation.</returns>
+		public static Method GetMethod (PlaceNotation [] full_notation) => MethodLibrary.GetMethodByPlaceNotation (full_notation);
 
 		/// <summary>
 		/// Generates a method's title given a load of attributes

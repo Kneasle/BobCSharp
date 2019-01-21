@@ -482,6 +482,50 @@ namespace Bob {
 			return output;
 		}
 
+		/// <summary>
+		/// Determines whether two arrays of place notation mean the same thing.
+		/// </summary>
+		/// <param name="notation1">The first notation.</param>
+		/// <param name="notation2">The second notation.</param>
+		/// <returns>True if both notations represent the same thing.</returns>
+		public static bool AreEquivalent (PlaceNotation [] notation1, PlaceNotation [] notation2) {
+			if (notation1.Length != notation2.Length) {
+				return false;
+			}
+
+			for (int i = 0; i < notation1.Length; i++) {
+				if (notation1 [i] != notation2 [i]) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+		/// <summary>
+		/// Determines whether two arrays of place notation mean the same thing.
+		/// </summary>
+		/// <param name="notation1">The first notation.</param>
+		/// <param name="notation2">The second notation.</param>
+		/// <param name="stage">The stage of the notations.</param>
+		/// <returns>True if both notations represent the same thing.</returns>
+		public static bool AreEquivalent (string notation1, PlaceNotation [] notation2, Stage stage) => AreEquivalent (DecodeFullNotation (notation1, stage), notation2);
+		/// <summary>
+		/// Determines whether two arrays of place notation mean the same thing.
+		/// </summary>
+		/// <param name="notation1">The first notation.</param>
+		/// <param name="notation2">The second notation.</param>
+		/// <param name="stage">The stage of the notations.</param>
+		/// <returns>True if both notations represent the same thing.</returns>
+		public static bool AreEquivalent (PlaceNotation [] notation1, string notation2, Stage stage) => AreEquivalent (notation1, DecodeFullNotation (notation2, stage));
+		/// <summary>
+		/// Determines whether two arrays of place notation mean the same thing.
+		/// </summary>
+		/// <param name="notation1">The first notation.</param>
+		/// <param name="notation2">The second notation.</param>
+		/// <param name="stage">The stage of the notations.</param>
+		/// <returns>True if both notations represent the same thing.</returns>
+		public static bool AreEquivalent (string notation1, string notation2, Stage stage) => AreEquivalent (DecodeFullNotation (notation1, stage), DecodeFullNotation (notation2, stage));
+
 		// Constants
 		/// <summary>
 		/// A customisable array of possible notations for a 'cross' place notations.
