@@ -185,6 +185,9 @@ namespace Bob {
 		/// <param name="notation">The string notation of this place notation.</param>
 		/// <param name="stage">The stage of this place notation.</param>
 		public PlaceNotation (string notation, Stage stage) {
+			if (notation == "")
+				throw new ArgumentException ("Place notation cannot be the empty string.");
+
 			array = new int [(int)stage];
 			this.notation = notation;
 			

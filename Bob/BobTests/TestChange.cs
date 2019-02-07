@@ -50,5 +50,12 @@ namespace BobTests {
 			Assert.AreEqual (Change.Rounds (Stage.Maximus), new Change ("1234567890ET"));
 			Assert.AreEqual (new Change (new int [] { 5, 4, 2, 3, 1, 0 }), new Change ("653421"));
 		}
+
+		[TestMethod]
+		public void Change_Indexing () {
+			Assert.AreEqual (0, new Change ("5234167").IndexOf (4));
+			Assert.AreEqual (-1, new Change ("5234167").IndexOf (8));
+			Assert.AreEqual (3, new Change ("5234167").IndexOf (3));
+		}
 	}
 }

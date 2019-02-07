@@ -1,6 +1,9 @@
 ﻿Todo:
  - Allow computation and storage of symmetries
+ - Allow calls and methods to be properly mixed during spliced
  - Allow methods to have custom rule-offs
+ - Fix when lead end calls turn up in lead end strings
+ - Beef up unit tests
 
 Intentionally Not Done:
  - Multithreading on extent generation

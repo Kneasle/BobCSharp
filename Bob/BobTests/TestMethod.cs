@@ -7,10 +7,30 @@ namespace BobTests {
 	public class TestMethod {
 		[TestMethod]
 		public void Method_NamingConventions () {
-			Assert.AreEqual ("Cambridge Surprise Major", new Method ("X", "Cambridge", Classification.Surprise, Stage.Major).title);
-			Assert.AreEqual ("Stedman Triples", new Method ("3", "Stedman", Classification.Principle, Stage.Triples).title);
-			Assert.AreEqual ("Kent Treble Bob Twenty-two", new Method ("X", "Kent", Classification.TrebleBob, Stage.TwentyTwo).title);
-			Assert.AreEqual ("Grandsire Triples", Method.GetMethod ("Grandsire Triples").title);
+			Assert.AreEqual (
+				"Cambridge Surprise Major", 
+				new Method ("X", "Cambridge", Classification.Surprise, Stage.Major).title
+			);
+			Assert.AreEqual (
+				"Stedman Triples", 
+				new Method ("3", "Stedman", Classification.Principle, Stage.Triples).title
+			);
+			Assert.AreEqual (
+				"Kent Treble Bob Twenty-two", 
+				new Method ("X", "Kent", Classification.TrebleBob, Stage.TwentyTwo).title
+			);
+			Assert.AreEqual (
+				"Grandsire Triples",
+				Method.GetMethod ("Grandsire Triples").title
+			);
+			Assert.AreEqual (
+				"Little Bob Minor", 
+				new Method ("X", "", Classification.Bob, Stage.Minor, null, true, false).title
+			);
+			Assert.AreEqual (
+				"London Differential Little Surprise Major", 
+				new Method ("38x38.14x12x14,12", "London", Classification.Surprise, Stage.Major, null, true, true).title
+			);
 		}
 
 		[TestMethod]
@@ -19,6 +39,7 @@ namespace BobTests {
 			Method p6 = Method.GetMethod ("Plain Bob Minor");
 			Method c8 = Method.GetMethod ("Cambridge Surprise Major");
 			Method g5 = Method.GetMethod ("Grandsire Doubles");
+			Method astleham_alliance = Method.GetMethod ("Astleham Alliance Doubles");
 
 			Assert.AreEqual (true, p5.is_treble_hunting);
 			Assert.AreEqual (1, p6.hunt_bells.Length);
@@ -44,12 +65,18 @@ namespace BobTests {
 			Assert.AreEqual (false, g5.main_hunt_bell.is_treble_dodging);
 			Assert.AreEqual (true, g5.main_hunt_bell.is_symmetrical);
 			Assert.AreEqual (true, g5.main_hunt_bell.spends_same_number_of_blows_in_each_place);
+
+			Assert.AreEqual (false, Method.GetMethod ("Astleham Alliance Doubles").main_hunt_bell.spends_same_number_of_blows_in_each_place);
+			Assert.AreEqual (false, Method.GetMethod ("Heywood Hybrid Major").main_hunt_bell.is_symmetrical);
 		}
 
 		[TestMethod]
 		public void Method_Symmetry () {
 			Assert.AreEqual (Method.SymmetryType.PlainBobLike, Method.GetMethod ("Plain Bob Doubles").symmetry_type);
 			Assert.AreEqual (Method.SymmetryType.GrandsireLike, Method.GetMethod ("Grandsire Triples").symmetry_type);
+			Assert.AreEqual (Method.SymmetryType.Asymmetric, Method.GetMethod ("Heywood Hybrid Major").symmetry_type);
+			Assert.AreEqual (Method.SymmetryType.PlainBobLike, Method.GetMethod ("Stedman Cinques").symmetry_type);
+			Assert.AreEqual (Method.SymmetryType.GrandsireLike, Method.GetMethod ("Erin Cinques").symmetry_type);
 		}
 
 		[TestMethod]
@@ -67,6 +94,25 @@ namespace BobTests {
 			CollectionAssert.AreEqual (
 				new int [] { 1, 2, 3, 4, 4, 3, 2, 1, 0, 0 },
 				Method.GetMethod ("Plain Bob Doubles").GetPathOfBell (0)
+			);
+
+			Method bonkers_method = Method.GetMethod ("Resident Pandynamic Fruitbat Differential Bob Minor");
+
+			CollectionAssert.AreEqual (
+				new int [] {
+					0, 0, 1, 1, 0, 1, 0, 0, 1, 2, 3, 3,
+					2, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1
+				},
+				bonkers_method.GetPathOfBell (1)
+			);
+
+			CollectionAssert.AreEqual (
+				new int [] {
+					4, 3, 2, 2, 3, 4, 5, 5, 4, 3, 2, 2,
+					3, 4, 5, 5, 4, 3, 2, 2, 3, 4, 5, 4,
+					5, 5, 4, 3, 2, 2, 3, 4, 5, 5, 4, 5
+				},
+				bonkers_method.GetPathOfBell (5)
 			);
 		}
 
