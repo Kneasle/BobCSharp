@@ -1,4 +1,4 @@
-# BobC# (Alpha)
+# BobC# (Discontinued)
 A high-level, high performance C# library for computing methods, touches, peals and other bellringing computations.
 
 
